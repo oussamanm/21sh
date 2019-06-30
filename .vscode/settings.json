@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "minishell.h": "c",
+        "libft.h": "c",
+        "unistd.h": "c",
+        "21sh.h": "c",
+        "ft_select.h": "c",
+        "fcntl.h": "c",
+        "stat.h": "c",
+        "dirent.h": "c",
+        "ioctl.h": "c",
+        "types.h": "c",
+        "stdio.h": "c"
+    }
+}

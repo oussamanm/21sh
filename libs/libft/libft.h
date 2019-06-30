@@ -70,7 +70,7 @@ char				*ft_strtrim(char const *s);
 char				**ft_strsplit(char const *s, char c);
 char				*ft_itoa(long long int n);
 void				ft_putchar(char c);
-void				ft_putstr(char const *s);
+int					ft_putstr(char const *s);
 void				ft_putendl(char const *s);
 void				ft_putnbr(int n);
 void				ft_putchar_fd(char c, int fd);
@@ -89,6 +89,7 @@ int					ft_lstcount(t_list *lst);
 int					ft_countw(const char *str, char c);
 void				ft_lstprint(t_list *lst);
 char				*ft_nstrdup(const char *s1, size_t n);
+
 int					ft_find_file(char *path, char *file);
 int					ft_check_char(char *str, char c);
 int					ft_find_char(char *str, char c);
@@ -111,6 +112,7 @@ void				ft_strrdel(char **str);
 char				*ft_strnew_char(size_t size, char c);
 char				*ft_strjoir(char *s1, char *s2, int rm);
 int					ft_isspace(char c);
-int					ft_check_charr(char *src, int tab[]);
+int					ft_check_charr(char *src, int str[], int exept);
+void				ft_repeat_char(int c, int n);
 
 #endif

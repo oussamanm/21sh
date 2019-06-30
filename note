@@ -1,0 +1,47 @@
+*** interpreter & compiler
+
+*Lexical Analysis : 
+    is the first phase of a compiler , it takes the modifies sources
+    form language preprocessors that are written in the form of senteces.
+    - the LA breaks these syntaxes into a series of tokens, by removing 
+    any whitespace or comments in the source code.
+    ex: int value = 100; ==> int (keyword), value (identidier), = (operator) ...
+    (the compiler breaks the submitted source code into meaningful elements 
+    called LEXEMES and generates a sequence of TOKENS from the lexemes)
+
+*Parsing || syntactic analysis || syntax analysis :
+    during syntax analysis the compiler use the sequence of tokens to generate
+    a tree-like data structure called Abstract Syntax Tree, AST
+    is also the phase where eventual syntax errors are detected and reported
+
+*Semantic Analysis :
+    During semantic analysis , the compiler uses the AST ot check if the program
+    is consistent with all the rules of the source programming language.
+    - semantic analysis encompasses :
+        . Type inference = check if a type is successfully inferred.
+        . Type checking : check that all value being assigned to vrb have the correct type
+        . Symbol management : the compiler maintains a data structure called symbol table
+            which contains information about all symbol (or names)
+            the compiler use the symbol table to answer questions such as is this vrb declared
+            use ? are there 2 vrb with the same names...
+
+* Intermediate Code generation
+    teh compiler uses the annotated AST to generate an intermediate  and machine-independent 
+    low-level code.
+
+
+pre preprocessor
+compiler
+assembler : machine code
+linker : tool is used to link all the part of program together for execution
+loader : load all of them into memory and the the program is executed
+memory
+
+
+*Quoting : used to remove the special meaning of certain character or words to the shell
+			
+
+test1 aaaaa bbb cccc dddd
+(str,remp,7,5)
+protonmail
+lavabit

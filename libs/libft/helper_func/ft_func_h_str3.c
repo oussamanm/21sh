@@ -12,7 +12,18 @@
 
 #include "../libft.h"
 
-int		ft_check_charr(char *src, int tab[])
+void	ft_repeat_char(int c, int n)
+{
+	if (!ft_isprint(c))
+		return ;
+	while (n > 0)
+	{
+		ft_putchar_fd(c, 2);
+		n--;
+	}
+}
+
+int		ft_check_charr(char *src, int str[], int exept)
 {
 	int i;
 	int j;
@@ -23,10 +34,12 @@ int		ft_check_charr(char *src, int tab[])
 	while (src[i])
 	{
 		j = -1;
-		while(tab[++j] != -1)
+		while(str[++j] != -1)
 		{
-			if (src[i] == tab[j])
-				return (tab[j]);
+			if (exept == 0 && src[i] == str[j])
+				return (str[j]);
+			if (exept == 1 && src[i] != str[j])
+				return (j);
 		}
 		i++;
 	}
