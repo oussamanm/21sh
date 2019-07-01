@@ -14,38 +14,28 @@
 
 void     ft_btn_right(t_dimen *st_dimen)
 {
-    int c;
-    int r;
-    int temp;
-
-    temp = st_dimen->index_c / st_dimen->nbr_cln;
-    (st_dimen->index_c)++;
-    if (ft_index_cur(st_dimen, &r, &c))
-        return ;
-    if (temp != r)
-        ft_capa_str("do");
-    else
-        ft_capa_str("nd");
+    ft_crea_cur(st_dimen, 1, 1);
+    st_dimen->index_c++;
+    if (!ft_correc_cur(st_dimen))
+    {
+        ft_shift_cur(st_dimen);
+        st_dimen->index_c--;
+        ft_crea_cur(st_dimen, 0, 1);
+        st_dimen->index_c++;
+    }
 }
 
 void     ft_btn_left(t_dimen *st_dimen)
 {
-    int c;
-    int r;
-    int temp;
-
-    temp = st_dimen->index_c / st_dimen->nbr_cln;
-    (st_dimen->index_c)--;
-    if (ft_index_cur(st_dimen, &r, &c))
-        return ;
-    if (temp != r)
+    ft_crea_cur(st_dimen, 1, -1);
+    st_dimen->index_c--;
+    if (!ft_correc_cur(st_dimen))
     {
-        dprintf(fd_err,"temp = %d  and  r = %d \n",temp,r);
-        ft_capa_str("up");
-        ft_move_cur("ch", 0, st_dimen->nbr_cln - 1);
+        ft_shift_cur(st_dimen);
+        st_dimen->index_c++;
+        ft_crea_cur(st_dimen, 0, -1);
+        st_dimen->index_c--;
     }
-    else
-        ft_capa_str("le");
 }
 
 int     ft_buttons(int btn, char **arg, t_dimen *st_dimen)
@@ -55,6 +45,5 @@ int     ft_buttons(int btn, char **arg, t_dimen *st_dimen)
         ft_btn_right(st_dimen);
     else if (btn == BTN_LF)
         ft_btn_left(st_dimen);
-
     return (0);
 }

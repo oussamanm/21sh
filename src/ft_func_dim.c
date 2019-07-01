@@ -41,7 +41,12 @@ t_dimen	*ft_init_dim()
 	st_dimen = (t_dimen *)malloc(sizeof(t_dimen));
 	st_dimen->index_c = 3;
 	st_dimen->nbr_row = 0;
-	st_dimen->max_cln = NULL;
+	st_dimen->st_pcur = (t_posit *)malloc(sizeof(t_posit));
+	st_dimen->st_parg = (t_posit *)malloc(sizeof(t_posit));
+	st_dimen->st_pcur->c = 3;
+	st_dimen->st_pcur->r = 0;
+	st_dimen->st_parg->c = 3;
+	st_dimen->st_parg->r = 0;
 	if (ioctl(0, TIOCGWINSZ, &(st_dimen->st_size)) == -1)
 		ft_putstr("Error to get size of terminal !!!\n");
 	st_dimen->nbr_cln = st_dimen->st_size.ws_col;

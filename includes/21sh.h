@@ -79,13 +79,20 @@ int fd_err;
 
 typedef struct termios	t_termios;
 
+typedef struct			s_posit
+{
+	int c;
+	int r;
+}						t_posit;
+
 typedef struct			s_dimen
 {
 	int					index_c;
 	int					nbr_row;
 	int					nbr_cln;
 	int					len_arg;
-	char				**max_cln;
+	struct s_posit		*st_pcur;
+	struct s_posit		*st_parg;
 	struct winsize		st_size;
 }						t_dimen;
 
@@ -134,7 +141,7 @@ void				ft_call_handler();
 void				ft_init_interf(t_termios *st_savedattr);
 void				ft_restor_attr(int fd, t_termios *st_savedattr);
 int					ft_index_cur(t_dimen *st_dimen, int *r, int *c);
-void				ft_corr_cur(t_dimen *st_dimen, int temp);
+//void				ft_corr_cur(t_dimen *st_dimen, int temp);
 
 
 ///* Dimention
@@ -142,7 +149,10 @@ void		ft_move_cur(char capa[2], int c, int r);
 void		ft_capa_str(char capa[2]);
 int			ft_putchar_err(int c);
 t_dimen		*ft_init_dim();
-void		ft_corr_cur(t_dimen *st_dimen, int temp);
+void		ft_shift_cur(t_dimen *st_dimen);
+void		ft_crea_cur(t_dimen *st_dimen, int bl_type, int nbr);
+void		ft_clear_cur(t_posit *st_posit);
+int		ft_correc_cur(t_dimen *st_dimen);
 
 ///* Buttons
 int     ft_buttons(int btn, char **arg, t_dimen *st_dimen);

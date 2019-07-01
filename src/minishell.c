@@ -79,6 +79,7 @@ int			ft_check_built(char **arg, char ***env)
 	return (rtn);
 }
 
+
 void		ft_print_char(char **arg, int temp, t_dimen *st_dimen)
 {
 	int i_temp;
@@ -88,50 +89,28 @@ void		ft_print_char(char **arg, int temp, t_dimen *st_dimen)
 		*arg = ft_strjoir(*arg, (char [2]){temp, '\0'}, 1);
 	else
 		*arg = ft_add_char(*arg, st_dimen->index_c - 3, temp, 0);
-	dprintf(fd_err,"*arg = %s \n",*arg);
 	(st_dimen->index_c)++;
 	(st_dimen->len_arg)++;
 	ft_putchar(temp);
 	if (st_dimen->index_c != (st_dimen->len_arg + 3)) /// If Curs not in last word
-	{
 		i_temp = ft_putstr(&(*arg)[st_dimen->index_c - 3]);
-		/*dprintf(fd_err,"1- compare %d > %d  \n",((i_temp) / st_dimen->nbr_cln),((st_dimen->index_c)/ st_dimen->nbr_cln));
-			if (((i_temp - 1) / st_dimen->nbr_cln) > (st_dimen->index_c / st_dimen->nbr_cln) && (st_dimen->index_c / st_dimen->nbr_cln) == ((st_dimen->index_c - 1) / st_dimen->nbr_cln))
-				ft_capa_str("up");
-			//dprintf(fd_err,"2- compare %d > %d  \n",(st_dimen->index_c / st_dimen->nbr_cln),((st_dimen->index_c - 1) / st_dimen->nbr_cln));		
-			else if ((st_dimen->index_c / st_dimen->nbr_cln)  > ((st_dimen->index_c - 1) / st_dimen->nbr_cln))
-			{
-				dprintf(fd_err,"is supp\n");
-				ft_capa_str("do");
-				dprintf(fd_err,"sleep\n");
-				//sleep(3);
-				//ft_move_cur("ch", 0, 0);
-			}
-			else
-				ft_move_cur("ch", 0, st_dimen->index_c);*/
-			// reste cur to his place
+	/// Clear struct position of arg
+	//ft_clear_cur(st_dimen->st_parg);
+	/// increse Cur by one if in the last cln 20
+	dprintf(fd_err,"\nCheck Condition (in last cln) : cur = %d and lastcln = %d \n",st_dimen->index_c,((st_dimen->st_pcur->r + 1) * st_dimen->nbr_cln));
+	if (st_dimen->index_c == ((st_dimen->st_pcur->r + 1) * st_dimen->nbr_cln))
+	{
+		ft_capa_str("do");
+		ft_move_cur("ch", 0, 0);
 	}
-	ft_corr_cur(st_dimen, i_temp);
+
+	/// Update indexes of cur and arg
+	ft_crea_cur(st_dimen, 0, 0);
+	ft_crea_cur(st_dimen, 1, i_temp - 1);
+	/// Reset Cursor
+	ft_shift_cur(st_dimen);
 }
 
-///*** After Press shift btn
-/*
-int			ft_shift_cur(t_dimen *st_dimen, int i)
-{
-	int temp;
-
-	temp = st_dimen->index_c / st_dimen->nbr_cln;
-	st_dimen->index_c++;
-	if (st_dimen->index_c >= (st_dimen->len_arg + 3))
-	{
-		/// should do nothing
-		st_dimen->index_c = (st_dimen->len_arg + 3);
-	}
-	else if ((st_dimen->index_c / st_dimen->nbr_cln) > temp)
-	{
-
-	}
-}*/
 
 char		*ft_read_sh(int fd)
 {
@@ -164,7 +143,7 @@ int			main(void)
 	int			i;
 
 	/// Error debug
-	ft_intia_err("/dev/ttys002");
+	ft_intia_err("/dev/ttys000");
 	// Initial interface
 	ft_init_interf(&st_savedattr);
 	// Initial signale

@@ -70,6 +70,87 @@ int		ft_index_cur(t_dimen *st_dimen, int *r, int *c)
 	return (rtn);
 }*/
 
+void		ft_shift_cur(t_dimen *st_dimen)
+{
+	int i_c;
+	int i_r;
+	int bl_nega;
+
+	bl_nega = 0;
+	i_c = st_dimen->st_parg->c - st_dimen->st_pcur->c;
+	i_r = st_dimen->st_parg->r - st_dimen->st_pcur->r;
+	// Column
+	if (i_c < 0 && (bl_nega = 1))
+		i_c *= -1;
+	dprintf(fd_err,"\n************ Start Clacule **********\ni_c = %d in bl_nega = %d \n",i_c,bl_nega);
+	while (i_c-- != 0)
+		(bl_nega == 1) ? ft_capa_str("le") : ft_capa_str("nd");
+	// Row
+	bl_nega = 0;
+	if (i_r < 0 && (bl_nega = 1))
+		i_r *= -1;
+	while (i_r-- != 0)
+		(bl_nega == 1) ? ft_capa_str("do") : ft_capa_str("up");
+	dprintf(fd_err,"************ End **********\ni_r = %d in bl_nega = %d \n",i_r,bl_nega);	
+}
+
+int		ft_correc_cur(t_dimen *st_dimen)
+{
+	int curr_row;
+	int len_arg;
+	int rtn;
+
+	rtn = 0;
+	len_arg = (st_dimen->len_arg + 3);
+	curr_row = ((st_dimen->st_pcur->r + 1) * st_dimen->nbr_cln);
+	if (st_dimen->index_c < 3 || ((st_dimen->st_pcur->c < 3) && (st_dimen->st_pcur->r == 0)))
+	{
+		st_dimen->index_c = 3;
+		st_dimen->st_pcur->c = 3;
+		st_dimen->st_parg->c = 3;
+		rtn++;
+	}
+	else if (st_dimen->index_c > len_arg || st_dimen->st_pcur->c > len_arg)
+	{
+		st_dimen->index_c = len_arg;
+		st_dimen->st_pcur->c = len_arg;
+		st_dimen->st_parg->c = len_arg;
+		rtn++;
+	}
+	return (rtn);
+}
+
+void		ft_clear_cur(t_posit *st_posit)
+{
+	st_posit->r = 0;
+	st_posit->c = 0;
+}
+
+void		ft_crea_cur(t_dimen *st_dimen, int bl_type, int nbr)
+{
+	t_posit *st_ptr;
+	int c;
+
+	c = 0;
+	st_ptr = (bl_type == 0) ? st_dimen->st_pcur : st_dimen->st_parg;
+	dprintf(fd_err,"Before in bl_type =%d : c = %d and r = %d\n",bl_type,st_ptr->c,st_ptr->r);
+	c = st_dimen->index_c + nbr;
+	st_ptr->r = c / st_dimen->nbr_cln;
+	st_ptr->c = c % st_dimen->nbr_cln;
+	/*while (nbr != 0)
+	{
+		if ((st_ptr->c + 1) == st_dimen->nbr_cln)
+		{
+			st_ptr->r++;
+			st_ptr->c = 0;
+		}
+		else
+			st_ptr->c++;
+		nbr--;
+	}*/
+	dprintf(fd_err,"After in bl_type =%d :c = %d and st_ptr->c = %d and st_ptr->r = %d\n\n",bl_type,c,st_ptr->c,st_ptr->r);
+}
+
 ///*** Initialize datab base of termcap & apply attr ICANON,ECHO mode
 void		ft_init_interf(t_termios *st_savedattr)
 {
