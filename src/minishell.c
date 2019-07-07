@@ -80,38 +80,6 @@ int			ft_check_built(char **arg, char ***env)
 }
 
 
-void		ft_print_char(char **arg, int temp, t_dimen *st_dimen)
-{
-	int i_temp;
-
-	i_temp = 1;
-	if (st_dimen->index_c == (st_dimen->len_arg + 3))
-		*arg = ft_strjoir(*arg, (char [2]){temp, '\0'}, 1);
-	else
-		*arg = ft_add_char(*arg, st_dimen->index_c - 3, temp, 0);
-	(st_dimen->index_c)++;
-	(st_dimen->len_arg)++;
-	ft_putchar(temp);
-	if (st_dimen->index_c != (st_dimen->len_arg + 3)) /// If Curs not in last word
-		i_temp = ft_putstr(&(*arg)[st_dimen->index_c - 3]);
-	/// Clear struct position of arg
-	//ft_clear_cur(st_dimen->st_parg);
-	/// increse Cur by one if in the last cln 20
-	dprintf(fd_err,"\nCheck Condition (in last cln) : cur = %d and lastcln = %d \n",st_dimen->index_c,((st_dimen->st_pcur->r + 1) * st_dimen->nbr_cln));
-	if (st_dimen->index_c == ((st_dimen->st_pcur->r + 1) * st_dimen->nbr_cln))
-	{
-		ft_capa_str("do");
-		ft_move_cur("ch", 0, 0);
-	}
-
-	/// Update indexes of cur and arg
-	ft_crea_cur(st_dimen, 0, 0);
-	ft_crea_cur(st_dimen, 1, i_temp - 1);
-	/// Reset Cursor
-	ft_shift_cur(st_dimen);
-}
-
-
 char		*ft_read_sh(int fd)
 {
 	t_dimen *st_dimen;
@@ -123,11 +91,15 @@ char		*ft_read_sh(int fd)
 	arg = ft_strnew(1);
 	while (read(fd, &temp, 4) > 0)
 	{
-		if (temp == '\n' && ft_putstr("\n"))
+		if (temp == '\n')
+		{
+			ft_move_cur("DO", 0, ((st_dimen->len_arg + 2) / st_dimen->nbr_cln) - (st_dimen->index_c / st_dimen->nbr_cln));
+			ft_putstr("\n");
 			break ;
-		if (ft_isprint(temp))				/// Printable input
+		}
+		if (ft_isprint(temp))	/// Printable input
 			ft_print_char(&arg, temp, st_dimen);
-		else if (/*ft_isnonprint(temp)*/1)  /// NoNPrintable input
+		else  					/// NoNPrintable input
 			ft_buttons(temp, &arg, st_dimen);
 		temp = 0;
 	}
@@ -142,6 +114,7 @@ int			main(void)
 	t_termios	st_savedattr;
 	int			i;
 
+	glb = 0;
 	/// Error debug
 	ft_intia_err("/dev/ttys000");
 	// Initial interface

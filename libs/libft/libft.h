@@ -114,5 +114,6 @@ char				*ft_strjoir(char *s1, char *s2, int rm);
 int					ft_isspace(char c);
 int					ft_check_charr(char *src, int str[], int exept);
 void				ft_repeat_char(int c, int n);
+char				*ft_rm_char(char *str, int index);
 
 #endif

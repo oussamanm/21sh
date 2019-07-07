@@ -45,3 +45,17 @@ int		ft_check_charr(char *src, int str[], int exept)
 	}
 	return (0);
 }
+
+char    *ft_rm_char(char *str, int index)
+{
+	int len;
+
+	len = (int)ft_strlen(str);
+    if (index >= len || str == NULL)
+        return (str);
+	if (index == (len - 1))
+		str[index] = '\0';
+	else
+    	str = ft_strcpy(&str[index], &str[index + 1]);
+    return (str);
+}

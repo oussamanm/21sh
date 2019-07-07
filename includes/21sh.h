@@ -38,6 +38,7 @@ int fd_err;
 	# define M_CHECK_W(C)(C==32||C==9||C==11||C==10||C==13||C==12)
 	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
+	# define PROMPT 3
 //
 
 //**** Error Msg
@@ -57,6 +58,7 @@ int fd_err;
 	# define BTN_SPC 32			/*Space*/
 	# define BTN_ENT 10			/*Enter*/
 	# define BTN_DEL 2117294875	/*Delete*/
+	# define BTN_BAK 127		/*Back*/
 	# define BTN_UP 4283163
 	# define BTN_DW 4348699
 	# define BTN_RG 4414235
@@ -76,14 +78,14 @@ int fd_err;
 		//`le' String to move the cursor left one column.
 		//`LE' String to move cursor left n columns.
 		//`nd' String to move the cursor right one column.
+		//`RI' String to move cursor right n columns.
+
+	//** editing
+		//`ce' String to clear from the cursor to the end of the line.
 
 typedef struct termios	t_termios;
 
-typedef struct			s_posit
-{
-	int c;
-	int r;
-}						t_posit;
+int glb;
 
 typedef struct			s_dimen
 {
@@ -91,8 +93,6 @@ typedef struct			s_dimen
 	int					nbr_row;
 	int					nbr_cln;
 	int					len_arg;
-	struct s_posit		*st_pcur;
-	struct s_posit		*st_parg;
 	struct winsize		st_size;
 }						t_dimen;
 
@@ -100,6 +100,7 @@ typedef struct			s_dimen
 int					ft_call_child(char **argv, char **env, int bl_path);
 int					ft_check_built(char **arg, char ***env);
 int					ft_creat_interf(struct termios *st_savedattr);
+char		*ft_read_sh(int fd);
 /// Builtins
 void				ft_buil_echo(char **arg, char **env);
 void				ft_buil_cd(char **arg, char ***env);
@@ -141,7 +142,9 @@ void				ft_call_handler();
 void				ft_init_interf(t_termios *st_savedattr);
 void				ft_restor_attr(int fd, t_termios *st_savedattr);
 int					ft_index_cur(t_dimen *st_dimen, int *r, int *c);
-//void				ft_corr_cur(t_dimen *st_dimen, int temp);
+int					ft_correc_cur(t_dimen *st_dimen);
+void				ft_shift_cur(t_dimen *st_dimen, int nbr, int bl);
+void				ft_print_char(char **arg, int temp, t_dimen *st_dimen);
 
 
 ///* Dimention
@@ -149,10 +152,6 @@ void		ft_move_cur(char capa[2], int c, int r);
 void		ft_capa_str(char capa[2]);
 int			ft_putchar_err(int c);
 t_dimen		*ft_init_dim();
-void		ft_shift_cur(t_dimen *st_dimen);
-void		ft_crea_cur(t_dimen *st_dimen, int bl_type, int nbr);
-void		ft_clear_cur(t_posit *st_posit);
-int		ft_correc_cur(t_dimen *st_dimen);
 
 ///* Buttons
 int     ft_buttons(int btn, char **arg, t_dimen *st_dimen);

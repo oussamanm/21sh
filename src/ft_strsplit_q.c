@@ -92,7 +92,7 @@ static int		ft_getindx_q(char const *str, char *c)
 }
 
 ///*** Check if quote isn't correct
-static void		ft_check_quot(char **src)
+void		ft_check_quot(char **src)
 {
 	char *temp;
 	int quote;
@@ -114,8 +114,9 @@ static void		ft_check_quot(char **src)
 				i += (index + 1);
 			else
 			{
-				ft_putstr("> ");
-				get_next_line(0, &temp);
+				ft_putstr("-> ");
+				//get_next_line(0, &temp);
+				temp = ft_read_sh(0);
 				*src = ft_strjoir(*src, "\n", 1);
 				*src = ft_strjoir(*src, temp, 3);
 			}
