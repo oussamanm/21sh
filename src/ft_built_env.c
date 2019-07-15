@@ -23,7 +23,7 @@ void		ft_builtenv_cmd(char **args, char ***env)
 			ft_print_error(FIL_NS, "env: ", args[j], 0);
 		else if (access(args[j], X_OK) == 0)
 		{
-			if (ft_call_child(&args[j], *env, 1) == -1)
+			if (ft_cmd_exec(&args[j], *env) == -1) /// change ft_call_child  with ft_cmd_exec
 				ft_putstr("Ops there's an error in child process\n");
 		}
 		else
@@ -32,7 +32,7 @@ void		ft_builtenv_cmd(char **args, char ***env)
 	else
 	{
 		j = ft_check_built(args, env);
-		j = (j == 0) ? ft_call_child(args, *env, 0) : j;
+		j = (j == 0) ? ft_cmd_exec(args, *env) : j; /// change ft_call_child  with ft_cmd_exec
 		(j == -1) ? ft_print_error(FIL_NS, "env: ", *args, 0) : NULL;
 	}
 }

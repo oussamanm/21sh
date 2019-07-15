@@ -54,25 +54,6 @@ void    ft_btn_del(char **arg, t_dimen *st_dimen, int bl_del) //if bl_del == 0 -
         ft_move_cur("LE", 0, temp);
 }
 
-void    ft_upd_tabmax(t_dimen *st_dimen, char *arg)
-{
-    int i;
-    int curr_row;
-
-    i = 0;
-    while (arg[i] != '\0')
-    {
-        if (arg[i] == '\n' && i < (st_dimen->nbr_cln * curr_row))
-        {
-            
-        }
-        else if ()
-        {
-
-        }
-    }
-}
-
 int     ft_buttons(int btn, char **arg, t_dimen *st_dimen)
 {
     UNUSED(arg);

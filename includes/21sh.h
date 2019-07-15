@@ -51,6 +51,7 @@ int fd_err;
 	# define FIL_ND "not a directory"
 	# define SYN_ER "syntax error" 
 	# define PRINT(x) printf("\n***/in %d/***\n",x);
+	# define DPRINT(x,y) dprintf(fd_err, x,y);
 //
 
 //**** Buttons
@@ -96,8 +97,15 @@ typedef struct			s_dimen
 	struct winsize		st_size;
 }						t_dimen;
 
+typedef struct			s_pipes
+{
+	char				*cmd;
+	int					*fds;
+	struct s_pipes		*next;
+}						t_pipes;
+
 /// Main
-int					ft_call_child(char **argv, char **env, int bl_path);
+int			ft_cmd_exec(char **args, char **env);
 int					ft_check_built(char **arg, char ***env);
 int					ft_creat_interf(struct termios *st_savedattr);
 char		*ft_read_sh(int fd);

@@ -45,3 +45,68 @@ test1 aaaaa bbb cccc dddd
 (str,remp,7,5)
 protonmail
 lavabit
+
+static void	ft_call_cmdss(char **str_arg, char ***environ)
+{
+	char		**args_pipe;
+	t_pipes		*st_pipes;
+	int			i = 0;
+	int			len;
+	int			pid;
+	int			fds[2];
+
+	args_pipe = ft_str_split_q(str_arg, "|");
+	st_pipes = ft_strr_list(args_pipe);
+
+	len = ft_lst_count(st_pipes);
+	//ft_lst_print(st_pipes, 2);
+
+	while (st_pipes != NULL)
+	{
+		if (pipe(fds) == -1)
+			ft_err_exit("Error in Pipe Function \n");
+		st_pipes->fds[1] = fds[1];
+		if (st_pipes->next != NULL)
+			st_pipes->next->fds[0] = fds[0];
+		if ((pid = fork()) == 0)
+		{
+			printf("Start with : fds[0] = %d and fds[1] = %d \n ", fds[0], fds[1]);
+			/// Close unsed Read end of Child1
+			if (i == 0 && close(st_pipes->fds[0]) == -1)
+				perror("Error close read in child");
+			
+			//// *** Duplcating
+				// pair even	// Duplcating STD_OUT on Write end of pipe
+				// unpair odd 	// Duplcating STD_IN on Read end of pipe
+		
+			if (i != 0 && dup2(st_pipes->fds[0] , 0) == -1)
+				perror("Error in dub STD_IN");
+
+			if (dup2(st_pipes->fds[1] , 1) == -1)
+				perror("Error in dub STD_OUT");
+			else if (close(st_pipes->fds[1]) == -1)
+				perror("Error in Close fds[0] in child 2");
+			
+			//execve(st_pipes->cmd, (char *[2]){args_pipe[0],"NULL"}, *environ);
+			ft_split_cmd(st_pipes->cmd, *environ);
+		}
+		else if (pid > 0)
+		{
+			wait(NULL);
+		}
+		st_pipes = st_pipes->next;
+	}
+	/*
+		argv = ft_str_split_q(str_arg, " \t");
+
+		/// Correct Args
+		ft_corr_args(&argv[1], *environ);
+		/// Check if cmd is Builtin
+		rtn = ft_check_built(argv, environ);
+		/// Call cmd from system
+		rtn = (rtn == 0) ? ft_call_child(argv, *environ, 0) : rtn;
+		(rtn == -1) ? ft_print_error(CMD_NF, argv[0], "", 0) : NULL;
+		ft_strrdel(argv);
+	*/
+	ft_strrdel(args_pipe);
+}

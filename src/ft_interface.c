@@ -85,6 +85,8 @@ int			ft_correc_cur(t_dimen *st_dimen)
 	return (rtn);
 }
 
+
+
 ///*** Initialize datab base of termcap & apply attr ICANON,ECHO mode
 void		ft_init_interf(t_termios *st_savedattr)
 {
