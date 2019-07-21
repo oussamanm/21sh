@@ -90,3 +90,12 @@ void		ft_buil_cd(char **arg, char ***env)
 	}
 	ft_strdel(&path);
 }
+
+char	*getpwd(void)
+{
+	char *path;
+
+	path = ft_memalloc(PATHSIZE);
+	getcwd(path, PATHSIZE);
+	return (path);
+}

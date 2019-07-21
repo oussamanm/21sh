@@ -11,210 +11,130 @@
 /* ************************************************************************** */
 
 #include "21sh.h"
+//#include "termcap.h"
+#include "../includes/termcap.h"
 
-void		ft_lst_print(t_pipes *lst,int i)
-{
-	while (lst != NULL)
+/* lst func
+	void		ft_lst_print(t_pipes *lst, int i)
 	{
-		dprintf(fd_err, "Addresse is |%p| \t",lst);
-		if (i == 0 || i == 2)
-			dprintf(fd_err, "content is |%s| \t",lst->cmd);
-		if (i == 1 || i == 2)
-			dprintf(fd_err, "fds is |%d|;|%d| \n",lst->fds[0],lst->fds[1]);
-		lst = lst->next;
-	}
-}
-
-int		ft_lst_count(t_pipes *lst)
-{
-	int resu;
-
-	resu = 0;
-	while (lst != NULL)
-	{
-		resu++;
-		lst = lst->next;
-	}
-	return (resu);
-}
-
-
-t_pipes		*ft_strr_list(char **args_pipe)
-{
-	t_pipes *st_pipes;
-	t_pipes *head;
-
-	st_pipes = NULL;
-	while (*args_pipe)
-	{
-		if (st_pipes == NULL)
+		UNUSED(i);
+		while (lst != NULL)
 		{
-			st_pipes = (t_pipes *)malloc(sizeof(*st_pipes));
-			head = st_pipes;
+			printf("Addresse is |%p| \t",lst);
+			//if (i == 0 || i == 2)
+			//printf("content is |%s| \n",lst->cmd);
+			//if (i == 1 || i == 2)
+			printf("fds is |%d|;|%d| \n\n",lst->fds[0],lst->fds[1]);
+			lst = lst->next;
 		}
-		st_pipes->cmd = *args_pipe;
-		args_pipe++;
-		if (*args_pipe != NULL)
-		{
-			st_pipes->next = (t_pipes *)malloc(sizeof(*st_pipes));
-			st_pipes = st_pipes->next;
-		}
-		else
-			st_pipes->next = NULL;
 	}
-	return (head);
-}
-
-void	ft_split_cmd(char *cmd, char **env)
-{
-	char **args;
-
-	if ((args = ft_str_split(cmd, " \t")) == NULL)
+	int			ft_lst_count(t_pipes *lst)
 	{
-		ft_putstr("Error NULL return of split \n");
-		return ;
+		int resu;
+
+		resu = 0;
+		while (lst != NULL)
+		{
+			resu++;
+			lst = lst->next;
+		}
+		return (resu);
 	}
-	ft_cmd_exec(args, env);
-}
+*/
 
-
-void	ft_call_cmdss(char **str_arg, char ***environ)
+/*
+**	Function PIPES 
+*/
+void		ft_close_pipes(t_pipes *st_pipes)
 {
-	char		**args_pipe;
-	t_pipes		*st_pipes;
-	int			i = 0;
-	int			len;
-	int			pid;
-	int			fds[2];
-
-	args_pipe = ft_str_split_q(str_arg, "|");
-	st_pipes = ft_strr_list(args_pipe);
-
-	len = ft_lst_count(st_pipes);
-	//ft_lst_print(st_pipes, 2);
-
 	while (st_pipes != NULL)
+	{
+		if (st_pipes->fds[0] != 0)
+			close(st_pipes->fds[0]);
+		if (st_pipes->fds[1] != 0)
+			close(st_pipes->fds[1]);
+		st_pipes = st_pipes->next;
+	}
+}
+void		ft_create_pipes(t_pipes *st_pipes)
+{
+	t_pipes *st_head;
+	int		fds[2];
+
+	st_head = st_pipes;
+	while (st_pipes->next != NULL)
 	{
 		if (pipe(fds) == -1)
 			ft_err_exit("Error in Pipe Function \n");
+		if (st_pipes == st_head)
+			st_pipes->fds[0] = fds[0];
 		st_pipes->fds[1] = fds[1];
 		if (st_pipes->next != NULL)
 			st_pipes->next->fds[0] = fds[0];
-		if ((pid = fork()) == 0)
-		{
-			printf("Start with : fds[0] = %d and fds[1] = %d \n ", fds[0], fds[1]);
-			/// Close unsed Read end of Child1
-			if (i == 0 && close(st_pipes->fds[0]) == -1)
-				perror("Error close read in child");
-			
-			//// *** Duplcating
-				// pair even	// Duplcating STD_OUT on Write end of pipe
-				// unpair odd 	// Duplcating STD_IN on Read end of pipe
-		
-			if (i != 0 && dup2(st_pipes->fds[0] , 0) == -1)
-				perror("Error in dub STD_IN");
-
-			if (dup2(st_pipes->fds[1] , 1) == -1)
-				perror("Error in dub STD_OUT");
-			else if (close(st_pipes->fds[1]) == -1)
-				perror("Error in Close fds[0] in child 2");
-			
-			//execve(st_pipes->cmd, (char *[2]){args_pipe[0],"NULL"}, *environ);
-			ft_split_cmd(st_pipes->cmd, *environ);
-		}
-		else if (pid > 0)
-		{
-			wait(NULL);
-		}
 		st_pipes = st_pipes->next;
+		if (st_pipes->next == NULL)
+			st_pipes->fds[1] = fds[1];
 	}
-	/*
-		argv = ft_str_split_q(str_arg, " \t");
-
-		/// Correct Args
-		ft_corr_args(&argv[1], *environ);
-		/// Check if cmd is Builtin
-		rtn = ft_check_built(argv, environ);
-		/// Call cmd from system
-		rtn = (rtn == 0) ? ft_call_child(argv, *environ, 0) : rtn;
-		(rtn == -1) ? ft_print_error(CMD_NF, argv[0], "", 0) : NULL;
-		ft_strrdel(argv);
-	*/
-	ft_strrdel(args_pipe);
 }
-
-
-static void	ft_call_cmds(char **str_arg, char ***environ)
+void		ft_apply_pipe(char **args_pipe, char ***environ)
 {
-	char		**args_pipe;
-	t_pipes		*st_pipes;
-	int			*fds;
-	int			i = 0;
+	t_pipes *st_pipes;
+	t_pipes *st_head;
+	int parent;
+	int child;
 
-	//int pid;
-	int len;
-
-	args_pipe = ft_str_split_q(str_arg, "|");
 	st_pipes = ft_strr_list(args_pipe);
+	st_head = st_pipes;
+	/// Create child , to exec the last cmd and the other cmds
+	if ((parent = fork()) == -1)
+		ft_err_exit("Error in Fork \n");
 
-	len = ft_lst_count(st_pipes);
-	i = 0;
-	fds = (int *)malloc(sizeof(int) * ((len - 1) * 2));
-	while (i < len - 1)
+	/// Initiale Pipes_line
+	(parent == 0) ? ft_create_pipes(st_pipes) : NULL;
+
+	while (parent == 0 && st_pipes != NULL)
 	{
-		pipe(fds);
-		i += 2;
-	}
-	pid_t childs[3];
-	childs[0] = fork();
-	if (childs[0] > 0)
-		childs[1] = fork();
-	i = -1;
-	while (++i < len)
-	{
-		if (childs[i] == 0)
+		/// Create other Childs
+		if ((child = fork()) == 0)
 		{
-			if (i == 0)
-			{
-				if (close(fds[0]) == -1)
-					perror("Error close read in child");
-				dup2(fds[1], 1);
-				close(fds[1]);
-			}
-			else if (i > 0 && i < len - 1)
-			{
-				dup2(fds[0], 0);
-				close(fds[0]);
-				dup2(fds[1], 1);
-				close(fds[1]);
-			}
-			else if (i == len - 1)
-			{
-				close(fds[1]);
-				dup2(fds[0], 0);
-				close(fds[0]);
-			}
-			execve(args_pipe[i], (char *[2]){args_pipe[0],"NULL"}, *environ);
-		}
-		else if (childs[i] > 0)
-		{
-			wait(NULL);
+			/// Duplcating STD_IN on Read end of pipe
+			if (st_pipes != st_head && dup2(st_pipes->fds[0] , 0) == -1)
+				ft_err_exit("Error in dub STD_IN");
+			/// Duplcating STD_OUT on Write end of pipe
+			if (dup2(st_pipes->fds[1] , 1) == -1)
+				ft_err_exit("Error in dub STD_OUT");
+			/// Close all fds
+			ft_close_pipes(st_head);
+			// Execve
+			ft_split_cmd(st_pipes->cmd, environ);
 		}
 		st_pipes = st_pipes->next;
+		if (st_pipes->next == NULL) /// parent_child
+		{
+			/// Duplcating STD_IN on Read end of pipe
+			if (dup2(st_pipes->fds[0] , 0) == -1)
+				ft_err_exit("Error in dub STD_IN");
+			/// Close all fds
+			ft_close_pipes(st_head);	
+			/// Execve
+			ft_split_cmd(st_pipes->cmd, environ);
+		}
 	}
-	ft_strrdel(args_pipe);
+	if (parent > 0)
+		wait(NULL);
 }
 
+
+/*
+** Function Execution
+*/
+
+///*** Execute Command
 int			ft_cmd_exec(char **args, char **env)
 {
 	char	*str_arg;
 
 	str_arg = NULL;
-	/*if ((args = ft_str_split(cmd, " \t")) == NULL)
-	{
-		ft_putstr("Error NULL return of split \n");
-		return (-1);
-	}*/
 	if (!ft_check_char(args[0], '/'))
 		str_arg = ft_find_path(args[0], env);
 	else
@@ -227,13 +147,29 @@ int			ft_cmd_exec(char **args, char **env)
 	}
 	if (str_arg != NULL)
 	{
-		//printf("Hello in %s \n",str_arg);
 		execve(str_arg, args, env);
 		ft_strdel(&str_arg);
+		return (0);
 	}
 	return (-1);
 }
+///*** Check if cmd is builtens and splite
+void		ft_split_cmd(char *cmd, char ***env)
+{
+	char **args;
 
+	if ((args = ft_str_split(cmd, " \t")) == NULL)
+	{
+		ft_putstr("Error NULL return of split \n");
+		return ;
+	}
+	/// Check Builtens
+	if (ft_check_built(args, env) != 1) // in case of builtens
+		if (ft_cmd_exec(args, *env) == -1)
+			ft_print_error(CMD_NF, "21sh: ", *args, 0); /// Command not found
+	//exit(0);
+}
+///*** Check if Command builtens
 int			ft_check_built(char **arg, char ***env)
 {
 	int		rtn;
@@ -255,65 +191,85 @@ int			ft_check_built(char **arg, char ***env)
 		ft_buil_cd(&arg[1], env);
 	return (rtn);
 }
-
-
-char		*ft_read_sh(int fd)
+///*** Check if there is a pipe
+void		ft_call_cmdss(char **str_arg, char ***environ)
 {
-	t_dimen *st_dimen;
-	char	*arg;
-	int		temp;
-
-	temp = 0;
-	st_dimen = ft_init_dim();
-	arg = ft_strnew(1);
-	while (read(fd, &temp, 4) > 0)
+	char		**args_pipe;
+	//pid_t		pid;
+	
+	args_pipe = ft_str_split_q(str_arg, "|");
+	if (args_pipe != NULL && args_pipe[0] != NULL && args_pipe[1] != NULL) /// exist pipe in cmds
+		ft_apply_pipe(args_pipe, environ);
+	else
 	{
-		if (temp == '\n')
-		{
-			//*c*//ft_move_cur("DO", 0, ((st_dimen->len_arg + 2) / st_dimen->nbr_cln) - (st_dimen->index_c / st_dimen->nbr_cln));
-			ft_putstr("\n");
-			break ;
-		}
-		if (ft_isprint(temp))	/// Printable input
-			ft_print_char(&arg, temp, st_dimen);
-		else  					/// NoNPrintable input
-			ft_buttons(temp, &arg, st_dimen);
-		temp = 0;
+		ft_split_cmd(*str_arg, environ);
 	}
-	return (arg);
+	ft_strrdel(args_pipe);
+}
+
+/*
+** Initiale terminle attr , fill struct info and call function Read
+*/
+char		*set_line(int sig, char **env)
+{
+	static struct s_termcap	info;
+
+	if (sig)
+		ft_init_signal(sig, &info);
+	else
+	{
+		disable_term();
+		//if (get_col_pos() > 1)
+		//	ft_putchar('\n');
+		set_info_termcap(&info, get_prompt());
+		ft_putstr(info.prompt);
+		read_input(0, &info, env);
+		enable_term();
+		ft_putchar('\n');
+		ft_strdel(&(info.prompt));
+		return(info.content);
+	}
+	return (NULL);
 }
 
 int			main(void)
 {
 	extern char	**environ;
-	char		*str_arg;
 	char		**args_cmd;
-	t_termios	st_savedattr;
+	char		*str_cmds;
 	int			i;
 
-	/// Error debug
-	//ft_intia_err("/dev/ttys005");
-	// Initial interface
-	ft_init_interf(&st_savedattr);
-	// Initial signale
-	ft_init_signal(0, &st_savedattr);
-
+	///Initial interface : tgetent
+	if (tgetent(NULL, getenv("TERM")) != 1)
+		ft_err_exit("Error tgetent ,may variable TERM not valid! \n");
+	///Call functions signal
+	ft_call_signal();
 	environ = ft_strr_dup(environ, ft_strrlen(environ));
 	while (1337)
 	{
 		i = 0;
-		ft_putstr("$> ");
-		// fill str_arg with command Entred
-		str_arg = ft_read_sh(0);
-
-		/// Split with ; multi command and call cmd
-		args_cmd = ft_str_split_q(&str_arg, ";");
-		if (!ft_error_semic(str_arg, args_cmd) || !ft_putstr("Syntax error\n")) /// Check error ; syntax
-			while (args_cmd != NULL && args_cmd[i] != NULL)
-				ft_call_cmds(&args_cmd[i++], &environ);
-		ft_strrdel(args_cmd);
-		ft_strdel(&str_arg);
+		// fill str_arg with command Entred || and print prompt
+		if ((str_cmds = set_line(0, environ)) != NULL)
+		{
+			/// Split with ; multi command and call cmd
+			args_cmd = ft_str_split_q(&str_cmds, ";");
+			if (!ft_error_semic(str_cmds, args_cmd) || !ft_putstr("Syntax error\n")) /// Check error ; syntax
+			{
+				while (args_cmd != NULL && args_cmd[i] != NULL)
+					ft_call_cmdss(&(args_cmd[i++]), &environ);
+			}
+			ft_strrdel(args_cmd);
+			//ft_strdel(&str_cmds);
+		}
 	}
-	ft_strrdel(environ);
+	//ft_strrdel(environ);
 	return (0);
+}
+
+void			exit_shell(char **env)
+{
+	UNUSED(env);
+	//ft_strrdel(env);
+	enable_term();
+	exit(0);
 }

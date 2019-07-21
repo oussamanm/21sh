@@ -39,6 +39,7 @@ int fd_err;
 	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
 	# define PROMPT 3
+	# define PATHSIZE 1024
 //
 
 //**** Error Msg
@@ -100,68 +101,89 @@ typedef struct			s_dimen
 typedef struct			s_pipes
 {
 	char				*cmd;
-	int					*fds;
+	int					fds[2];
 	struct s_pipes		*next;
 }						t_pipes;
 
-/// Main
-int			ft_cmd_exec(char **args, char **env);
-int					ft_check_built(char **arg, char ***env);
-int					ft_creat_interf(struct termios *st_savedattr);
-char		*ft_read_sh(int fd);
-/// Builtins
-void				ft_buil_echo(char **arg, char **env);
-void				ft_buil_cd(char **arg, char ***env);
-void				ft_builtenv_cmd(char **args, char ***env);
-void				ft_buil_env(char **args, char ***env);
-void				ft_buil_setenv(char **args, char ***env, int len_args);
-void				ft_buil_unsetenv(char *arg, char ***env);
-int					ft_print_var(char *arg, char **env);
-/// Variable
-char				*ft_get_vrb(char *vrb, char **env);
-void				ft_set_vrb(char *vrb, char ***env, int rm);
-void				ft_add_vrb(char *arg, char ***env);
-/// Error
-void				ft_print_error(char *msg, char *para1, char *para2, int rm);
-void		ft_err_exit(char *str);
-int					ft_error_cd(char *path, char **arg);
-/// Updated
-char				**ft_str_split(char const *s, char *c);
-int					get_next_line(const int fd, char **line);
-char                **ft_str_split_q(char **s, char *c);
-/// helper
-char				*ft_find_path(char *arg, char **env);
-int					ft_count_word(const char *str, char *c);
+///*** Main
+void			exit_shell(char **env);
 
-///*quote
-void				ft_rm_quot(char *str);
-void				ft_corr_args(char **argv, char **environ);
+///*** Execution
+	void		ft_split_cmd(char *cmd, char ***env);
+	int			ft_cmd_exec(char **args, char **env);
+	int			ft_check_built(char **arg, char ***env);
+	void		ft_call_cmdss(char **str_arg, char ***environ);
+//
 
-///* Error handler
-void				ft_intia_err(char *tty);
-int					ft_error_semic(char *str_arg, char **args_cmd);
+///*** Builtins
+	void				ft_buil_echo(char **arg, char **env);
+	void				ft_buil_cd(char **arg, char ***env);
+	void				ft_builtenv_cmd(char **args, char ***env);
+	void				ft_buil_env(char **args, char ***env);
+	void				ft_buil_setenv(char **args, char ***env, int len_args);
+	void				ft_buil_unsetenv(char *arg, char ***env);
+	int					ft_print_var(char *arg, char **env);
+	char				*getpwd(void);
+//
 
-///* Signals
-void				ft_init_signal(int sig, t_termios *st_saveattr);
+///*** Variable
+	char				*ft_get_vrb(char *vrb, char **env);
+	void				ft_set_vrb(char *vrb, char ***env, int rm);
+	void				ft_add_vrb(char *arg, char ***env);
+//
 
-void				ft_call_handler();
+///*** Error handler
+	void				ft_print_error(char *msg, char *para1, char *para2, int rm);
+	void				ft_err_exit(char *str);
+	int					ft_error_cd(char *path, char **arg);
+	void				ft_intia_err(char *tty);
+	int					ft_error_semic(char *str_arg, char **args_cmd);
+//
 
-///* interface
-void				ft_init_interf(t_termios *st_savedattr);
-void				ft_restor_attr(int fd, t_termios *st_savedattr);
-int					ft_index_cur(t_dimen *st_dimen, int *r, int *c);
-int					ft_correc_cur(t_dimen *st_dimen);
-void				ft_shift_cur(t_dimen *st_dimen, int nbr, int bl);
-void				ft_print_char(char **arg, int temp, t_dimen *st_dimen);
+///*** Updated
+	char				**ft_str_split(char const *s, char *c);
+	int					get_next_line(const int fd, char **line);
+	char                **ft_str_split_q(char **s, char *c);
+//
+
+///*** helper
+	char				*ft_find_path(char *arg, char **env);
+	int					ft_count_word(const char *str, char *c);
+	char				*delete_char(char *str, int pos);
+	void				edit_str(char **line, char *copy, int pos);
+	int					key_is_str(char *buff);
+	t_pipes				*ft_strr_list(char **args_pipe);
+//
+
+///*** Quote
+	void				ft_rm_quot(char *str);
+	void				ft_corr_args(char **argv, char **environ);
+//
 
 
-///* Dimention
-void		ft_move_cur(char capa[2], int c, int r);
-void		ft_capa_str(char capa[2]);
-int			ft_putchar_err(int c);
-t_dimen		*ft_init_dim();
+///*** Signals
+	void 				ft_call_signal();
+	void				ft_call_handler();
+//
 
-///* Buttons
-int     ft_buttons(int btn, char **arg, t_dimen *st_dimen);
+///*** Dimention
+	void		ft_move_cur(char capa[2], int c, int r);
+	void		ft_capa_str(char capa[2]);
+	int			ft_putchar_err(int c);
+//
+
+///*** Pipes
+	void		ft_close_pipes(t_pipes *st_pipes);
+	void		ft_create_pipes(t_pipes *st_pipes);
+	void		ft_apply_pipe(char **args_pipe, char ***environ);
+//
+
+/*
+**	termacp
+*/
+
+char			*get_prompt(void);
+int				get_col_pos(void);
+
 
 #endif

@@ -116,7 +116,7 @@ void		ft_check_quot(char **src)
 			{
 				ft_putstr("-> ");
 				//get_next_line(0, &temp);
-				temp = ft_read_sh(0);
+				//temp = ft_read_sh(0);
 				*src = ft_strjoir(*src, "\n", 1);
 				*src = ft_strjoir(*src, temp, 3);
 			}

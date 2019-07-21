@@ -11,43 +11,48 @@
 /* ************************************************************************** */
 
 #include "21sh.h"
+#include "termcap.h"
 
 static void	ft_handler_ctlc()
 {
-	ft_putstr("\n$> ");
+    ft_init_signal(SIGINT, NULL);
 }
 
 static void	ft_handler_quit()
 {
-	ft_putstr("exit\n");
-    ft_init_signal(SIGQUIT, NULL);
-	exit(0);
+	ft_init_signal(SIGQUIT, NULL);
 }
 
-static void ft_call_signal()
+void ft_call_signal()
 {
 	signal(SIGINT, ft_handler_ctlc);
 	signal(SIGQUIT, ft_handler_quit);
 }
 
-void    ft_apply_handler(int sig, t_termios *st_saveattr)
+void    ft_apply_handler(int sig, struct s_termcap *info)
 {
+    UNUSED(info);
+    if (sig == SIGINT)
+        ft_putstr("\n$> ");
     if (sig == SIGQUIT)
-        ft_restor_attr(0, st_saveattr);
+    {
+        enable_term();
+	    ft_putstr("exit\n");
+	    exit(0);
+    }
 }
 
 /// Initial Signals : (sig = 0)->initial pointer (else)->apply handler
-void    ft_init_signal(int sig, t_termios *st_saveattr)
+void    ft_init_signal(int sig, struct s_termcap *info)
 {
-    static t_termios *st_ptrattr;
+    static struct s_termcap	*ptr;
 
     if (sig == 0)
     {
-        ft_call_signal();
-        st_ptrattr = st_saveattr;
+        ptr = info;
     }
     else
     {
-        ft_apply_handler(sig, st_ptrattr);
+        ft_apply_handler(sig, ptr);
     }
 }

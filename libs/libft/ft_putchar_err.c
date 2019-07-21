@@ -1,35 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_func_dim.c                                      :+:      :+:    :+:   */
+/*   ft_putchar_err.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: onouaman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/06/15 22:35:59 by onouaman          #+#    #+#             */
-/*   Updated: 2019/06/16 21:59:06 by onouaman         ###   ########.fr       */
+/*   Created: 2019/07/16 00:20:28 by onouaman          #+#    #+#             */
+/*   Updated: 2019/07/16 00:20:31 by onouaman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "libft.h"
 
-void		ft_move_cur(char capa[2], int c, int r)
+int		ft_putchar_err(int c)
 {
-	char *temp;
-
-	temp = tgetstr(capa, NULL);
-	tputs(tgoto(temp, c, r), 1, &ft_putchar_err);
-}
-
-void		ft_capa_str(char capa[2])
-{
-	char	*temp;
-
-	temp = tgetstr(capa, NULL);
-	tputs(temp, 1, &ft_putchar_err);
-}
-
-int			ft_putchar_err(int c)
-{
-	write(1, &c, 1);
-	return (1);
+	write(2, &c, 1);
+	return (c);
 }

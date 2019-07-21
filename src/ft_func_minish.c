@@ -40,3 +40,107 @@ char	*ft_find_path(char *arg, char **env)
 	ft_strrdel(str_paths);
 	return (NULL);
 }
+
+/*
+** delete a char of string in a giving position
+*/
+
+char	*delete_char(char *str, int pos)
+{
+	while (str[pos])
+	{
+		str[pos] = str[pos + 1];
+		pos++;
+	}
+	return (str);
+}
+
+int		key_is_str(char *buff)
+{
+	int i;
+
+	i = -1;
+	while (buff[++i])
+	{
+		if ((buff[i] < 32 || buff[i] > 126) && buff[i] != '\n')
+			return (0);
+	}
+	return (1);
+}
+
+char	*ft_strsubb(char const *s, unsigned int start, size_t len)
+{
+	int		i;
+	char	*str;
+
+	if (s != NULL)
+	{
+		str = (char*)malloc(len + 1);
+		if (str == NULL)
+			return (NULL);
+		i = 0;
+		while (i < (int)len && s[start] != '\0')
+		{
+			str[i] = s[start];
+			i++;
+			start++;
+		}
+		str[i] = '\0';
+		return (str);
+	}
+	return (NULL);
+}
+
+
+/*
+** edit string by adding buffer to line in the given position
+*/
+
+void	edit_str(char **line, char *copy, int pos)
+{
+	char	*begin;
+	char	*end;
+	int		len;
+
+	len = ft_strlen(*line);
+	if (pos > len)
+		pos--;
+	begin = ft_strsubb(*line, 0, pos);
+	end = ft_strjoin(copy, *line + pos);
+	free(*line);
+	*line = ft_strjoin(begin, end);
+	free(begin);
+	free(end);
+}
+
+/*
+** Convert table of string to list
+*/
+
+t_pipes		*ft_strr_list(char **args_pipe)
+{
+	t_pipes *st_pipes;
+	t_pipes *head;
+
+	st_pipes = NULL;
+	while (*args_pipe)
+	{
+		if (st_pipes == NULL)
+		{
+			st_pipes = (t_pipes *)malloc(sizeof(*st_pipes));
+			head = st_pipes;
+		}
+		st_pipes->cmd = *args_pipe;
+		st_pipes->fds[0] = 0;
+		st_pipes->fds[1] = 1;		
+		args_pipe++;
+		if (*args_pipe != NULL)
+		{
+			st_pipes->next = (t_pipes *)malloc(sizeof(*st_pipes));
+			st_pipes = st_pipes->next;
+		}
+		else
+			st_pipes->next = NULL;
+	}
+	return (head);
+}

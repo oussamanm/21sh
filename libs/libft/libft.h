@@ -115,5 +115,7 @@ int					ft_isspace(char c);
 int					ft_check_charr(char *src, int str[], int exept);
 void				ft_repeat_char(int c, int n);
 char				*ft_rm_char(char *str, int index);
+int		ft_putchar_err(int c);
+int		ft_chrlen(const char *str, char c);
 
 #endif
