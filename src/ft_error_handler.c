@@ -25,7 +25,7 @@ void		ft_err_exit(char *str)
 	exit(0);
 }
 
-int		ft_error_semic(char *str_arg, char **args_cmd)
+int		ft_error_semic(char *str_arg, char **args_cmd) /// return 1 : error
 {
 	int i;
 

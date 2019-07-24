@@ -70,11 +70,12 @@ int fd_err;
 //
 
 //**** Tokens
-	# define T_TXT 0;
-	# define T_RED 1;
-	# define T_AND 2;
-	# define T_MIN 4;
-	# define T_TXT 5;
+	# define T_TXT 0
+	# define T_RED 1
+	
+	# define T_HER 2
+	# define T_AND 3
+	# define T_MIN 4
 //
 
 //**** MACRO Capability Cursor
@@ -125,13 +126,9 @@ typedef struct			s_tokens
 }						t_tokens;
 
 ///*** Main
-void			exit_shell(char **env);
-
-///*** Execution
-	void		ft_split_cmd(t_pipes *st_pipes, char ***env);
-	int			ft_cmd_exec(char **args, char **env);
-	int			ft_check_built(char **arg, char ***env);
-	void		ft_call_cmdss(char **str_arg, char ***environ);
+	void		exit_shell(char **env);
+	char		*get_next_spli(char *cmd, char *split);
+	void		ft_parser(char *cmd, char *split, char ***env);
 //
 
 ///*** Builtins
@@ -200,12 +197,19 @@ void			exit_shell(char **env);
 ///*** Lexer
 	t_tokens	*ft_new_token();
 	void	ft_fill_token(t_tokens **st_tokens, int token, char *value);
-	void	ft_err_lexer(t_tokens *st_tokens);
+	void	ft_err_lexer(t_pipes *st_pipes);
 	void	ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j);
 	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j);
+	void	ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j);
 	void	ft_lexer(t_pipes *st_pipes, char **args);
 //
 
+///*** Execution
+	int			ft_cmd_exec(char **args, char **env);
+	void		ft_split_cmd(t_pipes *st_pipes, char ***env);
+	int			ft_check_built(char **arg, char ***env);
+	void		ft_call_cmdss(char **str_arg, char ***environ);
+//
 
 /*
 **	termacp
