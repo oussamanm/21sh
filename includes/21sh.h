@@ -158,7 +158,6 @@ typedef struct			s_tokens
 
 ///*** Updated
 	char				**ft_str_split(char const *s, char *c);
-	int					get_next_line(const int fd, char **line);
 	char                **ft_str_split_q(char **s, char *c);
 //
 

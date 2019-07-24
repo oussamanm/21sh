@@ -3,8 +3,8 @@ NAME = 21sh
 SRC = ./src/
 S_21SH = ft_built_env.c ft_builtins.c ft_error_handler.c\
 	ft_func_minish.c ft_quote.c ft_strsplit.c ft_strsplit_q.c\
-	ft_variable.c get_next_line.c minishell.c ft_signals.c\
-	ft_func_dim.c ft_buttons.c ft_lexer.c ft_pipe.c ft_execution.c\
+	ft_variable.c minishell.c ft_signals.c\
+	ft_lexer.c ft_pipe.c ft_execution.c\
 	termcap/auto_complete/auto_completion.c\
 	termcap/auto_complete/display_files.c\
 	termcap/auto_complete/get_similar_files.c\
