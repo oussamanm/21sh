@@ -76,14 +76,12 @@ void		ft_create_pipes(t_pipes *st_pipes)
 			st_pipes->fds[1] = fds[1];
 	}
 }
-void		ft_apply_pipe(char **args_pipe, char ***environ)
+void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 {
-	t_pipes *st_pipes;
 	t_pipes *st_head;
 	int parent;
 	int child;
 
-	st_pipes = ft_strr_list(args_pipe);
 	st_head = st_pipes;
 	/// Create child , to exec the last cmd and the other cmds
 	if ((parent = fork()) == -1)
@@ -106,24 +104,140 @@ void		ft_apply_pipe(char **args_pipe, char ***environ)
 			/// Close all fds
 			ft_close_pipes(st_head);
 			// Execve
-			ft_split_cmd(st_pipes->cmd, environ);
+			ft_split_cmd(st_pipes, environ);
+			exit(0);
 		}
 		st_pipes = st_pipes->next;
 		if (st_pipes->next == NULL) /// parent_child
 		{
 			/// Duplcating STD_IN on Read end of pipe
 			if (dup2(st_pipes->fds[0] , 0) == -1)
-				ft_err_exit("Error in dub STD_IN");
+				perror("Error in dub STD_IN");
 			/// Close all fds
 			ft_close_pipes(st_head);	
 			/// Execve
-			ft_split_cmd(st_pipes->cmd, environ);
+			ft_split_cmd(st_pipes, environ);
+			exit(0);
 		}
 	}
 	if (parent > 0)
 		wait(NULL);
 }
 
+/*
+** Lexer
+*/
+
+t_tokens	*ft_new_token()
+{
+	t_tokens *st_token;
+
+	st_token = (t_tokens *)malloc(sizeof(t_tokens));
+	st_token->token = 0;
+	//st_token->value = ft_strnew(len_content);
+	st_token->value = NULL;
+	st_token->next = NULL;
+}
+
+void	ft_fill_token(t_tokens **st_tokens, int token, char *value)
+{
+	(*st_tokens)->token = token;
+	(*st_tokens)->value = value;
+	(*st_tokens)->next = ft_new_token();
+	(*st_tokens) = (*st_tokens)->next;
+}
+
+///*** Check error lexer
+void	ft_err_lexer(t_tokens *st_tokens)
+{
+	UNUSED(st_tokens);
+
+}
+
+void	ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j)
+{
+	int i;
+	int quote;
+
+	i = *j;
+	quote = arg[0];
+	while (arg[i] != '\0')
+	{
+		if (i != 0 && arg[i] != quote)
+		{
+			(*st_tokens)->token = T_TXT;
+			(*st_tokens)->value = ft_strsub(arg , *j, i);
+			*j += i;
+		}
+		i++;
+	}
+}
+
+void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j)
+{
+	int redi;
+	int i;
+
+	i = *j;
+	redi = arg[i];
+	while (arg[i] != '\0')
+	{
+		if (arg[i] == '&')
+		{
+			i++;
+			ft_fill_token(st_tokens, T_AND, ft_strdup("&\0"));
+		}
+		if (arg[i] == '>' || arg[i] == '<')
+		{
+			/// redirection >>
+			if (arg[i + 1] == '>')
+				ft_fill_token(st_tokens, T_RED, ft_strdup("<<"));
+			/// redirection <<
+			else if (arg[i + 1] == '<')
+				ft_fill_token(st_tokens, T_RED, ft_strdup("<<"));
+			else
+				ft_fill_token(st_tokens, T_RED, ft_strdup((char [2]){arg[i],'\0'}));
+		}
+			
+
+		i++;
+	}
+	
+}
+
+void	ft_lexer(t_pipes *st_pipes, char **args)
+{
+	char *arg;
+	t_tokens *st_tokens;
+	t_tokens *st_head;
+	int i;
+	int j;
+
+	i = 0;
+	while (args[i] != '\0')
+	{
+		j = 0;
+		arg = args[i];
+		st_tokens = ft_new_token();
+		while (arg[j] != '\0')
+		{
+			if (arg[j] == '"' || arg[j] == '\'')
+				ft_lexer_quot(&st_tokens, arg, &j);
+			else if (arg[j] == '>' || arg[j] == '<')
+				ft_lexer_red(&st_tokens, arg, &j);
+			else if (arg[j] == '&')
+				ft_lexer_red(&st_tokens, arg, &j);
+			else
+				ft_lexer_txt(&st_tokens, arg, &j);
+			j++;
+			/*if (arg[j] != '\0')
+			{
+				st_tokens->next = ft_new_token();
+				st_tokens = st_tokens->next;
+			}*/
+		}
+	}
+}
 
 /*
 ** Function Execution
@@ -154,20 +268,21 @@ int			ft_cmd_exec(char **args, char **env)
 	return (-1);
 }
 ///*** Check if cmd is builtens and splite
-void		ft_split_cmd(char *cmd, char ***env)
+void		ft_split_cmd(t_pipes *st_pipes, char ***env)
 {
 	char **args;
 
-	if ((args = ft_str_split(cmd, " \t")) == NULL)
+	if ((args = ft_str_split_q(&(st_pipes->cmd), " \t")) == NULL)
 	{
 		ft_putstr("Error NULL return of split \n");
 		return ;
 	}
+	ft_err_lexer(st_pipes);
+	ft_lexer(st_pipes, args);
 	/// Check Builtens
 	if (ft_check_built(args, env) != 1) // in case of builtens
 		if (ft_cmd_exec(args, *env) == -1)
 			ft_print_error(CMD_NF, "21sh: ", *args, 0); /// Command not found
-	//exit(0);
 }
 ///*** Check if Command builtens
 int			ft_check_built(char **arg, char ***env)
@@ -195,14 +310,16 @@ int			ft_check_built(char **arg, char ***env)
 void		ft_call_cmdss(char **str_arg, char ***environ)
 {
 	char		**args_pipe;
+	t_pipes *st_pipes;
 	//pid_t		pid;
 	
 	args_pipe = ft_str_split_q(str_arg, "|");
+	st_pipes = ft_strr_list(args_pipe);
 	if (args_pipe != NULL && args_pipe[0] != NULL && args_pipe[1] != NULL) /// exist pipe in cmds
-		ft_apply_pipe(args_pipe, environ);
+		ft_apply_pipe(st_pipes, environ);
 	else
 	{
-		ft_split_cmd(*str_arg, environ);
+		ft_split_cmd(st_pipes, environ);
 	}
 	ft_strrdel(args_pipe);
 }
@@ -253,6 +370,9 @@ int			main(void)
 		{
 			/// Split with ; multi command and call cmd
 			args_cmd = ft_str_split_q(&str_cmds, ";");
+			printf("cmd befor corr : %s\n",args_cmd[0]);
+			ft_corr_args(args_cmd, environ);
+			printf("cmd after corr : %s\n",args_cmd[0]);
 			if (!ft_error_semic(str_cmds, args_cmd) || !ft_putstr("Syntax error\n")) /// Check error ; syntax
 			{
 				while (args_cmd != NULL && args_cmd[i] != NULL)

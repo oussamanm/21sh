@@ -12,7 +12,7 @@
 
 #include "21sh.h"
 
-void	ft_rm_quot(char *str)
+void	ft_rm_quot(char **str)
 {
 	int i;
 	int index;
@@ -21,17 +21,21 @@ void	ft_rm_quot(char *str)
 	i = 0;
 	bl_quot = 0;
 	index = 0;
-	while(str[i])
+	while(STR(i))
 	{
-		if (!bl_quot && M_CHECK(str[i], 34, 39))
+		if (bl_quot && STR(i) == '|')
 		{
-			bl_quot = str[i];
+			*str = ft_add_char(*str, i++, '\\', 1);
+		}
+		if (!bl_quot && M_CHECK(STR(i), 34, 39))
+		{
+			bl_quot = STR(i);
 			index = i;
 		}
-		else if (bl_quot && str[i] == bl_quot)
+		else if (bl_quot && STR(i) == bl_quot)
 		{
-			ft_memmove(&str[i], &str[i + 1], ft_strlen(&str[i + 1]) + 1);
-			ft_memmove(&str[index], &str[index + 1], ft_strlen(&str[index + 1]) + 1);
+			ft_memmove(&STR(i), &STR(i + 1), ft_strlen(&STR(i + 1)) + 1);
+			ft_memmove(&STR(index), &STR(index + 1), ft_strlen(&STR(index + 1)) + 1);
 			i -= 2;
 			bl_quot = 0;
 			index = 0;
@@ -101,10 +105,11 @@ void	ft_corr_args(char **argv, char **environ)
 	{
 		quoted = 0;
 		j = -1;
-		if ((quoted = ft_check_charr(argv[i], (int[]){34, 39, -1}, 0)))
-			ft_rm_quot(argv[i]);
+		//if ((quoted = ft_check_charr(argv[i], (int[]){34, 39, -1}, 0)))
+		//	ft_rm_quot(&(argv[i]));
 		while (argv[i][++j])
 		{
+			
 			if (argv[i][j] == '\\')
 				continue ;
 			if (argv[i][j] == '$' && M_CHECK(quoted, 0 , 34) && argv[i][j + 1])

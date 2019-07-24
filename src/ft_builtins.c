@@ -33,7 +33,9 @@ void		ft_buil_echo(char **arg, char **env)
 			//		(arg[i][1] == 47 || arg[i][1] == '\0') && ++j)
 			//	ft_print_var("HOME", env);
 			//else
-				ft_putchar(arg[i][j++]);
+			if (arg[i][j] == '\\' && ++j)
+				continue ;
+			ft_putchar(arg[i][j++]);
 		}
 	}
 	ft_putstr("\n");

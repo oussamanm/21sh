@@ -57,7 +57,7 @@ static int		ft_getlen_q(char const *str, char *c)
 			is_quot = 0;
 		else if (!is_quot && (str[i] == 34 || str[i] == 39))
 			is_quot = str[i];
-		else if (!is_quot && ft_check_char(c, str[i]) && str[i - 1] != 92) /// review i - 1
+		else if (!is_quot && ft_check_char(c, str[i]) && str[i - 1] != '\\') /// review i - 1
 			break ;
 		i++;
 	}
@@ -78,7 +78,7 @@ static int		ft_getindx_q(char const *str, char *c)
 	is_quot = 1;
 	while (str[i] != '\0')
 	{
-		if (ft_check_char(c, str[i]) != 1 && str[i] != 92) /// add condition if \ exist before
+		if (ft_check_char(c, str[i]) != 1 && str[i - 1] != '\\') /// add condition if \ exist before || check i - 1 if null
 		{
 			i_bln = 1;
 			break ;
@@ -138,7 +138,7 @@ char			**ft_str_split_q(char **str, char *c)
 	if (*str == NULL || c == NULL)
 		return (NULL);
 	/// Check Norme
-	ft_check_quot(str);
+	//ft_check_quot(str);
 	if (!(s_re = (char **)malloc(sizeof(*s_re) * ft_count_word_q(*str, c) + 1)))
 		return (NULL);
 	while (STR(i) != '\0')

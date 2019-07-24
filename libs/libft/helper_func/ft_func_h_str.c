@@ -38,7 +38,10 @@ int		ft_find_char(char *str, char c)
 	while (str[i] != '\0')
 	{
 		if (str[i] == c)
+		{
+			if (i != 0 && str[i - 1] != '\\')
 			return (i);
+		}
 		i++;
 	}
 	return (-1);

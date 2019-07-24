@@ -36,6 +36,7 @@ int fd_err;
 	# define M_C (arg[i][0]==34||arg[i][0]==39)
 	# define M_CC (arg[i][ft_strlen(arg[i])-1]==34||arg[i][ft_strlen(arg[i])-1]==39)
 	# define M_CHECK_W(C)(C==32||C==9||C==11||C==10||C==13||C==12)
+	# define M_REDIR(C) (C == '>' || C == '<')
 	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
 	# define PROMPT 3
@@ -66,6 +67,14 @@ int fd_err;
 	# define BTN_RG 4414235
 	# define BTN_LF 4479771
 
+//
+
+//**** Tokens
+	# define T_TXT 0;
+	# define T_RED 1;
+	# define T_AND 2;
+	# define T_MIN 4;
+	# define T_TXT 5;
 //
 
 //**** MACRO Capability Cursor
@@ -102,14 +111,24 @@ typedef struct			s_pipes
 {
 	char				*cmd;
 	int					fds[2];
+	int					fd_in;
+	int					fd_out;
+	int					fd_err;
 	struct s_pipes		*next;
 }						t_pipes;
+
+typedef struct			s_tokens
+{
+	int					token;
+	char				*value;
+	struct s_tokens		*next;
+}						t_tokens;
 
 ///*** Main
 void			exit_shell(char **env);
 
 ///*** Execution
-	void		ft_split_cmd(char *cmd, char ***env);
+	void		ft_split_cmd(t_pipes *st_pipes, char ***env);
 	int			ft_cmd_exec(char **args, char **env);
 	int			ft_check_built(char **arg, char ***env);
 	void		ft_call_cmdss(char **str_arg, char ***environ);
@@ -156,7 +175,7 @@ void			exit_shell(char **env);
 //
 
 ///*** Quote
-	void				ft_rm_quot(char *str);
+	void				ft_rm_quot(char **str);
 	void				ft_corr_args(char **argv, char **environ);
 //
 
@@ -175,8 +194,18 @@ void			exit_shell(char **env);
 ///*** Pipes
 	void		ft_close_pipes(t_pipes *st_pipes);
 	void		ft_create_pipes(t_pipes *st_pipes);
-	void		ft_apply_pipe(char **args_pipe, char ***environ);
+	void		ft_apply_pipe(t_pipes *st_pipes, char ***environ);
 //
+
+///*** Lexer
+	t_tokens	*ft_new_token();
+	void	ft_fill_token(t_tokens **st_tokens, int token, char *value);
+	void	ft_err_lexer(t_tokens *st_tokens);
+	void	ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j);
+	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j);
+	void	ft_lexer(t_pipes *st_pipes, char **args);
+//
+
 
 /*
 **	termacp
@@ -185,5 +214,5 @@ void			exit_shell(char **env);
 char			*get_prompt(void);
 int				get_col_pos(void);
 
-
+//
 #endif
