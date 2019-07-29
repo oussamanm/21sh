@@ -40,7 +40,7 @@ int fd_err;
 	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
 	# define CHECK_TOKEN(t, a, b, c) (t == a || t == b || t == c)
-# define FLAG_TYPE(x)((x == 0) ? O_RDONLY : ((x == 1) ? O_WRONLY : O_APPEND))
+# define FLAG_TYPE(x)((x == 0) ? O_RDONLY : ((x == 1) ? O_WRONLY : (O_APPEND | O_WRONLY)))
 	# define PROMPT 3
 	# define PATHSIZE 1024
 	# define M_QUOTE 34

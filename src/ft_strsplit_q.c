@@ -13,7 +13,7 @@
 #include "21sh.h"
 
 ///*** Check if quote isn't correct
-int			ft_check_quot(char **str)
+int			ft_check_quot(char *str)
 {
 	int i;
 	int temp;
@@ -22,7 +22,7 @@ int			ft_check_quot(char **str)
 	i = 0;
 	quote = 0;
 	if (!str || !*str)
-		return ;
+		return (-1);
 	while (str[i])
 	{
 		if (quote == 0 && (str[i] == '\'' || str[i] == '"'))
@@ -75,15 +75,21 @@ char			**ft_str_split_q(char *str, char *c)
 int		ft_index_of_first_split(char *s1, char *s2)
 {
 	int i;
+	int quote;
 	int j;
 
 	if (!s2[0])
 		return (-1);
 	i = -1;
+	quote = 0;
 	while (s1[++i])
 	{
 		j = 0;
-		while (s1[i + j] == s2[j])
+		if (quote == 0 && (s1[i] == '\'' || s1[i] == '"'))
+			quote = s1[i];
+		else if (s1[i] == quote)
+			quote = 0;
+		while (!quote && s1[i + j] == s2[j])
 		{
 			if (s2[j + 1] == '\0')
 				return (i);

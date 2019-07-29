@@ -12,9 +12,8 @@
 
 #include "21sh.h"
 
-/*
-** Lexer
-*/
+///*** LEXER *****////
+
 
 int		ft_sum_asci(char str[])
 {
@@ -217,6 +216,10 @@ void		ft_init_redi(t_redir *st_redir, int type_red)
 		st_redir->fd_err = -1;
 		st_redir->fd_close = -1;
 	}
+	else if (type_red == 2)
+	{
+		st_redir->fd_red = 1;
+	}
 }
 
 int		ft_isalldigit(char *str)
@@ -347,12 +350,7 @@ void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
 		if (st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value) && (st_tokens->prev->is_arg = 1))
 			st_redir->fd_red = ft_atoi(st_tokens->prev->value);
 		st_redir->fd_des = ft_open_file(st_tokens->next->value, 2);
-		dprintf(fd_err, "fd dest = %d \n",st_redir->fd_des);
 		st_tokens->next->is_arg = 1;
-	}
-	else if (st_tokens->token == T_RED_APP_M)
-	{
-
 	}
 }
 
@@ -489,37 +487,3 @@ void	ft_parse_cmd(t_pipes *st_pipes, char ***args)
 	// Check error after create tokens
 		//ft_err_lexer(st_pipes);
 }
-//
-/*
-void	ft_rm_redi(t_tokens *st_tokens, char **args)
-{
-	t_tokens *next;
-	t_tokens *prev;
-
-	next = NULL;
-	prev = NULL;
-	while (st_tokens != NULL)
-	{
-		if (st_tokens->token < 1 || st_tokens->is_arg == 1)
-		{
-			next = st_tokens->next;
-			prev = st_tokens->prev;
-			free(st_tokens->value);
-			free(st_tokens);
-			if (prev != NULL)
-				prev->next = next;
-			if (next != NULL)
-				next->prev = prev;
-			st_tokens = next;
-		}
-		else
-			st_tokens = st_tokens->next;
-	}
-	st_tokens = (prev == NULL) ? next : prev;
-	while (st_tokens != NULL)
-	{
-		if (st_tokens-prev != NULL)
-			st_tokens = st_tokens->prev;
-	}
-}
-*/
