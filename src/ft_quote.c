@@ -109,7 +109,6 @@ void	ft_corr_args(char **argv, char **environ)
 		//	ft_rm_quot(&(argv[i]));
 		while (argv[i][++j])
 		{
-			
 			if (argv[i][j] == '\\')
 				continue ;
 			if (argv[i][j] == '$' && M_CHECK(quoted, 0 , 34) && argv[i][j + 1])

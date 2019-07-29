@@ -60,12 +60,12 @@ void	ft_print_error(char *msg, char *para1, char *para2, int rm)
 		return ;
 	}
 	if (para1 != NULL)
-		ft_putstr(para1);
+		ft_putstr_fd(para1, 2);
 	if (para2 != NULL)
-		ft_putstr(para2);
+		ft_putstr_fd(para2, 2);
 	if (para2 != NULL)
-		ft_putstr(": ");
-	ft_putendl(msg);
+		ft_putstr_fd(": ", 2);
+	ft_putendl_fd(msg, 2);
 	if (rm == 1 || rm == 3)
 		ft_strdel(&para1);
 	if (rm == 2 || rm == 3)

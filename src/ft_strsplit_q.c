@@ -14,30 +14,36 @@
 
 
 ///***  Count Words
-static int		ft_count_word_q(const char *str, char *c)
+static int		ft_count_word_q(char *str, char *c)
 {
 	int i;
-	int rtn;
-	int	i_bln;
-	int temp;
+	int resu;
+	int index;
+	int bl;
 
 	i = -1;
-	i_bln = 0;
-	rtn = (str && str[0] != '\0' && ft_check_char(c, str[0]) != 1) ? 1 : 0;
+	resu = 0;
+	bl = 1;
 	while (str[++i] != '\0')
 	{
-		/// if find " or ' got to the last char in word
-		if (ft_check_char("\"\'\0", str[i]) && (temp = str[i]))
+		if (str[i] == '"' || str[i] == '\'')
 		{
-			if ((temp = ft_find_char((char *)&str[i + 1], temp)) != -1)
-				i += (temp);
+			resu++;
+			if ((index = ft_find_char(&str[i + 1], str[i])) != -1)
+            {
+				i += (index + 1);
+                bl = 1;
+            }
+        }
+		else if (ft_check_char(c, str[i]) == 1)
+			bl = 1;
+        else if (bl == 1)
+		{
+			resu++;
+			bl = 0;
 		}
-		if (ft_check_char(c, str[i]))
-			i_bln = 1;
-		else if (i_bln == 1 && !(i_bln = 0))
-			rtn++;
 	}
-	return (rtn);
+    return resu;
 }
 
 ///*** get len of Word
@@ -125,7 +131,7 @@ void		ft_check_quot(char **src)
 	}
 }
 
-char			**ft_str_split_q(char **str, char *c)
+char			**ft_str_split_q(char *str, char *c)
 {
 	int		i;
 	int		j;
@@ -135,22 +141,64 @@ char			**ft_str_split_q(char **str, char *c)
 
 	i = 0;
 	j = 0;
-	if (*str == NULL || c == NULL)
+	if (str == NULL || c == NULL)
 		return (NULL);
-	/// Check Norme
-	//ft_check_quot(str);
-	if (!(s_re = (char **)malloc(sizeof(*s_re) * ft_count_word_q(*str, c) + 1)))
+	if (!(s_re = (char **)malloc(sizeof(*s_re) * ft_count_word_q(str, c) + 1)))
 		return (NULL);
-	while (STR(i) != '\0')
+	while (str[i] != '\0')
 	{
-		if ((i_firstw = ft_getindx_q(&(STR(i)), c)) == -1) /// index of first Word
+		if ((i_firstw = ft_getindx_q(&str[i], c)) == -1) /// index of first Word
 			break ;
 		i += i_firstw;
-		if ((i_lenw = ft_getlen_q(&(STR(i)), c)) == -1) /// len of the word
+		if ((i_lenw = ft_getlen_q(&str[i], c)) == -1) /// len of the word
 			break ;
-		s_re[j++] = ft_strsub(*str, i, i_lenw);
+		s_re[j++] = ft_strsub(str, i, i_lenw);
 		i += i_lenw;
 	}
 	s_re[j] = NULL;
 	return (s_re);
+}
+
+
+////****** Splite string with string : Hamza
+
+int		ft_index_of_first_split(char *s1, char *s2)
+{
+	int i;
+	int j;
+
+	if (!s2[0])
+		return (-1);
+	i = -1;
+	while (s1[++i])
+	{
+		j = 0;
+		while (s1[i + j] == s2[j])
+		{
+			if (s2[j + 1] == '\0')
+				return (i);
+			j++;
+		}
+	}
+	return (-1);
+}
+
+char	**ft_strsplit_by_arr(char *str, char *split)
+{
+	int i;
+	int j;
+	char *tmp;
+	char **resu;
+
+	resu = NULL;
+	tmp = ft_strdup(str);
+	while ((i = ft_index_of_first_split(tmp, split)) != -1)
+	{
+		j = -1;
+		while (split[++j] && split[j] == tmp[i])
+			tmp[i++] = -1;
+	}
+	resu = ft_strsplit(tmp, -1);
+	ft_strdel(&tmp);
+	return (resu);
 }

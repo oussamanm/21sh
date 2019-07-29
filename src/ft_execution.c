@@ -41,20 +41,26 @@ int			ft_cmd_exec(char **args, char **env)
 	return (-1);
 }
 ///*** Check if cmd is builtens and splite
-void		ft_split_cmd(t_pipes *st_pipes, char ***env)
+void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 {
 	char **args;
+	int pid;
+	
+	pid = 0;
+	args = ft_str_split_q(st_pipes->cmd, " \t");
+	/// call ft_parse_cmd : Lexer and parser
+	ft_parse_cmd(st_pipes, args);
 
-	if ((args = ft_str_split_q(&(st_pipes->cmd), " \t")) == NULL)
-	{
-		ft_putstr("Error NULL return of split \n");
-		return ;
-	}
-	ft_lexer(st_pipes, args);
 	/// Check Builtens
 	if (ft_check_built(args, env) != 1) // in case of builtens
-		if (ft_cmd_exec(args, *env) == -1)
+	{
+		if (fork_it == 1)
+			pid = fork();
+		if (pid == 0 && ft_cmd_exec(args, *env) == -1)
 			ft_print_error(CMD_NF, "21sh: ", *args, 0); /// Command not found
+		if (pid != 0)
+			wait(NULL);
+	}
 }
 ///*** Check if Command builtens
 int			ft_check_built(char **arg, char ***env)
@@ -82,16 +88,14 @@ int			ft_check_built(char **arg, char ***env)
 void		ft_call_cmdss(char **str_arg, char ***environ)
 {
 	char		**args_pipe;
-	t_pipes *st_pipes;
-	//pid_t		pid;
+	t_pipes		*st_pipes;
 	
-	args_pipe = ft_str_split_q(str_arg, "|");
+	args_pipe = ft_str_split_q(*str_arg, "|");
 	st_pipes = ft_strr_list(args_pipe);
 	if (args_pipe != NULL && args_pipe[0] != NULL && args_pipe[1] != NULL) /// exist pipe in cmds
 		ft_apply_pipe(st_pipes, environ);
 	else
-	{
-		ft_split_cmd(st_pipes, environ);
-	}
+		ft_split_cmd(1, st_pipes, environ);
+
 	ft_strrdel(args_pipe);
 }

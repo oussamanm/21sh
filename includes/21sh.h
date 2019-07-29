@@ -39,6 +39,8 @@ int fd_err;
 	# define M_REDIR(C) (C == '>' || C == '<')
 	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
+	# define CHECK_TOKEN(t, a, b, c) (t == a || t == b || t == c)
+# define FLAG_TYPE(x)((x == 0) ? O_RDONLY : ((x == 1) ? O_WRONLY : O_RDWR))
 	# define PROMPT 3
 	# define PATHSIZE 1024
 //
@@ -71,9 +73,18 @@ int fd_err;
 
 //**** Tokens
 	# define T_TXT 0
-	# define T_RED 1
-	
-	# define T_HER 2
+	# define T_QUO 1
+
+	# define T_RED_IN_S		-60
+	# define T_RED_IN_A		-98
+	# define T_RED_IN_B		-143
+	# define T_RED_OUT_S	-62
+	# define T_RED_OUT_A	-100
+	# define T_RED_OUT_B	-145
+	# define T_RED_APP_S	-124
+	# define T_RED_APP_M	-169
+	# define T_RED_HER_D	-160
+
 	# define T_AND 3
 	# define T_MIN 4
 //
@@ -108,13 +119,27 @@ typedef struct			s_dimen
 	struct winsize		st_size;
 }						t_dimen;
 
+typedef struct			s_filedes
+{
+	int					fd;
+	struct s_filedes	*next;
+}						t_filedes;
+
+typedef struct			s_redir
+{
+	int type_red;
+	int fd_red;
+	int fd_des;
+	int fd_err;
+	int fd_close;
+	struct s_redir	*next;
+}						t_redir;
+
 typedef struct			s_pipes
 {
 	char				*cmd;
 	int					fds[2];
-	int					fd_in;
-	int					fd_out;
-	int					fd_err;
+	t_redir				*st_redir;
 	struct s_pipes		*next;
 }						t_pipes;
 
@@ -122,7 +147,10 @@ typedef struct			s_tokens
 {
 	int					token;
 	char				*value;
+	int					indx;
+	int					is_arg;
 	struct s_tokens		*next;
+	struct s_tokens		*prev;
 }						t_tokens;
 
 ///*** Main
@@ -156,9 +184,11 @@ typedef struct			s_tokens
 	int					ft_error_semic(char *str_arg, char **args_cmd);
 //
 
-///*** Updated
+///*** Updated Splite
 	char				**ft_str_split(char const *s, char *c);
-	char                **ft_str_split_q(char **s, char *c);
+	char			**ft_str_split_q(char *str, char *c);
+	int					ft_index_of_first_split(char *s1, char *s2);
+	char				**ft_strsplit_by_arr(char *str, char *split);
 //
 
 ///*** helper
@@ -195,17 +225,22 @@ typedef struct			s_tokens
 
 ///*** Lexer
 	t_tokens	*ft_new_token();
-	void	ft_fill_token(t_tokens **st_tokens, int token, char *value);
+	void	ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx);
 	void	ft_err_lexer(t_pipes *st_pipes);
-	void	ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j);
-	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j);
-	void	ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j);
-	void	ft_lexer(t_pipes *st_pipes, char **args);
+	void	ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx);
+	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx);
+	void	ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx);
+	t_tokens	*ft_lexer(char **args);
+//
+
+///*** Parser Red
+	void	ft_parse_cmd(t_pipes *st_pipes, char **args);
+	
 //
 
 ///*** Execution
 	int			ft_cmd_exec(char **args, char **env);
-	void		ft_split_cmd(t_pipes *st_pipes, char ***env);
+	void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env);
 	int			ft_check_built(char **arg, char ***env);
 	void		ft_call_cmdss(char **str_arg, char ***environ);
 //

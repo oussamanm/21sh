@@ -40,12 +40,12 @@ char		*set_line(int sig, char **env)
 
 char		*get_next_spli(char *cmd, char *split)
 {
-	static char (*keys)[5];
-	int cpt;
-	int i;
+	char	*keys[5] = {";", "||", "&&", "&", NULL};
+	int		cpt;
+	int		i;
 
-	if (keys == NULL)
-		keys = (char[5][3]){";", "||", "&&", "&", NULL};
+	//if (keys == NULL)
+	//	keys = (char[5][3]){";", "||", "&&", "&", NULL};
 	i = -1;
 	while (keys[++i])
 	{
@@ -64,24 +64,26 @@ void		ft_parser(char *cmd, char *split, char ***env)
 
 	if (split == NULL)
 		return ;
-	args = ft_str_split_q(&cmd, split);	
+	args = ft_strsplit_by_arr(cmd, split);	
 	i = -1;
 	while (args[++i])
 	{
 		if (ft_strequ(split, "&"))
 			ft_call_cmdss(&args[i], env);
-		ft_parser(args[i], get_next_char(args[i], split), env);
+		ft_parser(args[i], get_next_spli(args[i], split), env);
 	}
-	//free()
+	ft_strrdel(args);
 }
 
 int			main(void)
 {
 	extern char	**environ;
-	char		**args_cmd;
 	char		*str_cmds;
 	int			i;
 
+	/// Initail error 
+	ft_intia_err("/dev/ttys002");
+	
 	///Initial interface : tgetent
 	if (tgetent(NULL, getenv("TERM")) != 1)
 		ft_err_exit("Error tgetent ,may variable TERM not valid! \n");
@@ -96,11 +98,11 @@ int			main(void)
 		if ((str_cmds = set_line(0, environ)) != NULL)
 		{
 			/// Correction args : Expansions + Correct Quoting
-			ft_corr_args(&str_cmds, environ);
+			//ft_corr_args(&str_cmds, environ);
 
 			///  Splite line entred with {;,&&,||,&} and Execute cmds
-			ft_parser();
-
+			//ft_parser(str_cmds, ";", &environ);
+			ft_call_cmdss(&str_cmds, &environ);
 			//ft_strdel(&str_cmds);
 		}
 	}

@@ -109,3 +109,9 @@ void	enable_term(void)
 	}
 	close(fd);
 }
+
+int		ft_putchar_err(int c)
+{
+	write(1, &c, 1);
+	return (c);
+}

@@ -74,7 +74,7 @@ void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 			/// Close all fds
 			ft_close_pipes(st_head);
 			// Execve
-			ft_split_cmd(st_pipes, environ);
+			ft_split_cmd(0, st_pipes, environ);
 			exit(0);
 		}
 		st_pipes = st_pipes->next;
@@ -86,7 +86,7 @@ void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 			/// Close all fds
 			ft_close_pipes(st_head);	
 			/// Execve
-			ft_split_cmd(st_pipes, environ);
+			ft_split_cmd(0, st_pipes, environ);
 			exit(0);
 		}
 	}
