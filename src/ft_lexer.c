@@ -476,6 +476,7 @@ void	ft_parse_cmd(t_pipes *st_pipes, char **args)
 	// Check error after create tokens
 		//ft_err_lexer(st_pipes);
 }
+//
 /*
 void	ft_rm_redi(t_tokens *st_tokens, char **args)
 {
