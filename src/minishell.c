@@ -38,15 +38,16 @@ char		*set_line(int sig, char **env)
 	return (NULL);
 }
 
-char		*get_next_spli(char *cmd, char *split)
+char		*get_next_split(char *cmd, char *split)
 {
-	char	*keys[5] = {";", "||", "&&", "&", NULL};
+	char	*keys[6] = {";", "||", "&&", "&", "|", NULL};
 	int		cpt;
 	int		i;
 
 	//if (keys == NULL)
 	//	keys = (char[5][3]){";", "||", "&&", "&", NULL};
 	i = -1;
+	cpt = 0;
 	while (keys[++i])
 	{
 		if (ft_strequ(keys[i], split))
@@ -61,18 +62,27 @@ void		ft_parser(char *cmd, char *split, char ***env)
 {
 	int i;
 	char **args;
+	char *next;
 
 	if (split == NULL)
 		return ;
-	args = ft_strsplit_by_arr(cmd, split);	
-	i = -1;
-	while (args[++i])
+	if (ft_strequ(split, "|"))
+		ft_call_cmdss(&cmd, env);
+	else
 	{
-		if (ft_strequ(split, "&"))
-			ft_call_cmdss(&args[i], env);
-		ft_parser(args[i], get_next_spli(args[i], split), env);
+		args = ft_strsplit_by_arr(cmd, split);
+		i = -1;
+		while (args[++i])
+		{
+
+			//dprintf(fd_err, "\n args[%d] : %s | split : %s \n", i, args[i], split);
+			if ((next = get_next_split(args[i], split)))
+				ft_parser(args[i], next, env);
+			else
+				ft_call_cmdss(&args[i], env);
+		}
+		ft_strrdel(args);		
 	}
-	ft_strrdel(args);
 }
 
 int			main(void)
@@ -101,8 +111,8 @@ int			main(void)
 			//ft_corr_args(&str_cmds, environ);
 
 			///  Splite line entred with {;,&&,||,&} and Execute cmds
-			//ft_parser(str_cmds, ";", &environ);
-			ft_call_cmdss(&str_cmds, &environ);
+			ft_parser(str_cmds, ";", &environ);
+			//ft_call_cmdss(&str_cmds, &environ);
 			//ft_strdel(&str_cmds);
 		}
 	}

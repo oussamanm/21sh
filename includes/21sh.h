@@ -234,7 +234,7 @@ typedef struct			s_tokens
 //
 
 ///*** Parser Red
-	void	ft_parse_cmd(t_pipes *st_pipes, char **args);
+	void	ft_parse_cmd(t_pipes *st_pipes, char ***args);
 	
 //
 

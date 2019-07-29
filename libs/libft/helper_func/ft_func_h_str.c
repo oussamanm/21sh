@@ -89,7 +89,7 @@ int		ft_str_alphanum(char *str)
 	return (1);
 }
 
-int		ft_isalphanum(char c)
+int		ft_isalphanum(char c) /// check condi . and /
 {
-	return (ft_isalpha(c) || ft_isalnum(c) || c == '_');
+	return (ft_isalpha(c) || ft_isalnum(c) || c == '_' || c == '.' || c == '/');
 }

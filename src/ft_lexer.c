@@ -388,11 +388,13 @@ void	ft_apply_redi(t_pipes *st_pipes)
 		{
 			if (dup2(lst_redi->fd_des , lst_redi->fd_red) == -1)
 				ft_err_exit("Error in dub \n");
+			//close(lst_redi->fd_des);
 		}
 		if (lst_redi->fd_err != -1 && lst_redi->fd_des != -1)
 		{
 			if (dup2(lst_redi->fd_des, lst_redi->fd_err) == -1)
 				ft_err_exit("Error in dub \n");
+			//close(lst_redi->fd_des);			
 		}
 		lst_redi = lst_redi->next;
 	}
@@ -413,7 +415,7 @@ char	**ft_strr_new(int len)
 	return (args);
 }
 
-void	ft_update_args(t_tokens *st_tokens, char **args)
+void	ft_update_args(t_tokens *st_tokens, char ***args)
 {
 	int count;
 	int	i;
@@ -422,30 +424,31 @@ void	ft_update_args(t_tokens *st_tokens, char **args)
 	count = 0;
 	i = 0;
 	st_temp = st_tokens;
-	while (st_temp != NULL)
+	while (st_temp != NULL && st_temp->value != NULL)
 	{
 		if (!(st_temp->token < 0 || st_temp->is_arg == 1))
 			count++;
 		st_temp = st_temp->next;
 	}
 	st_temp = st_tokens;
-	ft_strrdel(args);
-	args = ft_strr_new(count);
-	while (st_temp != NULL)
+	ft_strrdel(*args);
+	*args = ft_strr_new(count);
+	while (st_temp != NULL && st_temp->value != NULL)
 	{
 		if (!(st_temp->token < 0 || st_temp->is_arg == 1))
-			args[i++] = ft_strdup(st_temp->value);
+			(*args)[i++] = ft_strdup(st_temp->value);
 		st_temp = st_temp->next;
 	}
+	(*args)[i] = NULL;
 }
 
-void	ft_parse_cmd(t_pipes *st_pipes, char **args)
+void	ft_parse_cmd(t_pipes *st_pipes, char ***args)
 {
 	t_tokens	*st_tokens;
 
 
 	// Call Lexer and return list of tokens
-	st_tokens = ft_lexer(args);
+	st_tokens = ft_lexer(*args);
 
 	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_tokens);
@@ -465,14 +468,7 @@ void	ft_parse_cmd(t_pipes *st_pipes, char **args)
 	ft_apply_redi(st_pipes);
 
 	// Remove nodes redirection and update args
-	//ft_rm_redi(st_tokens, args);
 	ft_update_args(st_tokens, args);
-	int i = 0;
-	while (args[i] != NULL)
-	{
-		ft_putstr_fd(args[i++], fd_err);
-	}
-	exit(0);
 	// Check error after create tokens
 		//ft_err_lexer(st_pipes);
 }

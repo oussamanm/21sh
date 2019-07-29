@@ -34,9 +34,11 @@ int			ft_cmd_exec(char **args, char **env)
 	}
 	if (str_arg != NULL)
 	{
+		dprintf(fd_err, "args[0] = %s \n",args[0]);
 		execve(str_arg, args, env);
 		ft_strdel(&str_arg);
-		return (0);
+		dprintf(fd_err, "Errorrr \n");
+		exit (0);
 	}
 	return (-1);
 }
@@ -45,11 +47,17 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 {
 	char **args;
 	int pid;
+	int tmp[3];
 	
 	pid = 0;
 	args = ft_str_split_q(st_pipes->cmd, " \t");
+	/// Save STD_*
+	tmp[0] = dup(0);
+	tmp[1] = dup(1);
+	tmp[2] = dup(2);
+	
 	/// call ft_parse_cmd : Lexer and parser
-	ft_parse_cmd(st_pipes, args);
+	ft_parse_cmd(st_pipes, &args);
 
 	/// Check Builtens
 	if (ft_check_built(args, env) != 1) // in case of builtens
@@ -61,6 +69,13 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 		if (pid != 0)
 			wait(NULL);
 	}
+	/// Resete STD_*
+	dup2(tmp[0], 0);
+	dup2(tmp[1], 1);
+	dup2(tmp[2], 2);
+	close(tmp[0]);
+	close(tmp[1]);
+	close(tmp[2]);
 }
 ///*** Check if Command builtens
 int			ft_check_built(char **arg, char ***env)
@@ -70,7 +85,7 @@ int			ft_check_built(char **arg, char ***env)
 	rtn = 0;
 	if (*arg == NULL)
 		return (-1);
-	if (ft_strcmp(arg[0], "exit") == 0)
+	if (ft_strcmp(arg[0], "exitt") == 0)
 		kill(0, SIGQUIT);
 	if (ft_strcmp(arg[0], "env") == 0 && (rtn = 1))
 		ft_buil_env(&arg[1], env);
@@ -96,6 +111,5 @@ void		ft_call_cmdss(char **str_arg, char ***environ)
 		ft_apply_pipe(st_pipes, environ);
 	else
 		ft_split_cmd(1, st_pipes, environ);
-
 	ft_strrdel(args_pipe);
 }
