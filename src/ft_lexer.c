@@ -339,6 +339,23 @@ void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens)
 	}
 }
 
+void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
+{
+	ft_init_redi(st_redir, 2);
+	if (st_tokens->token == T_RED_APP_S)
+	{
+		if (st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value) && (st_tokens->prev->is_arg = 1))
+			st_redir->fd_red = ft_atoi(st_tokens->prev->value);
+		st_redir->fd_des = ft_open_file(st_tokens->next->value, 2);
+		dprintf(fd_err, "fd dest = %d \n",st_redir->fd_des);
+		st_tokens->next->is_arg = 1;
+	}
+	else if (st_tokens->token == T_RED_APP_M)
+	{
+
+	}
+}
+
 void	ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 {
 	t_redir		*st_redir;
@@ -363,9 +380,9 @@ void	ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 				ft_redi_out(st_redir, st_tokens);
 			else if (CHECK_TOKEN(st_tokens->token, T_RED_IN_S, T_RED_IN_A, T_RED_IN_B))	/// IN_PUT
 				ft_redi_in(st_redir, st_tokens);
-			/*else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, 0))		/// APPEND
-				ft_redi_app(st_pipes, st_tokens);
-			else if (CHECK_TOKEN(st_tokens->token, T_RED_HER_D, 0, 0))					/// HERE_DOC
+			else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, 0))		/// APPEND
+				ft_redi_app(st_redir, st_tokens);
+			/*else if (CHECK_TOKEN(st_tokens->token, T_RED_HER_D, 0, 0))					/// HERE_DOC
 				ft_redi_her(st_pipes, st_tokens);*/
 		}
 		st_tokens = st_tokens->next;

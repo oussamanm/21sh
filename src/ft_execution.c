@@ -47,35 +47,34 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 {
 	char **args;
 	int pid;
+	int i;
 	int tmp[3];
 	
 	pid = 0;
+	i = -1;
 	args = ft_str_split_q(st_pipes->cmd, " \t");
 	/// Save STD_*
-	tmp[0] = dup(0);
-	tmp[1] = dup(1);
-	tmp[2] = dup(2);
-	
+	while (++i < 3)
+		tmp[i] = dup(i);
 	/// call ft_parse_cmd : Lexer and parser
 	ft_parse_cmd(st_pipes, &args);
 
-	/// Check Builtens
-	if (ft_check_built(args, env) != 1) // in case of builtens
+	if (ft_check_built(args, env) != 1) /// in case of Builtens
 	{
 		if (fork_it == 1)
 			pid = fork();
-		if (pid == 0 && ft_cmd_exec(args, *env) == -1)
+		if (pid == 0 && ft_cmd_exec(args, *env) == -1)	/// Execute cmd
 			ft_print_error(CMD_NF, "21sh: ", *args, 0); /// Command not found
 		if (pid != 0)
 			wait(NULL);
 	}
 	/// Resete STD_*
-	dup2(tmp[0], 0);
-	dup2(tmp[1], 1);
-	dup2(tmp[2], 2);
-	close(tmp[0]);
-	close(tmp[1]);
-	close(tmp[2]);
+	i = -1;
+	while (++i < 3)
+	{
+		dup2(tmp[i], i);
+		close(tmp[i]);
+	}
 }
 ///*** Check if Command builtens
 int			ft_check_built(char **arg, char ***env)
