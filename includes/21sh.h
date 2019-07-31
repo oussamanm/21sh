@@ -87,7 +87,7 @@ int fd_err;
 	# define T_RED_OUT_B	-145
 	# define T_RED_APP_S	-124
 	# define T_RED_APP_M	-169
-	# define T_RED_HER_D	-160
+	# define T_RED_HER_D	-120
 	# define T_RED_BOTH		-122
 
 	# define T_AND 3

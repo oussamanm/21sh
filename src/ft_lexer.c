@@ -55,6 +55,19 @@ int			ft_isalldigit(char *str)
 	return (1);
 }
 
+int			ft_isallprint(char *str)
+{
+	if (str == NULL)
+		return (0);
+	while (*str != '\0')
+	{
+		if (!ft_isprint(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
 
 void	ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx)
 {
@@ -155,6 +168,7 @@ void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
 	*j += i;
 }
 
+
 t_tokens	*ft_lexer(char **args)
 {
 	char *arg;
@@ -189,7 +203,7 @@ t_tokens	*ft_lexer(char **args)
 	// free last node // and protect it
 	st_tokens->prev->next = NULL;
 	free(st_tokens);
-	
+	/*
 		st_tokens = st_head;
 		while (st_tokens != NULL)
 		{
@@ -197,7 +211,8 @@ t_tokens	*ft_lexer(char **args)
 			st_tokens = st_tokens->next;
 		}
 		printf("\n--------------\n");
-	
+	//exit(0);
+	*/
 	return (st_head);
 }
 
@@ -237,6 +252,13 @@ void		ft_init_redi(t_redir *st_redir, int type_red)
 		st_redir->fd_red = 1;
 	}
 	else if (type_red == 3)
+	{
+		st_redir->fd_red = 0;
+		st_redir->fd_des = -1;
+		st_redir->fd_err = -1;
+		st_redir->fd_close = -1;
+	}
+	else if (type_red == 4)
 	{
 		st_redir->fd_red = 0;
 		st_redir->fd_des = -1;
@@ -386,6 +408,23 @@ void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
 	st_redir->fd_file = st_tokens->next->value;
 	st_tokens->next->is_arg = 1;
 }
+
+void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
+{
+	//char *content;
+
+	/// add error of here doc syntax
+	ft_init_redi(st_redir, 4);
+	if (st_tokens->next != NULL && st_tokens->next->value && ft_isallprint(st_tokens->next->value))
+	{
+		st_tokens->next->is_arg = 1;
+		ft_strdel(&(st_tokens->next->value));
+		//content = ft_cont_hered();
+		//st_tokens->next->value = content;
+		//st_redir->fd_file = content;
+		st_redir->fd_file = ft_strdup("Hello Wolrdddd \n");
+	}
+}
 ///*** PARSER *****////
 
 void	ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
@@ -414,10 +453,10 @@ void	ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 				ft_redi_in(st_redir, st_tokens);
 			else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, 0))		/// APPEND
 				ft_redi_app(st_redir, st_tokens);
-			else if (st_tokens->token == T_RED_BOTH)
+			else if (st_tokens->token == T_RED_BOTH)									/// <>
 				ft_redi_both(st_redir, st_tokens);
-			/*else if (CHECK_TOKEN(st_tokens->token, T_RED_HER_D, 0, 0))					/// HERE_DOC
-				ft_redi_her(st_pipes, st_tokens);*/
+			else if (st_tokens->token == T_RED_HER_D)					/// HERE_DOC
+				ft_redi_her(st_redir, st_tokens);
 		}
 		st_tokens = st_tokens->next;
 	}
@@ -435,6 +474,21 @@ int		ft_exist_fd(int fd)
 	return (1);
 }
 
+void	ft_apply_hered(t_redir *st_redi)
+{
+	int fds[2];
+
+	if (st_redi == NULL)
+		return ;
+	if (pipe(fds) == -1)
+		ft_putendl_fd("Error in pipe line of here_doc", 2);
+	write(fds[1], st_redi->fd_file, ft_strlen(st_redi->fd_file));
+	close(fds[1]);
+	st_redi->fd_red = 0;
+	st_redi->fd_des = fds[0];
+}
+
+
 int		ft_apply_redi(t_pipes *st_pipes)
 {
 	t_redir *lst_redi;
@@ -444,6 +498,8 @@ int		ft_apply_redi(t_pipes *st_pipes)
 	lst_redi = st_pipes->st_redir;
 	while (lst_redi != NULL)
 	{
+		if (lst_redi->type_red == 4)
+			ft_apply_hered(lst_redi);
 		if (lst_redi->fd_close != -1)
 			close(lst_redi->fd_close);
 		if (lst_redi->fd_red != -1 && lst_redi->fd_des != -1)
@@ -454,15 +510,11 @@ int		ft_apply_redi(t_pipes *st_pipes)
 				return (REDI_KO);
 			if (dup2(lst_redi->fd_des , lst_redi->fd_red) == -1)
 				ft_err_exit("Error in dub \n");
-			//close(lst_redi->fd_des);
 		}
 		if (lst_redi->fd_err != -1 && lst_redi->fd_des != -1)
 		{
-			/*if (!ft_exist_fd(lst_redi->fd_des))
-				return (REDI_KO);*/
 			if (dup2(lst_redi->fd_des, lst_redi->fd_err) == -1)
 				ft_err_exit("Error in dub \n");
-			//close(lst_redi->fd_des);			
 		}
 		lst_redi = lst_redi->next;
 	}
@@ -525,7 +577,6 @@ int	ft_parse_cmd(t_pipes *st_pipes)
 {
 	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_pipes->st_tokens);
-
 	/*
 		t_redir *temp;
 		temp = st_pipes->st_redir;

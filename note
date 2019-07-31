@@ -59,7 +59,7 @@ Close standard output (or n).
     Duplicate standard input (or n1) from file descriptor n2.
 [n] <&-     :   60 + 38 + 45
     Close standard input (or n).
-
+        
 ----------------
 [n] <> file :   60 + 62
     Open file for reading and writing on standard input (or n).
