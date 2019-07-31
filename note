@@ -41,13 +41,6 @@ memory
 *Quoting : used to remove the special meaning of certain character or words to the shell
 			
 
-test1 aaaaa bbb cccc dddd
-(str,remp,7,5)
-protonmail
-lavabit
-
-62
-
 [n] > file :    62
 Redirect standard output (or n) to file.
 [n1] >& n2 :    62 + 38
@@ -100,3 +93,10 @@ ls -la 2>FILE
 
 If the digits in word do not specify a file descriptor open for output, a redirection error occurs.
 
+
+
+//********* Tasks *********************/
+
+
+
+Open file for reading and writing on standard input (or n).

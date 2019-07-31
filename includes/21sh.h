@@ -40,11 +40,13 @@ int fd_err;
 	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
 	# define CHECK_TOKEN(t, a, b, c) (t == a || t == b || t == c)
-# define FLAG_TYPE(x)((x == 0) ? O_RDONLY : ((x == 1) ? O_WRONLY : (O_APPEND | O_WRONLY)))
+	# define FLAG_TYPE(x)((x == 0) ? O_RDONLY : ((x == 1) ? O_WRONLY : (O_APPEND | O_WRONLY)))
 	# define PROMPT 3
 	# define PATHSIZE 1024
 	# define M_QUOTE 34
 	# define M_DQUOTE 39
+	# define P_TK st_tokens->prev
+	# define ERRO_IN_AND -12
 //
 
 //**** Error Msg
@@ -86,9 +88,17 @@ int fd_err;
 	# define T_RED_APP_S	-124
 	# define T_RED_APP_M	-169
 	# define T_RED_HER_D	-160
+	# define T_RED_BOTH		-122
 
 	# define T_AND 3
 	# define T_MIN 4
+//
+
+//**** Parsing
+	# define PARSE_KO 0
+	# define PARSE_OK 1
+	# define REDI_OK 1
+	# define REDI_KO 0
 //
 
 //**** MACRO Capability Cursor
@@ -112,14 +122,15 @@ typedef struct termios	t_termios;
 
 int glb;
 
-typedef struct			s_dimen
+typedef struct			s_tokens
 {
-	int					index_c;
-	int					nbr_row;
-	int					nbr_cln;
-	int					len_arg;
-	struct winsize		st_size;
-}						t_dimen;
+	int					token;
+	char				*value;
+	int					indx;
+	int					is_arg;
+	struct s_tokens		*next;
+	struct s_tokens		*prev;
+}						t_tokens;
 
 typedef struct			s_filedes
 {
@@ -134,6 +145,7 @@ typedef struct			s_redir
 	int fd_des;
 	int fd_err;
 	int fd_close;
+	char	*fd_file;
 	struct s_redir	*next;
 }						t_redir;
 
@@ -141,19 +153,11 @@ typedef struct			s_pipes
 {
 	char				*cmd;
 	int					fds[2];
+	char				**args;
+	t_tokens			*st_tokens;
 	t_redir				*st_redir;
 	struct s_pipes		*next;
 }						t_pipes;
-
-typedef struct			s_tokens
-{
-	int					token;
-	char				*value;
-	int					indx;
-	int					is_arg;
-	struct s_tokens		*next;
-	struct s_tokens		*prev;
-}						t_tokens;
 
 ///*** Main
 	void		exit_shell(char **env);
@@ -184,6 +188,7 @@ typedef struct			s_tokens
 	int					ft_error_cd(char *path, char **arg);
 	void				ft_intia_err(char *tty);
 	int					ft_error_semic(char *str_arg, char **args_cmd);
+	int		ft_error_separ(char *str_arg, char c);
 //
 
 ///*** Updated Splite
@@ -233,10 +238,12 @@ typedef struct			s_tokens
 	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx);
 	void	ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx);
 	t_tokens	*ft_lexer(char **args);
+	int		ft_error_redir(t_tokens *st_tokens);
+
 //
 
 ///*** Parser Red
-	void	ft_parse_cmd(t_pipes *st_pipes, char ***args);
+	int		ft_parse_cmd(t_pipes *st_pipes);
 	
 //
 
@@ -244,7 +251,7 @@ typedef struct			s_tokens
 	int			ft_cmd_exec(char **args, char **env);
 	void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env);
 	int			ft_check_built(char **arg, char ***env);
-	void		ft_call_cmdss(char **str_arg, char ***environ);
+	int			ft_call_cmdss(char *str_arg, char ***environ);
 //
 
 /*
@@ -253,6 +260,11 @@ typedef struct			s_tokens
 
 char			*get_prompt(void);
 int				get_col_pos(void);
+
+//
+
+////*** Free
+	void		ft_clear_cmds(t_pipes *st_pipes);
 
 //
 #endif

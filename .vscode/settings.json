@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "21sh.h": "c",
-        "termcap.h": "c"
+        "termcap.h": "c",
+        "libft.h": "c"
     }
 }

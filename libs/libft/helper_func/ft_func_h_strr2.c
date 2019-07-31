@@ -36,3 +36,19 @@ char		**alloc_chain(char **env, int nbr)
 	new_env[i] = NULL;
 	return (new_env);
 }
+
+char		**ft_strr_new(int len)
+{
+	char **args;
+	int i;
+
+	i = 0;
+	if ((args = (char **)malloc(sizeof(char *) * (len + 1))) == NULL)
+		exit(0);
+		//("Error in allocation of args\n"); /// should add free
+	while (i < len)
+	{
+		args[i++] = NULL;
+	}
+	return (args);
+}

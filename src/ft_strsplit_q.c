@@ -42,6 +42,7 @@ int			ft_check_quot(char *str)
 	return (1);
 }
 
+///*** Split with quoting
 char			**ft_str_split_q(char *str, char *c)
 {
 	int		i;
@@ -71,8 +72,7 @@ char			**ft_str_split_q(char *str, char *c)
 
 
 ////****** Splite string with string : Hamza
-
-int		ft_index_of_first_split(char *s1, char *s2)
+int	ft_index_of_first_split(char *s1, char *s2)
 {
 	int i;
 	int quote;
@@ -99,7 +99,7 @@ int		ft_index_of_first_split(char *s1, char *s2)
 	return (-1);
 }
 
-char	**ft_strsplit_by_arr(char *str, char *split)
+char		**ft_strsplit_by_arr(char *str, char *split)
 {
 	int i;
 	int j;

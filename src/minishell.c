@@ -67,7 +67,7 @@ void		ft_parser(char *cmd, char *split, char ***env)
 	if (split == NULL)
 		return ;
 	if (ft_strequ(split, "|"))
-		ft_call_cmdss(&cmd, env);
+		ft_call_cmdss(cmd, env);
 	else
 	{
 		args = ft_strsplit_by_arr(cmd, split);
@@ -79,10 +79,27 @@ void		ft_parser(char *cmd, char *split, char ***env)
 			if ((next = get_next_split(args[i], split)))
 				ft_parser(args[i], next, env);
 			else
-				ft_call_cmdss(&args[i], env);
+				ft_call_cmdss(args[i], env);
 		}
 		ft_strrdel(args);		
 	}
+}
+
+int			ft_parse_error(char *str_cmds)
+{
+	/// check ; error
+	if (ft_error_separ(str_cmds, ';'))
+	{
+		ft_putstr_fd("syntax error near unexpected token `;' \n", 2);
+		return (1);
+	}
+	/// check | error
+	if (ft_error_separ(str_cmds, '|'))
+	{
+		ft_putstr_fd("syntax error near unexpected token `| hello' \n", 2);
+		return (1);
+	}
+	return (0);
 }
 
 int			main(void)
@@ -107,13 +124,21 @@ int			main(void)
 		// fill str_arg with command Entred And print prompt
 		if ((str_cmds = set_line(0, environ)) != NULL)
 		{
+			/// Check all error ; | redir 
+			if (ft_parse_error(str_cmds))
+			{
+				/// print prompt
+				ft_strdel(&str_cmds);
+				continue ;
+			}
+
 			/// Correction args : Expansions + Correct Quoting
 			//ft_corr_args(&str_cmds, environ);
 
 			///  Splite line entred with {;,&&,||,&} and Execute cmds
-			ft_parser(str_cmds, ";", &environ);
-			//ft_call_cmdss(&str_cmds, &environ);
-			//ft_strdel(&str_cmds);
+			//ft_parser(str_cmds, ";", &environ);
+			ft_call_cmdss(str_cmds, &environ);
+			ft_strdel(&str_cmds);
 		}
 	}
 	//ft_strrdel(environ);
