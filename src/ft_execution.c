@@ -16,29 +16,30 @@
 ** Function Execution
 */
 
-///*** Execute Command
-int			ft_cmd_exec(char **args, char **env)
+///*** Execute Command 
+int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 {
 	char	*str_arg;
 
 	str_arg = NULL;
-	if (!ft_check_char(args[0], '/'))
-		str_arg = ft_find_path(args[0], env);
+	if (!ft_check_char(st_pipes->args[0], '/'))
+		str_arg = ft_find_path((st_pipes->args)[0], env);
 	else
 	{
-		str_arg = ft_strdup(args[0]);
+		str_arg = ft_strdup(st_pipes->args[0]);
 		if (access(str_arg, F_OK) != 0)
 			ft_print_error(FIL_NS, NULL, str_arg, 2);
 		else if (str_arg && access(str_arg, X_OK) != 0)
 			ft_print_error(FIL_PD, NULL, str_arg, 2);
 	}
-	if (str_arg != NULL)
+	if (!(ft_parse_cmd(st_pipes) == PARSE_KO))
 	{
-		dprintf(fd_err, "args[0] = %s \n",args[0]);
-		execve(str_arg, args, env);
-		ft_strdel(&str_arg);
-		dprintf(fd_err, "Errorrr \n");
-		exit (0);
+		if (str_arg != NULL)
+		{
+			execve(str_arg, st_pipes->args, env);
+			ft_strdel(&str_arg);
+			exit (0);
+		}
 	}
 	return (-1);
 }
@@ -52,63 +53,84 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	
 	pid = 0;
 	i = -1;
-
-	/// Save STD_*
-	while (++i < 3)
-		tmp[i] = dup(i);
-	/// Call Parser : to  read token and fill st_redi
-	if (!(ft_parse_cmd(st_pipes) == PARSE_KO))
+	if (st_pipes != NULL && ft_check_built((st_pipes->args)[0])) /// in case of Builtens
 	{
-		if (ft_check_built(st_pipes->args, env) != 1) /// in case of Builtens
-		{
-			if (fork_it == 1)
-				pid = fork();
-			if (pid == 0)	/// Execute cmd
-			{
-				if (ft_cmd_exec(st_pipes->args, *env) == -1)
-					ft_print_error(CMD_NF, "21sh: ", (st_pipes->args)[0], 0); /// Command not found
-			}
-			if (pid != 0)
-				wait(NULL);
-		}
+		/// Save STD_*
+		while (++i < 3)
+			tmp[i] = dup(i);
+		/// Call builtens
+		if (ft_call_built(st_pipes, env) == REDI_KO)
+			return ;
+		/// Resete STD_*
+		i = -1;
+		while (++i < 3)
+			if (dup2(tmp[i], i) == -1 || close(tmp[i]) == -1)
+				ft_putendl_fd("Error in dup or close \n", 2); // Dont exit
+		return ;
 	}
-	while (st_pipes->st_redir)
+	/// Create new Child process
+	if (fork_it == 1 && (pid = fork()) == -1)
+		ft_err_exit("Error in Fork new process \n");
+	if (pid == 0)
 	{
-		if (st_pipes->st_redir->fd_des != -1)
-		{
-			dprintf(fd_err, "fd to close = %d\n",st_pipes->st_redir->fd_des);
-			close(st_pipes->st_redir->fd_des);
-		}
-		st_pipes->st_redir = st_pipes->st_redir->next;
+		if (ft_parse_cmd(st_pipes) == PARSE_KO)
+			exit(0);
+		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// builten ECHO (executed in child)
+			ft_buil_echo(st_pipes->args, *env);
+		else
+			if (ft_cmd_exec(st_pipes, *env) == -1)							/// Execute cmd
+				ft_print_error(CMD_NF, "21sh: ", (st_pipes->args)[0], 0);	/// Command not found
+		exit(0);
 	}
-	/// Resete STD_*
-	i = -1;
-	while (++i < 3)
-	{
-		dup2(tmp[i], i);
-		close(tmp[i]);
-	}
+	if (pid > 0)
+		wait(NULL);
 }
-///*** Check if Command builtens
-int			ft_check_built(char **arg, char ***env)
+
+///*** Call Builtens (close fds of redirection)
+int			ft_call_built(t_pipes *st_pipes, char ***env)
 {
 	int		rtn;
 
 	rtn = 0;
-	if (*arg == NULL)
+	if (st_pipes == NULL || st_pipes->args == NULL)
 		return (-1);
-	if (ft_strcmp(arg[0], "exitt") == 0)
+	/// Call Parser : to  read token and fill st_redi
+	if (ft_parse_cmd(st_pipes) == PARSE_KO)
+		return (REDI_KO);
+	/// Close all fds opned
+	while (st_pipes->st_redir != NULL)
+	{
+		if (st_pipes->st_redir->fd_des != -1)
+			close(st_pipes->st_redir->fd_des);
+		st_pipes->st_redir = st_pipes->st_redir->next;
+	}
+	if (ft_strcmp((st_pipes->args)[0], "exit") == 0)
 		kill(0, SIGQUIT);
-	if (ft_strcmp(arg[0], "env") == 0 && (rtn = 1))
-		ft_buil_env(&arg[1], env);
-	if (ft_strcmp(arg[0], "setenv") == 0 && (rtn = 1))
-		ft_buil_setenv(&arg[1], env, ft_strrlen(&arg[1]));
-	if (ft_strcmp(arg[0], "unsetenv") == 0 && (rtn = 1))
-		ft_buil_unsetenv(arg[1], env);
-	if (ft_strcmp(arg[0], "echo") == 0 && (rtn = 1))
-		ft_buil_echo(arg, *env);
-	if (ft_strcmp(arg[0], "cd") == 0 && (rtn = 1))
-		ft_buil_cd(&arg[1], env);
+	if (ft_strcmp((st_pipes->args)[0], "env") == 0 && (rtn = 1))
+		ft_buil_env(&(st_pipes->args)[1], env);
+	if (ft_strcmp((st_pipes->args)[0], "setenv") == 0 && (rtn = 1))
+		ft_buil_setenv(&(st_pipes->args)[1], env, ft_strrlen(&(st_pipes->args)[1]));
+	if (ft_strcmp((st_pipes->args)[0], "unsetenv") == 0 && (rtn = 1))
+		ft_buil_unsetenv(st_pipes->args[1], env);
+	if (ft_strcmp((st_pipes->args)[0], "cd") == 0 && (rtn = 1))
+		ft_buil_cd(&(st_pipes->args)[1], env);
+	return (rtn);
+}
+
+///*** Check if Command builtens
+int			ft_check_built(char *arg)
+{
+	int		rtn;
+
+	rtn = 0;
+	if (arg == NULL)
+		return (-1);
+	if (!ft_strcmp(arg, "exit") || !ft_strcmp(arg, "env"))
+		rtn++;
+	else if (!ft_strcmp(arg, "setenv") || !ft_strcmp(arg, "unsetenv"))
+		rtn++;
+	else if (!ft_strcmp(arg, "cd"))
+		rtn++;
 	return (rtn);
 }
 

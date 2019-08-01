@@ -248,9 +248,10 @@ typedef struct			s_pipes
 //
 
 ///*** Execution
-	int			ft_cmd_exec(char **args, char **env);
+	int			ft_cmd_exec(t_pipes *st_pipes, char **env);
 	void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env);
-	int			ft_check_built(char **arg, char ***env);
+	int			ft_check_built(char *arg);
+	int			ft_call_built(t_pipes *st_pipes, char ***env);
 	int			ft_call_cmdss(char *str_arg, char ***environ);
 //
 
