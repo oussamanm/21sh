@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "21sh.h"
+#include "read_line.h"
 
 /*
 ** Function Execution
@@ -102,7 +103,11 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 		exit(0);
 	}
 	if (pid > 0)
+	{
+		g_sign = 0;
 		wait(NULL);
+		g_sign = 1;
+	}
 }
 
 ///*** Call Builtens (close fds of redirection)

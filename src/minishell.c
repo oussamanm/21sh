@@ -11,32 +11,11 @@
 /* ************************************************************************** */
 
 #include "21sh.h"
-#include "../includes/termcap.h"
+#include "read_line.h"
 
 /*
 ** Initiale terminle attr , fill struct info and call function Read
 */
-char		*set_line(int sig, char **env)
-{
-	static struct s_termcap	info;
-
-	if (sig)
-		ft_init_signal(sig, &info);
-	else
-	{
-		disable_term();
-		//if (get_col_pos() > 1)
-		//	ft_putchar('\n');
-		set_info_termcap(&info, get_prompt());
-		ft_putstr(info.prompt);
-		read_input(0, &info, env);
-		enable_term();
-		ft_putchar('\n');
-		ft_strdel(&(info.prompt));
-		return(info.content);
-	}
-	return (NULL);
-}
 
 char		*get_next_split(char *cmd, char *split)
 {
@@ -106,24 +85,38 @@ int			main(void)
 {
 	extern char	**environ;
 	char		*str_cmds;
+	t_history	his;
+	t_select	select;
 	int			i;
 
 	/// Initail error 
-	ft_intia_err("/dev/ttys001");
-	
+	//ft_intia_err("/dev/ttys004");
+	select.start = -1;
+	select.end = -1;
+	select.save = NULL;
+	his.history = ft_alloc_tab();
+	his.his_count = 0;
 	///Initial interface : tgetent
-	if (tgetent(NULL, getenv("TERM")) != 1)
-		ft_err_exit("Error tgetent ,may variable TERM not valid! \n");
+	if (ft_set_termcap() == -1)
+		ft_err_exit("ERROR in seting Temcap");
 	///Call functions signal
 	ft_call_signal();
 	/// Duplicate environ
 	environ = ft_strr_dup(environ, ft_strrlen(environ));
+	his.path = ft_get_vrb("PATH", environ);
 	while (1337)
 	{
 		i = 0;
 		// fill str_arg with command Entred And print prompt
-		if ((str_cmds = set_line(0, environ)) != NULL)
+		ft_putstr("\033[0;32m21sh $>\033[0m ");
+		if ((str_cmds = ft_read_line(&his, &select, 8)) != NULL)
 		{
+			if (ft_strcmp(str_cmds, ""))
+			{	
+				ft_stock_history(his.history, str_cmds, his.his_count);
+				if (his.his_count < MAX_HISTORY)
+					his.his_count++;
+			}
 			/// Check all error ; | redir 
 			if (ft_parse_error(str_cmds))
 			{
@@ -148,6 +141,5 @@ void		exit_shell(char **env)
 {
 	UNUSED(env);
 	//ft_strrdel(env);
-	enable_term();
 	exit(0);
 }
