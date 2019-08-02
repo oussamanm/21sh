@@ -186,12 +186,11 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 		}
 		st_temp = st_temp->next;
 	}
-
 	if (args_pipe != NULL && args_pipe[0] != NULL && args_pipe[1] != NULL) /// exist pipe in cmds
 		ft_apply_pipe(st_pipes, environ);
 	else
 		ft_split_cmd(1, st_pipes, environ);
-
+	ft_clear_cmds(st_pipes);
 	ft_strrdel(args_pipe);
 	return (1);
 }
@@ -225,6 +224,7 @@ void		ft_clear_cmds(t_pipes *st_pipes)
 		/// free st_tokens
 		ft_clear_tokens(st_pipes->st_tokens);
 		st_pipes = st_pipes->next;
-		(st_pipes != NULL) ? free(st_pipes) : NULL;
+		/// free old node
+		free(st_temp);
 	}
 }
