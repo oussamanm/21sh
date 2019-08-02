@@ -11,48 +11,19 @@
 /* ************************************************************************** */
 
 #include "21sh.h"
-#include "termcap.h"
+#include "read_line.h"
 
-static void	ft_handler_ctlc()
+void	ft_catch_signal(int signal)
 {
-    ft_init_signal(SIGINT, NULL);
-}
-
-static void	ft_handler_quit()
-{
-	ft_init_signal(SIGQUIT, NULL);
+	signal = 0;
+	if (!g_sign)
+		ft_putstr("\n\033[0;32m21sh $>\033[0m ");
+	else
+		ft_putchar('\n');
 }
 
 void ft_call_signal()
 {
-	signal(SIGINT, ft_handler_ctlc);
-	signal(SIGQUIT, ft_handler_quit);
-}
-
-void    ft_apply_handler(int sig, struct s_termcap *info)
-{
-    UNUSED(info);
-    if (sig == SIGINT)
-        ft_putstr("\n$> ");
-    if (sig == SIGQUIT)
-    {
-        enable_term();
-	    ft_putstr("exit\n");
-	    exit(0);
-    }
-}
-
-/// Initial Signals : (sig = 0)->initial pointer (else)->apply handler
-void    ft_init_signal(int sig, struct s_termcap *info)
-{
-    static struct s_termcap	*ptr;
-
-    if (sig == 0)
-    {
-        ptr = info;
-    }
-    else
-    {
-        ft_apply_handler(sig, ptr);
-    }
+	signal(SIGINT, ft_catch_signal);
+    signal(SIGWINCH, ft_win_change);
 }

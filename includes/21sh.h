@@ -37,7 +37,6 @@ int fd_err;
 	# define M_CC (arg[i][ft_strlen(arg[i])-1]==34||arg[i][ft_strlen(arg[i])-1]==39)
 	# define M_CHECK_W(C)(C==32||C==9||C==11||C==10||C==13||C==12)
 	# define M_REDIR(C) (C == '>' || C == '<')
-	# define TAB(x)  (*src)[x]
 	# define STR(x)  (*str)[x]
 	# define CHECK_TOKEN(t, a, b, c) (t == a || t == b || t == c)
 	# define FLAG_TYPE(x)((x == 0) ? O_RDONLY : ((x == 1) ? O_WRONLY : (O_APPEND | O_WRONLY)))
@@ -217,6 +216,7 @@ typedef struct			s_pipes
 ///*** Signals
 	void 				ft_call_signal();
 	void				ft_call_handler();
+
 //
 
 ///*** Dimention
@@ -254,14 +254,6 @@ typedef struct			s_pipes
 	int			ft_check_built(char *arg);
 	int			ft_call_built(t_pipes *st_pipes, char ***env);
 	int			ft_call_cmdss(char *str_arg, char ***environ);
-//
-
-/*
-**	termacp
-*/
-
-char			*get_prompt(void);
-int				get_col_pos(void);
 
 //
 
