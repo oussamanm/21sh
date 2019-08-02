@@ -86,6 +86,7 @@ int fd_err;
 	# define T_RED_OUT_A	-100
 	# define T_RED_OUT_B	-145
 	# define T_RED_APP_S	-124
+	# define T_RED_APP_A	-162
 	# define T_RED_APP_M	-169
 	# define T_RED_HER_D	-120
 	# define T_RED_BOTH		-122
@@ -170,7 +171,7 @@ typedef struct			s_pipes
 	void				ft_buil_cd(char **arg, char ***env);
 	void				ft_builtenv_cmd(char **args, char ***env);
 	void				ft_buil_env(char **args, char ***env);
-	void				ft_buil_setenv(char **args, char ***env, int len_args);
+	void				ft_buil_setenv(char **args, char ***env);
 	void				ft_buil_unsetenv(char *arg, char ***env);
 	int					ft_print_var(char *arg, char **env);
 	char				*getpwd(void);

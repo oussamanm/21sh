@@ -22,17 +22,10 @@ void		ft_buil_echo(char **arg, char **env)
 	UNUSED(env);
 	while (arg[++i] != NULL)
 	{
-		(j != 0) ? ft_putchar(' ') : NULL;
+		(i != 1) ? ft_putchar(' ') : NULL;
 		j = 0;
 		while (arg[i][j] != '\0')
 		{
-			//if (arg[i][j] == '$' && arg[i][j + 1] != '$' &&
-			//		arg[i][j + 1] != '\0')
-			//	j += ft_print_var(&arg[i][j + 1], env);
-			//if (j == 0 && arg[i][0] == '~' &&
-			//		(arg[i][1] == 47 || arg[i][1] == '\0') && ++j)
-			//	ft_print_var("HOME", env);
-			//else
 			if (arg[i][j] == '\\' && ++j)
 				continue ;
 			ft_putchar(arg[i][j++]);

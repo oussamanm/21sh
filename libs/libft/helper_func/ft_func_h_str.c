@@ -91,5 +91,5 @@ int		ft_str_alphanum(char *str)
 
 int		ft_isalphanum(char c) /// check condi . and /
 {
-	return (ft_isalpha(c) || ft_isalnum(c) || c == '_' || c == '.' || c == '/');
+	return (ft_isalpha(c) || ft_isalnum(c) || c == '_' || c == '.' || c == '/' || c == '~');
 }

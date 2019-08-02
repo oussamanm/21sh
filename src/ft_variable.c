@@ -59,10 +59,12 @@ void		ft_add_vrb(char *arg, char ***env)
 	char	**environ;
 	int		len;
 
-	if (env == NULL || (env && *env == NULL) || arg == NULL)
+	if (env == NULL || *env == NULL || arg == NULL)
 		return ;
 	len = ft_strrlen(*env);
-	environ = ft_strr_dup(*env, len + 1);
+	if ((environ = ft_strr_dup(*env, len + 1)) == NULL)
+		if (len == 0)
+			environ = ft_strr_new(1);
 	if (ft_find_char(arg, '=') > 0)
 		environ[len] = ft_strdup(arg);
 	ft_strrdel(*env);
@@ -87,11 +89,11 @@ void		ft_set_vrb(char *vrb, char ***env, int rm)
 		{
 			ft_strdel(&temp[i]);
 			temp[i] = ft_strdup(vrb);
-			i = -1;
+			i = -2;
 			break ;
 		}
 	}
-	if (i != -1)
+	if (i != -2)
 		ft_add_vrb(vrb, env);
 	(rm == 1) ? ft_strdel(&vrb) : NULL;
 }

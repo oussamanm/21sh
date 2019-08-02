@@ -44,12 +44,13 @@ void	ft_rm_quot(char **str)
 	}
 }
 ////*** Function to Change sub_string with string
-char	*ft_str_remp(char *str, char *remp, int start, int len, int free)
+char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 {
 	char *rtn;
 	int i;
 	int len_remp;
-
+	if (remp == NULL || str == NULL)
+		return NULL;
 	len_remp = ft_strlen(remp);
 	i = len_remp - len;
 	i = (i <= 0) ? 0 : i;
@@ -57,15 +58,15 @@ char	*ft_str_remp(char *str, char *remp, int start, int len, int free)
 	ft_memcpy(rtn, str, start);
 	ft_memcpy(&rtn[start],remp, len_remp);
 	ft_strcpy(&rtn[start + len_remp], &str[start + len + 1]);
-	if (free == 1 || free == 3)
+	if (rm == 1 || rm == 3)
 		ft_strdel(&str);
-	if (free == 2 || free == 3)
+	if (rm == 2 || rm == 3)
 		ft_strdel(&remp);
 	return (rtn);
 }
 
 ////*** Swap Variable with value
-char	*ft_swap_vrb(char *arg, int j, char **environ)
+char	*ft_swap_vrb(char *arg, int index, char **environ)
 {
 	int i;
 	int index_vrb;
@@ -75,10 +76,10 @@ char	*ft_swap_vrb(char *arg, int j, char **environ)
 	if (arg == NULL || !(*arg))
 		return NULL;
 	i = 0;
-	index_vrb = j + 1;
-	while (arg[++j])
+	index_vrb = index + 1;
+	while (arg[++index])
 	{
-		if (!ft_isalphanum(arg[j]))
+		if (!ft_isalphanum(arg[index]))
 			break ;
 		i++;
 	}
@@ -92,30 +93,24 @@ char	*ft_swap_vrb(char *arg, int j, char **environ)
 	return (temp);
 }
 
-void	ft_corr_args(char **argv, char **environ)
+////*** Correction cmd_line by change expansions
+void	ft_corr_args(char **str_cmds, char **environ)
 {
 	int i;
-	int j;
-	int quoted;
+	char *cmd;
 
 	i = 0;
-	if (*argv == NULL)
+	if (*str_cmds == NULL)
 		return ;
-	while (argv[i] != NULL)
+	cmd = *str_cmds;
+	while (cmd[i])
 	{
-		quoted = 0;
-		j = -1;
-		//if ((quoted = ft_check_charr(argv[i], (int[]){34, 39, -1}, 0)))
-		//	ft_rm_quot(&(argv[i]));
-		while (argv[i][++j])
-		{
-			if (argv[i][j] == '\\')
-				continue ;
-			if (argv[i][j] == '$' && M_CHECK(quoted, 0 , 34) && argv[i][j + 1])
-				argv[i] = ft_swap_vrb(argv[i], j, environ);
-			else if (argv[i][j] == '~' && !quoted)
-				argv[i] = ft_str_remp(argv[i], ft_get_vrb("HOME" , environ), j, 1, 3);
-		}
+		if (cmd[i] == '\'')
+			i += ft_find_char(&cmd[i + 1], cmd[i]);
+		if (cmd[i] == '$' && cmd[i + 1])
+			*str_cmds = ft_swap_vrb(cmd, i, environ);
+		if (cmd[i] == '~' && cmd[i + 1] && cmd[i + 1] == '/')
+			cmd = ft_str_remp(cmd, ft_get_vrb("HOME" , environ), i, 1, 3);
 		i++;
 	}
 }

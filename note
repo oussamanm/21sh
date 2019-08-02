@@ -100,3 +100,10 @@ If the digits in word do not specify a file descriptor open for output, a redire
 
 
 Open file for reading and writing on standard input (or n).
+
+
+
+
+
+echo llo &>> mok
+ls -la 1>&-

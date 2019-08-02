@@ -16,12 +16,31 @@
 ** Function Execution
 */
 
+
+///*** Check redirection
+int			ft_check_redi(t_pipes *st_pipes)
+{
+	t_tokens *st_temp;
+
+	if (st_pipes == NULL || st_pipes->st_tokens == NULL)
+		return (-1);
+	st_temp = st_pipes->st_tokens;
+	while (st_temp)
+	{
+		if (st_temp->token < 0)
+			return (1);
+		st_temp = st_temp->next;
+	}
+	return (0);
+}
+
 ///*** Execute Command 
 int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 {
 	char	*str_arg;
 
 	str_arg = NULL;
+	/// Check Error : perm , no sush , ...
 	if (!ft_check_char(st_pipes->args[0], '/'))
 		str_arg = ft_find_path((st_pipes->args)[0], env);
 	else
@@ -32,14 +51,14 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 		else if (str_arg && access(str_arg, X_OK) != 0)
 			ft_print_error(FIL_PD, NULL, str_arg, 2);
 	}
-	if (!(ft_parse_cmd(st_pipes) == PARSE_KO))
+	if (ft_check_redi(st_pipes)) /// Check if exist redirection
+		if (ft_parse_cmd(st_pipes) == PARSE_KO)
+			return (-1);
+	if (str_arg != NULL)
 	{
-		if (str_arg != NULL)
-		{
-			execve(str_arg, st_pipes->args, env);
-			ft_strdel(&str_arg);
-			exit (0);
-		}
+		execve(str_arg, st_pipes->args, env);
+		ft_strdel(&str_arg);
+		exit (0);
 	}
 	return (-1);
 }
@@ -58,6 +77,8 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 		/// Save STD_*
 		while (++i < 3)
 			tmp[i] = dup(i);
+		if (ft_parse_cmd(st_pipes) == PARSE_KO)
+			exit(0);
 		/// Call builtens
 		if (ft_call_built(st_pipes, env) == REDI_KO)
 			return ;
@@ -68,13 +89,12 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 				ft_putendl_fd("Error in dup or close \n", 2); // Dont exit
 		return ;
 	}
+
 	/// Create new Child process
 	if (fork_it == 1 && (pid = fork()) == -1)
 		ft_err_exit("Error in Fork new process \n");
 	if (pid == 0)
 	{
-		if (ft_parse_cmd(st_pipes) == PARSE_KO)
-			exit(0);
 		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// builten ECHO (executed in child)
 			ft_buil_echo(st_pipes->args, *env);
 		else
@@ -109,7 +129,7 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 	if (ft_strcmp((st_pipes->args)[0], "env") == 0 && (rtn = 1))
 		ft_buil_env(&(st_pipes->args)[1], env);
 	if (ft_strcmp((st_pipes->args)[0], "setenv") == 0 && (rtn = 1))
-		ft_buil_setenv(&(st_pipes->args)[1], env, ft_strrlen(&(st_pipes->args)[1]));
+		ft_buil_setenv(&(st_pipes->args)[1], env);
 	if (ft_strcmp((st_pipes->args)[0], "unsetenv") == 0 && (rtn = 1))
 		ft_buil_unsetenv(st_pipes->args[1], env);
 	if (ft_strcmp((st_pipes->args)[0], "cd") == 0 && (rtn = 1))
@@ -141,6 +161,8 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 	t_pipes		*st_pipes;
 	t_pipes		*st_temp;
 	
+	if (str_arg == NULL)
+		return (-1);
 	/// Split with PIPE |
 	args_pipe = ft_str_split_q(str_arg, "|");
 
@@ -151,6 +173,7 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 	{
 		/// split cmd with whitespace
 		st_temp->args = ft_str_split_q(st_temp->cmd, " ");
+	
 		// Call Lexer and return list of tokens
 		st_temp->st_tokens = ft_lexer(st_temp->args);
 

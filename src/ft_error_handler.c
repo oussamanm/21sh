@@ -25,10 +25,16 @@ void		ft_err_exit(char *str)
 	exit(0);
 }
 
-int		ft_error_separ(char *str_arg, char c) /// return 1 : error
+int			ft_error_separ(char *str_arg, char c) /// return 1 : error
 {
 	int	temp;
+	//char **args;
 
+	/*if ((args = ft_str_split_q(str_arg, " ;")) == NULL || args[0] == NULL)
+	{
+		ft_strrdel(args);
+		return (1);
+	}*/
 	temp = 0;
 	while (*str_arg)
 	{
@@ -37,8 +43,8 @@ int		ft_error_separ(char *str_arg, char c) /// return 1 : error
 			if (temp)
 				return (1);
 			str_arg++;
-			continue ;
 			temp = 1;
+			continue ;
 		}
 		if (temp == 1 && (*str_arg == ' ' || *str_arg == '\t'))
 		{
@@ -49,40 +55,10 @@ int		ft_error_separ(char *str_arg, char c) /// return 1 : error
 			temp = 0;
 		str_arg++;
 	}
+	//ft_strrdel(args);
 	return (0);
 }
 
-/*
-int		ft_error_redir(char *str_arg)
-{
-	int i;
-	int quote;
-	int temp;
-	
-	quote = 0;
-	if (!str_arg)
-		return (1);
-	i = -1;
-	while (str_arg[++i])
-	{
-		if (str_arg[i] == '\'' || str_arg[i] == '"') /// in case of quote escape it
-			if ((temp = ft_find_char(&str_arg[i + 1], str_arg[i])) != -1)
-				i += temp;
-		temp = 0;
-		if (str_arg[i] == '>' || str_arg[i] == '<')
-		{
-			if (str_arg[i + 1] == str_arg[i] && ++temp)
-				i++;
-			while (str_arg[i] != '\0' && ft_isspace(str_arg[i])) /// escape whitespaces
-				i++;
-			if (!ft_isalphanum(str_arg[i]))
-				return (1);
-			if (!ft_isprint(str_arg[i]))
-				return (1);
-		}
-	}
-}
-*/
 void	ft_print_error(char *msg, char *para1, char *para2, int rm)
 {
 	if (msg == NULL)

@@ -55,6 +55,19 @@ int			ft_isalldigit(char *str)
 	return (1);
 }
 
+int			ft_isallalphanum(char *str)
+{
+	if (str == NULL)
+		return (0);
+	while (*str != '\0')
+	{
+		if (!ft_isalphanum(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
 int			ft_isallprint(char *str)
 {
 	if (str == NULL)
@@ -134,7 +147,7 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 			if ((arg[i + 1] == arg[i] /*|| arg[i + 1] == '<'*/) && ++i) /// Redirection >> OR Here doc	<<
 				str[k++] = arg[i];
 		}
-		else if (arg[i] == '-' && k == 2) // Check dash if in pos 2 " >>- || >&- "
+		else if (arg[i] == '-' && k == 2 && str[1] == '&') // Check dash if in pos 2 " >>- || >&- "
 			str[k++] = '-';
 		else if (i-- || 1)
 			break ;
@@ -152,7 +165,7 @@ void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
 	i = 0;
 	while (arg[i] != '\0')
 	{
-		if (arg[i + 1] == ' ' || arg[i + 1] == '\t' || arg[i + 1] == '\0' || !ft_isalphanum(arg[i + 1]))
+		if (arg[i + 1] == ' ' || arg[i + 1] == '\t' || arg[i + 1] == '\0' || arg[i + 1] == '&' || arg[i + 1] == '|')
 		{
 			temp = ft_strsub(arg, 0, i + 1);
 			ft_fill_token(st_tokens, T_TXT, temp, indx);
@@ -187,7 +200,7 @@ t_tokens	*ft_lexer(char **args)
 				ft_lexer_red(&st_tokens, &arg[j], &j, i);
 			else if (arg[j] == '>' || arg[j] == '<')					// Redirection
 				ft_lexer_red(&st_tokens, &arg[j], &j, i);
-			else if (st_tokens->prev != NULL && st_tokens->prev->token == T_RED_OUT_A && arg[j] == '-')
+			else if (st_tokens->prev != NULL && st_tokens->prev->token == T_RED_OUT_A && arg[j] == '-' && j != 0 && arg[j - 1] == '&') // append - to redirection if separated execpt (&>-)
 				ft_upd_token(st_tokens->prev, T_RED_OUT_B, ">&-");
 			else
 				ft_lexer_txt(&st_tokens, &arg[j], &j, i);				// Text
@@ -202,7 +215,7 @@ t_tokens	*ft_lexer(char **args)
 		st_tokens = st_head;
 		while (st_tokens != NULL)
 		{
-			printf("Token = <%d> : %s\n",st_tokens->token,st_tokens->value);
+			printf("Token = <%d> : %s : is_arg = %d\n",st_tokens->token,st_tokens->value,st_tokens->is_arg);
 			st_tokens = st_tokens->next;
 		}
 		printf("\n--------------\n");
@@ -395,6 +408,17 @@ void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
 		st_redir->fd_file = st_tokens->next->value;
 		st_tokens->next->is_arg = 1;
 	}
+	else if (st_tokens->token == T_RED_APP_A)
+	{
+		st_redir->fd_red = 1;
+		st_redir->fd_err = 2;
+		if (st_tokens->next && st_tokens->next->value && ft_isallalphanum(st_tokens->next->value))
+		{
+			st_redir->fd_des = -2;
+			st_redir->fd_file = st_tokens->next->value;
+			st_tokens->next->is_arg = 1;
+		}
+	}
 }
 
 void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
@@ -457,7 +481,7 @@ void	ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 				ft_redi_out(st_redir, st_tokens);
 			else if (CHECK_TOKEN(st_tokens->token, T_RED_IN_S, T_RED_IN_A, T_RED_IN_B))	/// IN_PUT
 				ft_redi_in(st_redir, st_tokens);
-			else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, 0))		/// APPEND
+			else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, T_RED_APP_A))		/// APPEND
 				ft_redi_app(st_redir, st_tokens);
 			else if (st_tokens->token == T_RED_BOTH)									/// <>
 				ft_redi_both(st_redir, st_tokens);
@@ -541,9 +565,11 @@ void	ft_update_args(t_pipes *st_pipes)
 			count++;
 		st_temp = st_temp->next;
 	}
+
 	st_temp = st_pipes->st_tokens;
 	ft_strrdel(st_pipes->args);
 	st_pipes->args = ft_strr_new(count);
+
 	while (st_temp != NULL && st_temp->value != NULL)
 	{
 		if (!(st_temp->token < 0 || st_temp->is_arg == 1))
@@ -557,14 +583,17 @@ int		ft_error_redir(t_tokens *st_tokens)
 {
 	while (st_tokens != NULL)
 	{
-		/// & after redir
+		if (st_tokens->token == -124 && st_tokens->next && st_tokens->next->token == T_TXT)
+			if (st_tokens->next->indx != st_tokens->indx && st_tokens->next->next && st_tokens->next->next->token < 0)
+				return (ft_putendl_fd("syntax error near unexpected token 'st_tokens->next->token'", 2));
+		/// >>> || <<<
 		if (st_tokens->token < -169)
 			return (ft_putendl_fd("syntax error near unexpected token ", 2));
 		/// & after redir
 		if (st_tokens->token < 0 && ft_check_char(st_tokens->value, ERRO_IN_AND))
 			return (ft_putendl_fd("syntax error near unexpected token `&'", 2));
 		/// error token redi || null after Redirection
-		if (st_tokens->token < 0 && (st_tokens->next == NULL || st_tokens->next->token < 0))
+		if (st_tokens->token < 0 && (st_tokens->next == NULL || st_tokens->next->token < 0) && st_tokens->token != -145 && st_tokens->token != -143) /// check arg after redi !(execpt >&- , <&-)
 			return (ft_putendl_fd("syntax error near unexpected token `last token'", 2));
 		/// error ><
 		if (st_tokens->token <= -122 && ft_strncmp(st_tokens->value, "><", 2) == 0)
@@ -585,6 +614,7 @@ int	ft_parse_cmd(t_pipes *st_pipes)
 {
 	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_pipes->st_tokens);
+	
 	/*
 		t_redir *temp;
 		temp = st_pipes->st_redir;
@@ -600,6 +630,7 @@ int	ft_parse_cmd(t_pipes *st_pipes)
 		}
 	*/
 	// Apply Redirection
+
 	if (ft_apply_redi(st_pipes) == REDI_KO)
 		return (PARSE_KO);
 

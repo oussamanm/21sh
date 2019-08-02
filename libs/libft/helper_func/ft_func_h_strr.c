@@ -104,4 +104,5 @@ void		ft_strrdel(char **str)
 		i++;
 	}
 	free(str);
+	str = NULL;
 }

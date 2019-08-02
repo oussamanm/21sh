@@ -12,60 +12,28 @@
 
 #include "21sh.h"
 
-void		ft_builtenv_cmd(char **args, char ***env)
-{
-	UNUSED(env);
-	int	j;
-
-	j = 0;
-	if (ft_str_alphanum(args[j]) == 0)
-	{
-		if (access(args[j], F_OK) == -1)
-			ft_print_error(FIL_NS, "env: ", args[j], 0);
-		else if (access(args[j], X_OK) == 0)
-		{
-			//if (ft_cmd_exec(&args[j], *env) == -1) /// change ft_call_child  with ft_cmd_exec
-				ft_putstr("Ops there's an error in child process\n");
-		}
-		else
-			ft_print_error(FIL_PD, "env: ", args[j], 0);
-	}
-	else
-	{
-		j = ft_check_built(args[0]);
-		//j = (j == 0) ? ft_cmd_exec(args, *env) : j; /// change ft_call_child  with ft_cmd_exec
-		(j == -1) ? ft_print_error(FIL_NS, "env: ", *args, 0) : NULL;
-	}
-}
-
 void		ft_buil_env(char **args, char ***env)
 {
-	int		j;
-	char	**new_env;
+	int		i;
 
-	if (*env == NULL)
-		return ;
-	j = 0;
-	while (args[j] != NULL && ft_find_char(args[j], '=') > 0)
-		j++;
-	new_env = ft_strr_dup(*env, ft_strrlen(*env));
-	(j != 0) ? ft_buil_setenv(args, &new_env, j) : NULL;
-	if (args[j] != NULL)
-		ft_builtenv_cmd(&args[j], &new_env);
-	if (args[j] == NULL)
-	{
+	i = 0;
+	if (env != NULL && *env != NULL)
 		ft_put_strr(*env);
-		if (j != 0 && !(j = 0))
-			ft_put_strr(new_env);
+	while (args != NULL && args[i] != NULL)
+	{
+		if (ft_find_char(args[i] , '=') > 0)
+			ft_putendl(args[i]);
+		else
+			break ;
+		i++;
 	}
-	ft_strrdel(new_env);
 }
 
-void		ft_buil_setenv(char **args, char ***env, int len_args)
+void		ft_buil_setenv(char **args, char ***env)
 {
-	if (*env == NULL || *args == NULL)
+	if (env == NULL || args == NULL || *args == NULL)
 		return ;
-	while (len_args-- != 0 && *args != NULL)
+	while (*args != NULL)
 	{
 		if (ft_find_char(*args, '=') > 0)
 			ft_set_vrb(*args, env, 0);

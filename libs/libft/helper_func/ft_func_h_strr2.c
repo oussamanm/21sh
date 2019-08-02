@@ -44,11 +44,14 @@ char		**ft_strr_new(int len)
 
 	i = 0;
 	if ((args = (char **)malloc(sizeof(char *) * (len + 1))) == NULL)
+	{
+		ft_putstr("Error in allocation of args\n");
 		exit(0);
-		//("Error in allocation of args\n"); /// should add free
+	}
 	while (i < len)
 	{
 		args[i++] = NULL;
 	}
+	args[i] = NULL;
 	return (args);
 }
