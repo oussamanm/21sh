@@ -28,13 +28,14 @@ void		ft_err_exit(char *str)
 int			ft_error_separ(char *str_arg, char c) /// return 1 : error
 {
 	int	temp;
-	//char **args;
+	char **args;
 
-	/*if ((args = ft_str_split_q(str_arg, " ;")) == NULL || args[0] == NULL)
+	if ((args = ft_str_split_q(str_arg, " ;")) == NULL || args[0] == NULL)
 	{
 		ft_strrdel(args);
 		return (1);
-	}*/
+	}
+	ft_strrdel(args);
 	temp = 0;
 	while (*str_arg)
 	{
@@ -46,16 +47,10 @@ int			ft_error_separ(char *str_arg, char c) /// return 1 : error
 			temp = 1;
 			continue ;
 		}
-		if (temp == 1 && (*str_arg == ' ' || *str_arg == '\t'))
-		{
-			str_arg++;
-			continue ;
-		}
-		else if (temp == 1)
+		if (temp == 1 && *str_arg != ' ' && *str_arg != '\t')
 			temp = 0;
 		str_arg++;
 	}
-	//ft_strrdel(args);
 	return (0);
 }
 
