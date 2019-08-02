@@ -67,12 +67,12 @@ char		**ft_strsplit(char const *s, char c)
 		j = 0;
 	else
 		j = ft_compte(s, c);
-	if (!(fr = (char **)malloc(sizeof(char *) * j + 1)))
+	if (!(fr = (char **)malloc(sizeof(char *) * (j + 1))))
 		return (NULL);
 	i = 0;
 	while (i < j)
 	{
-		if (!(fr[i] = (char *)malloc(sizeof(char) * d + 1)))
+		if (!(fr[i] = (char *)malloc(sizeof(char) * (d + 1))))
 			return (NULL);
 		i++;
 	}

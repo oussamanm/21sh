@@ -58,10 +58,10 @@ char		**ft_strr_dup(char **chaine, int len)
 	char	**new_chaine;
 	int		i;
 
-	if (chaine == NULL || (chaine && *chaine == NULL) || len == 0)
+	if (!chaine || *chaine == NULL || len == 0)
 		return (NULL);
 	i = 0;
-	if ((new_chaine = (char **)malloc(sizeof(char **) * (len + 1))) == NULL)
+	if ((new_chaine = (char **)malloc(sizeof(char *) * (len + 1))) == NULL)
 		return (NULL);
 	while (chaine[i] && chaine[i] != NULL)
 	{

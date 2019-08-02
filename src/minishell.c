@@ -109,7 +109,7 @@ int			main(void)
 	int			i;
 
 	/// Initail error 
-	ft_intia_err("/dev/ttys004");
+	ft_intia_err("/dev/ttys001");
 	
 	///Initial interface : tgetent
 	if (tgetent(NULL, getenv("TERM")) != 1)

@@ -24,6 +24,7 @@
 
 ///////////********* TASKS ********///////////////
 
+
 - Delete quoting before exec cmd
 - ‘<<-’, then all leading tab characters are stripped from input lines and the line containing delimiter.
 - Change variable in here_doc

@@ -167,7 +167,7 @@ typedef struct			s_pipes
 //
 
 ///*** Builtins
-	void				ft_buil_echo(char **arg, char **env);
+	void				ft_buil_echo(char **arg);
 	void				ft_buil_cd(char **arg, char ***env);
 	void				ft_builtenv_cmd(char **args, char ***env);
 	void				ft_buil_env(char **args, char ***env);

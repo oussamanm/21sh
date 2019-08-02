@@ -12,14 +12,14 @@
 
 #include "21sh.h"
 
-void		ft_buil_echo(char **arg, char **env)
+void		ft_buil_echo(char **arg)
 {
 	int		i;
 	int		j;
 
 	i = 0;
 	j = 0;
-	UNUSED(env);
+
 	while (arg[++i] != NULL)
 	{
 		(i != 1) ? ft_putchar(' ') : NULL;

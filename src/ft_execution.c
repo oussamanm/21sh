@@ -72,13 +72,12 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	
 	pid = 0;
 	i = -1;
-	if (st_pipes != NULL && ft_check_built((st_pipes->args)[0])) /// in case of Builtens
+	///************* in case : Builtens
+	if (st_pipes != NULL && ft_check_built((st_pipes->args)[0]))
 	{
 		/// Save STD_*
 		while (++i < 3)
 			tmp[i] = dup(i);
-		if (ft_parse_cmd(st_pipes) == PARSE_KO)
-			exit(0);
 		/// Call builtens
 		if (ft_call_built(st_pipes, env) == REDI_KO)
 			return ;
@@ -90,13 +89,13 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 		return ;
 	}
 
-	/// Create new Child process
+	///************* in case : cmd , Create new Child process
 	if (fork_it == 1 && (pid = fork()) == -1)
 		ft_err_exit("Error in Fork new process \n");
 	if (pid == 0)
 	{
-		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// builten ECHO (executed in child)
-			ft_buil_echo(st_pipes->args, *env);
+		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// Builten ECHO (executed in child)
+			ft_buil_echo(st_pipes->args);
 		else
 			if (ft_cmd_exec(st_pipes, *env) == -1)							/// Execute cmd
 				ft_print_error(CMD_NF, "21sh: ", (st_pipes->args)[0], 0);	/// Command not found
@@ -115,8 +114,9 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 	if (st_pipes == NULL || st_pipes->args == NULL)
 		return (-1);
 	/// Call Parser : to  read token and fill st_redi
-	if (ft_parse_cmd(st_pipes) == PARSE_KO)
-		return (REDI_KO);
+	if (ft_check_redi(st_pipes)) /// Check if exist redirection
+		if (ft_parse_cmd(st_pipes) == PARSE_KO)
+			return (REDI_KO);
 	/// Close all fds opned
 	while (st_pipes->st_redir != NULL)
 	{
@@ -125,7 +125,11 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 		st_pipes->st_redir = st_pipes->st_redir->next;
 	}
 	if (ft_strcmp((st_pipes->args)[0], "exit") == 0)
+	{
+		ft_strrdel(*env);
+		ft_clear_cmds(st_pipes);
 		kill(0, SIGQUIT);
+	}
 	if (ft_strcmp((st_pipes->args)[0], "env") == 0 && (rtn = 1))
 		ft_buil_env(&(st_pipes->args)[1], env);
 	if (ft_strcmp((st_pipes->args)[0], "setenv") == 0 && (rtn = 1))
@@ -165,9 +169,9 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 		return (-1);
 	/// Split with PIPE |
 	args_pipe = ft_str_split_q(str_arg, "|");
-
 	/// Fill list st_pipes
 	st_pipes = ft_strr_list(args_pipe);
+	(args_pipe) ? free(args_pipe) : NULL;
 	st_temp = st_pipes;
 	while (st_temp)
 	{
@@ -186,12 +190,11 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 		}
 		st_temp = st_temp->next;
 	}
-	if (args_pipe != NULL && args_pipe[0] != NULL && args_pipe[1] != NULL) /// exist pipe in cmds
+	if (st_pipes->args != NULL && st_pipes->args[0] != NULL && st_pipes->args[1] != NULL) /// exist pipe in cmds
 		ft_apply_pipe(st_pipes, environ);
 	else
 		ft_split_cmd(1, st_pipes, environ);
 	ft_clear_cmds(st_pipes);
-	ft_strrdel(args_pipe);
 	return (1);
 }
 

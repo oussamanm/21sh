@@ -13,11 +13,12 @@
 #include "21sh.h"
 
 ///*** Check if quote isn't correct
-int			ft_check_quot(char *str)
+/*char		*ft_check_quot(char *str)
 {
 	int i;
 	int temp;
 	int quote;
+	char *str_read;
 
 	i = 0;
 	quote = 0;
@@ -31,16 +32,20 @@ int			ft_check_quot(char *str)
 		{
 			if ((temp = ft_find_char(&str[i + 1], quote)) != -1)
 			{
-				i += temp;
+				i += (temp + 1);
 				quote = 0;
 			}
 			else
-				return (quote);
+			{
+				ft_putstr("\n ==> ");
+				str_read = ft_read_quot(quote)
+				return (str);
+			}
 		}
 		i++;
 	}
-	return (1);
-}
+	return (str);
+}*/
 
 ///*** Split with quoting
 char			**ft_str_split_q(char *str, char *c)
@@ -72,7 +77,7 @@ char			**ft_str_split_q(char *str, char *c)
 
 
 ////****** Splite string with string : Hamza
-int	ft_index_of_first_split(char *s1, char *s2)
+int			ft_index_of_first_split(char *s1, char *s2)
 {
 	int i;
 	int quote;
