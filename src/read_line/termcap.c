@@ -20,9 +20,7 @@ int		my_outc(int c)
 
 int		ft_set_termcap()
 {
-	char *term_name;
 	struct termios term;
-	int retval;
 
 	if (tgetent(NULL, getenv("TERM")) != 1)
 		return (-1);

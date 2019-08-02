@@ -87,7 +87,6 @@ int			main(void)
 	char		*str_cmds;
 	t_history	his;
 	t_select	select;
-	int			i;
 
 	/// Initail error 
 	//ft_intia_err("/dev/ttys004");
@@ -96,19 +95,22 @@ int			main(void)
 	select.save = NULL;
 	his.history = ft_alloc_tab();
 	his.his_count = 0;
+
 	///Initial interface : tgetent
 	if (ft_set_termcap() == -1)
 		ft_err_exit("ERROR in seting Temcap");
+
 	///Call functions signal
 	ft_call_signal();
+
 	/// Duplicate environ
 	environ = ft_strr_dup(environ, ft_strrlen(environ));
 	his.path = ft_get_vrb("PATH", environ);
+
 	while (1337)
 	{
-		i = 0;
-		// fill str_arg with command Entred And print prompt
 		ft_putstr("\033[0;32m21sh $>\033[0m ");
+		// fill str_arg with command Entred And print prompt
 		if ((str_cmds = ft_read_line(&his, &select, 8)) != NULL)
 		{
 			if (ft_strcmp(str_cmds, ""))
@@ -126,9 +128,9 @@ int			main(void)
 			}
 			/// Correction args : Expansions + Correct Quoting
 			str_cmds = ft_corr_args(str_cmds, environ);
-			/*
+			
 			///  Splite line entred with {;,&&,||,&} and Execute cmds
-			//ft_parser(str_cmds, ";", &environ);*/
+			//ft_parser(str_cmds, ";", &environ);
 			ft_call_cmdss(str_cmds, &environ);
 			ft_strdel(&str_cmds);
 		}
