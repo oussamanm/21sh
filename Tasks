@@ -31,5 +31,6 @@
 
 ******* To check
 
+- variable inside value of variable (incres i)
 cat <<eof1; cat <<eof2
 

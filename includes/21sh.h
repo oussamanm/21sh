@@ -210,7 +210,7 @@ typedef struct			s_pipes
 
 ///*** Quote
 	void				ft_rm_quot(char **str);
-	void				ft_corr_args(char **argv, char **environ);
+	char				*ft_corr_args(char *argv, char **environ);
 //
 
 

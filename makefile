@@ -44,7 +44,7 @@ $(NAME) :
 	make re -C $(LIBS)/libft/
 	mv $(LIBS)/libft/libft.a $(LIBS)
 	#gcc -c $(FLAG) $(SRC_SELECT) -I $(INCL)
-	gcc -c $(FLAG) $(SRC_21SH) -I $(INCL)
+	gcc -g -c $(FLAG) $(SRC_21SH) -I $(INCL)
 	#gcc -c $(FLAG) ./src/ft_select/*.c -I $(INCL)
 	#gcc -c $(FLAG) ./src/*.c -I $(INCL)
 	

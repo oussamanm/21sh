@@ -38,10 +38,7 @@ int		ft_find_char(char *str, char c)
 	while (str[i] != '\0')
 	{
 		if (str[i] == c)
-		{
-			if (i != 0 && str[i - 1] != '\\')
 			return (i);
-		}
 		i++;
 	}
 	return (-1);
@@ -91,5 +88,5 @@ int		ft_str_alphanum(char *str)
 
 int		ft_isalphanum(char c) /// check condi . and /
 {
-	return (ft_isalpha(c) || ft_isalnum(c) || c == '_' || c == '.' || c == '/' || c == '~');
+	return (ft_isalpha(c) || ft_isalnum(c) || c == '_' || c == '.' || c == '/');
 }

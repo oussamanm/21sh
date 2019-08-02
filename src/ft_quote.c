@@ -47,26 +47,25 @@ void	ft_rm_quot(char **str)
 char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 {
 	char *rtn;
-	int i;
 	int len_remp;
-	if (remp == NULL || str == NULL)
+
+	if (!remp || !str)
 		return NULL;
 	len_remp = ft_strlen(remp);
-	i = len_remp - len;
-	i = (i <= 0) ? 0 : i;
-	rtn = ft_strnew(ft_strlen(str) + i);
-	ft_memcpy(rtn, str, start);
-	ft_memcpy(&rtn[start],remp, len_remp);
-	ft_strcpy(&rtn[start + len_remp], &str[start + len + 1]);
-	if (rm == 1 || rm == 3)
-		ft_strdel(&str);
-	if (rm == 2 || rm == 3)
-		ft_strdel(&remp);
+	rtn = ft_strnew(ft_strlen(str) - len + len_remp);
+	ft_strncpy(rtn, str, start);
+	ft_strncpy(rtn + start, remp, len_remp);
+	ft_strcpy(rtn + start + len_remp, str + start + len);
+	if ((rm == 1 || rm == 3) && str)
+		free(str);
+	if ((rm == 2 || rm == 3) && remp)
+		free(remp);
 	return (rtn);
 }
-
+/*
+*/
 ////*** Swap Variable with value
-char	*ft_swap_vrb(char *arg, int index, char **environ)
+char	*ft_swap_vrb(char *arg, int *index, char **environ)
 {
 	int i;
 	int index_vrb;
@@ -76,41 +75,53 @@ char	*ft_swap_vrb(char *arg, int index, char **environ)
 	if (arg == NULL || !(*arg))
 		return NULL;
 	i = 0;
-	index_vrb = index + 1;
-	while (arg[++index])
+	index_vrb = *index + 1;
+	while (arg[++(*index)])
 	{
-		if (!ft_isalphanum(arg[index]))
+		if (!ft_isalpha(arg[*index]) && ft_isalnum(arg[*index]) && arg[*index] == '_')
 			break ;
 		i++;
 	}
+	/// resete index to $
+	*index -= i;
 	/// Get value of Variable
 	temp = ft_strsub(arg, index_vrb, i);
 	value = ft_get_vrb(temp, environ);
+	if (value == NULL)
+		value = ft_strnew(1);
 	/// Change Vrb with value
 	i = ft_strlen(temp);
+	/// incres i by len of value
+	*index += i;
 	ft_strdel(&temp);
-	temp = ft_str_remp(arg, value, index_vrb - 1, i, 3); /// you can free value inside the func
+	temp = ft_str_remp(arg, value, index_vrb - 1, i + 1, 0); /// you can free value inside the func
+	ft_strdel(&value);
 	return (temp);
 }
 
 ////*** Correction cmd_line by change expansions
-void	ft_corr_args(char **str_cmds, char **environ)
+char 	*ft_corr_args(char *str_cmds, char **environ)
 {
 	int i;
 	char *cmd;
 
 	i = 0;
-	if (*str_cmds == NULL)
-		return ;
-	cmd = *str_cmds;
+	if (str_cmds == NULL)
+		return (NULL);
+	cmd = str_cmds;
 	while (cmd[i])
 	{
 		if (cmd[i] == '\'')
-			i += ft_find_char(&cmd[i + 1], cmd[i]);
+		 	i += ft_find_char(cmd + i + 1, cmd[i]) + 2;
 		if (cmd[i] == '$' && cmd[i + 1])
-			*str_cmds = ft_swap_vrb(cmd, i, environ);
-		if (cmd[i] == '~' && cmd[i + 1] && cmd[i + 1] == '/')
+		{
+			str_cmds = cmd;
+			cmd = ft_swap_vrb(cmd, &i, environ);
+			ft_strdel(&str_cmds);
+		}
+		else if (cmd[i] == '~' && (cmd[i + 1] == '/' || !cmd[i + 1] || ft_isspace(cmd[i + 1])))
 			cmd = ft_str_remp(cmd, ft_get_vrb("HOME" , environ), i, 1, 3);
-		i++;
+		i += cmd[i] != '\0';
 	}
+	return (cmd);
 }

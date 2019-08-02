@@ -109,7 +109,7 @@ int			main(void)
 	int			i;
 
 	/// Initail error 
-	//ft_intia_err("/dev/ttys002");
+	ft_intia_err("/dev/ttys004");
 	
 	///Initial interface : tgetent
 	if (tgetent(NULL, getenv("TERM")) != 1)
@@ -131,13 +131,12 @@ int			main(void)
 				ft_strdel(&str_cmds);
 				continue ;
 			}
-			
 			/// Correction args : Expansions + Correct Quoting
-			ft_corr_args(&str_cmds, environ);
+			str_cmds = ft_corr_args(str_cmds, environ);
 			/*
 			///  Splite line entred with {;,&&,||,&} and Execute cmds
-			//ft_parser(str_cmds, ";", &environ);
-			ft_call_cmdss(str_cmds, &environ);*/
+			//ft_parser(str_cmds, ";", &environ);*/
+			ft_call_cmdss(str_cmds, &environ);
 			ft_strdel(&str_cmds);
 		}
 	}
