@@ -13,6 +13,7 @@
 #ifndef READ_LINE_H
 # define READ_LINE_H
 
+#include "libft.h"
 # include <unistd.h>
 # include <stdio.h>
 # include <sys/wait.h>
@@ -25,7 +26,6 @@
 # include <stdlib.h>
 # include <curses.h>
 # include <sys/ioctl.h>
-# include "libft.h"
 
 # define MAX_HISTORY 20
 
@@ -130,7 +130,7 @@ char			*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s);
 char			*ft_auto_completion(t_cursor *pos, t_history *his, char *s);
 void			ft_save_address(t_history **his, t_select **select);
 void			ft_clear_readline_struct(void);
-
+char			*ft_read_heredoc(char *eol);
 
 #endif
 

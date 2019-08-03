@@ -59,3 +59,63 @@ char    *ft_rm_char(char *str, int index)
     	str = ft_strcpy(&str[index], &str[index + 1]);
     return (str);
 }
+
+int			ft_isalldigit(char *str)
+{
+	if (str == NULL)
+		return (0);
+	while (*str != '\0')
+	{
+		if (!ft_isdigit(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+int			ft_isallalphanum(char *str)
+{
+	if (str == NULL)
+		return (0);
+	while (*str != '\0')
+	{
+		if (!ft_isalphanum(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+int			ft_isallprint(char *str)
+{
+	if (str == NULL)
+		return (0);
+	while (*str != '\0')
+	{
+		if (!ft_isprint(*str))
+			return (0);
+		str++;
+	}
+	return (1);
+}
+
+void		ft_print_error(char *msg, char *para1, char *para2, int rm)
+{
+	if (msg == NULL)
+	{
+		ft_putstr("Opss MSG_ERROR is NULL \n");
+		return ;
+	}
+	if (para1 != NULL)
+		ft_putstr_fd(para1, 2);
+	if (para2 != NULL)
+		ft_putstr_fd(para2, 2);
+	if (para2 != NULL)
+		ft_putstr_fd(": ", 2);
+	ft_putendl_fd(msg, 2);
+	if (rm == 1 || rm == 3)
+		ft_strdel(&para1);
+	if (rm == 2 || rm == 3)
+		ft_strdel(&para2);
+	return ;
+}

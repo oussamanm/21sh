@@ -2,6 +2,11 @@
     "files.associations": {
         "21sh.h": "c",
         "termcap.h": "c",
-        "libft.h": "c"
-    }
+        "libft.h": "c",
+        "stdlib.h": "c",
+        "stdio.h": "c",
+        "dirent.h": "c",
+        "types.h": "c"
+    },
+    "C_Cpp.dimInactiveRegions": false
 }
