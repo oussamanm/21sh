@@ -212,7 +212,7 @@ t_tokens	*ft_lexer(char **args)
 	// free last node // and protect it
 	st_tokens->prev->next = NULL;
 	free(st_tokens);
-	
+	/*
 		st_tokens = st_head;
 		while (st_tokens != NULL)
 		{
@@ -221,7 +221,7 @@ t_tokens	*ft_lexer(char **args)
 		}
 		printf("\n--------------\n");
 	//exit(0);
-	
+	*/
 	return (st_head);
 }
 
