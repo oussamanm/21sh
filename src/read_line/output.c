@@ -33,8 +33,8 @@ void	ft_win_change(int sig)
 	if (pos1.cmd)
 	{
 		pos1.num_col = ft_get_size_windz();
-		ft_move_cursor_zero(pos1);
-		tputs(tgetstr("cd", NULL), 0, my_outc);
+		tputs(tgetstr("cl", NULL), 0, my_outc);
+		ft_putstr("\033[0;32m21sh $>\033[0m ");
 		ft_putstr(pos1.cmd);
 		ft_get_end_of_line_pos(&pos1, pos1.cmd, pos1.num_col);
 		pos1.num_lines = ft_get_num_of_lines(pos1.num_col, pos1.cmd, pos1.p);
@@ -99,11 +99,7 @@ void	ft_print_touch_and_join(t_cursor *pos, char *buf, char **s)
 {
 	int i;
 
-	
 	i = 0;
 	while ((ft_isprint(buf[i]) || buf[i] =='\n') && i < 6)
-	{	
-			*s = ft_putline(buf[i], *s, pos);
-		i++;
-	}
+		*s = ft_putline(buf[i++], *s, pos);
 }

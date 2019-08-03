@@ -30,7 +30,7 @@ char	*ft_read_line(t_history *his, t_select *select, int p)
 
 	ft_initial(&s, p);
 	ft_bzero(buf, 6);
-	g_fd = fopen("/dev/ttys004", "a+");
+	g_fd = fopen("/dev/ttys001", "a+");
 	while ((len = read(0, buf, 6)))
 	{
 		fprintf(g_fd, "key = %d\n", *((int *)buf));
