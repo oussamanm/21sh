@@ -57,7 +57,9 @@ void		ft_buil_unsetenv(char *arg, char ***env)
 	{
 		len_arg = ft_find_char((*env)[i], '=');
 		len_arg = (len_arg == 1) ? 2 : len_arg;
-		if (ft_strncmp(arg, (*env)[i], len_arg - 1) == 0)
+		if (ft_find_char(arg, '=') >= 0)
+			ft_print_error(CMD_NV, "setenv :", arg, 0);
+		else if (ft_strncmp(arg, (*env)[i], len_arg) == 0)
 		{
 			len_env = ft_strrlen(*env);
 			ft_strdel(&((*env)[i]));
