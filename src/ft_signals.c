@@ -16,10 +16,22 @@
 void	ft_catch_signal(int signal)
 {
 	signal = 0;
-	if (!g_sign)
-		ft_putstr("\n\033[0;32m21sh $>\033[0m ");
-	else
+	if (g_sign)
 		ft_putchar('\n');
+	else
+	{
+		ft_putstr("\n\033[0;32m21sh $>\033[0m ");
+		free(pos1.end);
+		if (!(pos1.end = ft_memalloc(sizeof(int) * 20)))
+			return ;
+		pos1.index = 0;
+		pos1.p = 8;
+		pos1.x = 8;
+		pos1.y = 0;
+		pos1.num_col = ft_get_size_windz();
+		ft_strdel(&pos1.cmd);
+		pos1.cmd = ft_strnew(0);
+	}
 }
 
 void ft_call_signal()

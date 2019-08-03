@@ -63,7 +63,6 @@ typedef struct	s_cursor
 	int num_col;
 	int *end;
 	char *cmd;
-	char	**s;
 }				t_cursor;
 
 typedef	struct	s_select
@@ -120,7 +119,7 @@ void			ft_print_with_reverse_mode(char *s, int start, int end, t_cursor *pos);
 void			ft_left_selection(char *s, t_cursor *pos, t_select *select);
 void			ft_remove_selections(t_cursor *pos, t_select *select, char *s);
 char			*ft_delcolomn(char *s, t_cursor *pos);
-void			ft_initial(char **s, int p);
+void			ft_initial(int p);
 void			ft_stock_history(char **history, char *line, int his_count);
 void			ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos);
 char			*ft_line_edd(char *s, t_cursor *pos, char c);

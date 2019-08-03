@@ -42,17 +42,15 @@ void	ft_mmmm(int **d)
 		(*d)[i++] = -1;
 }
 
-void	ft_initial(char **s, int p)
+void	ft_initial(int p)
 {
-	*s = ft_strnew(0);
+	pos1.cmd = ft_strnew(0);
 	pos1.index = 0;
 	pos1.p = p;
 	pos1.x = p;
 	pos1.y = 0;
 	pos1.num_col = ft_get_size_windz();
-	pos1.cmd = NULL;
 	if (!(pos1.end = ft_memalloc(sizeof(int) * 20)))
 		return ;
-	pos1.s = s;
 	ft_mmmm(&pos1.end);
 }
