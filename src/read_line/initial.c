@@ -18,7 +18,8 @@ char	**ft_alloc_tab(void)
 	char **tb;
 
 	i = 0;
-	tb = (char **)malloc(sizeof(char *) * MAX_HISTORY + 1);
+	if (!(tb = (char **)malloc(sizeof(char *) * MAX_HISTORY + 1)))
+		return (NULL);
 	while (i < MAX_HISTORY)
 		tb[i++] = NULL;
 	tb[i] = 0;
@@ -50,7 +51,8 @@ void	ft_initial(char **s, int p)
 	pos1.y = 0;
 	pos1.num_col = ft_get_size_windz();
 	pos1.cmd = NULL;
-	pos1.end = (int *)malloc(sizeof(int) * 20);
+	if (!(pos1.end = ft_memalloc(sizeof(int) * 20)))
+		return ;
 	pos1.s = s;
 	ft_mmmm(&pos1.end);
 }

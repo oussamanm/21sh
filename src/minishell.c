@@ -144,18 +144,13 @@ int			main(void)
 			if (his->his_count < MAX_HISTORY)
 				his->his_count++;
 			/// Check all error ; | redir 
-			if (ft_parse_error(str_cmds))
+			if (!ft_parse_error(str_cmds))
 			{
-				/// print prompt
-				ft_strdel(&str_cmds);
-				continue ;
+				/// Correction args : Expansions + Correct Quoting
+				str_cmds = ft_corr_args(str_cmds, environ);
+				///  Splite line entred with {;,&&,||,&} and Execute cmds
+				ft_call_cmdss(str_cmds, &environ);
 			}
-			/// Correction args : Expansions + Correct Quoting
-			str_cmds = ft_corr_args(str_cmds, environ);
-			
-			///  Splite line entred with {;,&&,||,&} and Execute cmds
-			//ft_parser(str_cmds, ";", &environ);
-			ft_call_cmdss(str_cmds, &environ);
 			ft_strdel(&str_cmds);
 		}
 	}

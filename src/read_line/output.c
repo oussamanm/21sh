@@ -69,14 +69,12 @@ void	ft_putstr_term(int num_col, char *s, t_cursor *pos)
 char	*ft_putline(char c, char *s, t_cursor *pos)
 {
 	char *new;
-	int	num_col;
 	char buff[2];
 
-	num_col = ft_get_size_windz();
 	buff[0] = c;
 	buff[1] = '\0';
 	ft_putchar(buff[0]);
-	if (pos->x == num_col - 1 || c == '\n')
+	if (pos->x == pos->num_col - 1 || c == '\n')
 	{
 		pos->end[pos->y] = pos->x;
 		if (c != '\n')
@@ -91,7 +89,7 @@ char	*ft_putline(char c, char *s, t_cursor *pos)
 	}
 	pos->index++;
 	new = ft_strjoin(s, buff);
-	free(s);
+	ft_strdel(&s);
 	return (new);
 }
 

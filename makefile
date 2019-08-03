@@ -22,7 +22,8 @@ OBJS = ft_built_env.o ft_builtins.o ft_error_handler.o\
 	read_line/reset_position.o\
 	read_line/selection1.o\
 	read_line/selection2.o\
-	read_line/termcap.o
+	read_line/termcap.o\
+	read_line/clear_readline.o
 
 
 FLAG = -Wall -Wextra -Werror 

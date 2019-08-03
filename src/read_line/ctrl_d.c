@@ -16,6 +16,8 @@ void	ft_free_tab(char **tableau)
 {
 	int i;
 
+	if (!tableau)
+		return ;
 	i = 0;
 	while (tableau[i])
 		free(tableau[i++]);
@@ -45,11 +47,11 @@ char	*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s)
 		exit(0);
     }
 	len = ft_strlen(s);
-	pos->num_col = ft_get_size_windz();
 	if (pos->index < len && pos->index >= 0)
 	{
         tputs(tgetstr("cd", NULL), 0, my_outc);
-		new = ft_memalloc(sizeof(char) * len);
+		if (!(new = ft_memalloc(sizeof(char) * len)))
+			return (NULL);
 		ft_strncpy(new, s, pos->index);
 		ft_strcpy(new + pos->index, s + pos->index + 1);
 		ft_putstr_term(pos->num_col, new + pos->index, pos);

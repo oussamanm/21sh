@@ -71,8 +71,10 @@ char	*ft_read_line(t_history *his, t_select *select, int p)
 		pos1.cmd = ft_strdup(s);
 		ft_bzero(buf, 6);
 	}
+	free(pos1.end);
+	ft_strdel(&pos1.cmd);
 	tmp = s;
 	s = ft_strtrim(s);
-	free(tmp);
+	ft_strdel(&tmp);
 	return (s);
 }

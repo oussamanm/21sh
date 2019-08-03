@@ -37,7 +37,8 @@ char	*ft_delcolomn(char *s, t_cursor *pos)
 	pos->num_col = ft_get_size_windz();
 	if (pos->index <= len && pos->index > 0)
 	{
-		new = ft_memalloc(sizeof(char) * len);
+		if (!(new = ft_memalloc(sizeof(char) * len)))
+			return (NULL);
 		ft_strncpy(new, s, pos->index - 1);
 		ft_strcpy(new + pos->index - 1, s + pos->index);
 		ft_move_cursor_fordel(pos);

@@ -63,7 +63,7 @@ typedef struct	s_cursor
 	int num_col;
 	int *end;
 	char *cmd;
-	char **s;
+	char	**s;
 }				t_cursor;
 
 typedef	struct	s_select
@@ -129,6 +129,7 @@ void			ft_move_right(int n);
 char			*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s);
 char			*ft_auto_completion(t_cursor *pos, t_history *his, char *s);
 void			ft_save_address(t_history **his, t_select **select);
+void			ft_clear_readline_struct(void);
 
 
 #endif

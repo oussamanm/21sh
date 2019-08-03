@@ -132,6 +132,7 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 	if (ft_strcmp((st_pipes->args)[0], "exit") == 0)
 	{
 		ft_strrdel(*env);
+		ft_clear_readline_struct();
 		ft_clear_cmds(st_pipes);
 		exit(0);
 	}
