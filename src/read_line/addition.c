@@ -17,7 +17,7 @@ char	*ft_line_edd(char *s, t_cursor *pos, char c)
 	char *new;
 
 	pos->num_col = ft_get_size_windz();
-	new = (char *)malloc(sizeof(char) *  ft_strlen(s) + 2);
+	new = ft_memalloc(sizeof(char) *  ft_strlen(s) + 2);
 	ft_strncpy(new, s, pos->index);
 	new[pos->index] = c;
 	ft_strcpy(new + pos->index + 1, s + pos->index);

@@ -36,10 +36,10 @@ void	ft_stock_history(char **history, char *line, int his_count)
 
 void	ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos)
 {
-	int num_col;
-	int num_lines;
-
-	num_col = ft_get_size_windz();
+	if ((UP == CAST(buf) && his->his_count == 0)
+		|| (DO == CAST(buf) && !his->history[his->his_count + 1]))
+		return ;
+	pos->num_col = ft_get_size_windz();
 	ft_move_cursor_zero(*pos);
 	tputs(tgetstr("cd", NULL), 0, my_outc);
 	if (UP == CAST(buf))
@@ -50,11 +50,11 @@ void	ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos)
 	else
 		his->his_count++;
 	ft_putstr(his->history[his->his_count]);
-	ft_get_end_of_line_pos(pos, his->history[his->his_count], num_col);
-	num_lines = ft_get_num_of_lines(num_col, his->history[his->his_count], pos->p);
+	ft_get_end_of_line_pos(pos, his->history[his->his_count], pos->num_col);
+	pos->num_lines = ft_get_num_of_lines(pos->num_col, his->history[his->his_count], pos->p);
 	pos->index = ft_strlen(his->history[his->his_count]);
-	pos->x = pos->end[num_lines - 1];
-	pos->y = num_lines - 1;
+	pos->x = pos->end[pos->num_lines - 1];
+	pos->y = pos->num_lines - 1;
 	free(*s);
 	*s = ft_strdup(his->history[his->his_count]);
 }

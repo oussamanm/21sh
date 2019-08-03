@@ -12,7 +12,6 @@
 
 #include "read_line.h"
 
-///*** Check if quote isn't correct
 int		ft_check_quot(char *str)
 {
 	int i;
