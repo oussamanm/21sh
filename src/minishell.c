@@ -66,6 +66,8 @@ void		ft_parser(char *cmd, char *split, char ***env)
 
 int			ft_parse_error(char *str_cmds)
 {
+	if (str_cmds == NULL)
+		return (1);
 	/// check ; error
 	if (ft_error_separ(str_cmds, ';'))
 	{
@@ -89,7 +91,7 @@ int			main(void)
 	t_select	select;
 
 	/// Initail error 
-	//ft_intia_err("/dev/ttys004");
+	ft_intia_err("/dev/ttys001");
 	select.start = -1;
 	select.end = -1;
 	select.save = NULL;
@@ -113,12 +115,10 @@ int			main(void)
 		// fill str_arg with command Entred And print prompt
 		if ((str_cmds = ft_read_line(&his, &select, 8)) != NULL)
 		{
-			if (ft_strcmp(str_cmds, ""))
-			{	
-				ft_stock_history(his.history, str_cmds, his.his_count);
-				if (his.his_count < MAX_HISTORY)
-					his.his_count++;
-			}
+			ft_stock_history(his.history, str_cmds, his.his_count);
+			if (his.his_count < MAX_HISTORY)
+				his.his_count++;
+
 			/// Check all error ; | redir 
 			if (ft_parse_error(str_cmds))
 			{

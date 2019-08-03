@@ -104,9 +104,9 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	}
 	if (pid > 0)
 	{
-		g_sign = 0;
-		wait(NULL);
 		g_sign = 1;
+		wait(NULL);
+		g_sign = 0;
 	}
 }
 
@@ -133,7 +133,7 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 	{
 		ft_strrdel(*env);
 		ft_clear_cmds(st_pipes);
-		kill(0, SIGQUIT);
+		exit(0);
 	}
 	if (ft_strcmp((st_pipes->args)[0], "env") == 0 && (rtn = 1))
 		ft_buil_env(&(st_pipes->args)[1], env);
@@ -195,7 +195,7 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 		}
 		st_temp = st_temp->next;
 	}
-	if (st_pipes->args != NULL && st_pipes->args[0] != NULL && st_pipes->args[1] != NULL) /// exist pipe in cmds
+	if (st_pipes != NULL && st_pipes->next != NULL) /// exist pipe in cmds
 		ft_apply_pipe(st_pipes, environ);
 	else
 		ft_split_cmd(1, st_pipes, environ);

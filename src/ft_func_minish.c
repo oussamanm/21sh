@@ -33,10 +33,14 @@ char	*ft_find_path(char *arg, char **env)
 		str_paths[i] = ft_strjoir(str_paths[i], "/", 1);
 		temp = ft_strjoir(str_paths[i], arg, 0);
 		if (access(temp, F_OK) != 0)
+		{
+			ft_strdel(&temp);
 			continue ;
+		}
 		ft_strrdel(str_paths);
 		return (temp);
 	}
+	ft_strdel(&temp);
 	ft_strrdel(str_paths);
 	return (NULL);
 }
@@ -117,30 +121,46 @@ void	edit_str(char **line, char *copy, int pos)
 ** Convert table of string to list
 */
 
+t_pipes		*ft_new_stpipe()
+{
+	t_pipes *st_pipes;
+
+	if ((st_pipes = (t_pipes *)malloc(sizeof(t_pipes))) == NULL)
+		return (NULL);
+	st_pipes->args = NULL;
+	st_pipes->cmd = NULL;
+	ft_bzero(st_pipes->fds, 2);
+	st_pipes->st_redir = NULL;
+	st_pipes->st_tokens = NULL;
+	st_pipes->next = NULL;
+	return (st_pipes);
+}
+
 t_pipes		*ft_strr_list(char **args_pipe)
 {
 	t_pipes *st_pipes;
 	t_pipes *head;
 
+	if (args_pipe == NULL)
+		return (NULL);
 	st_pipes = NULL;
+	head = NULL;
 	while (*args_pipe)
 	{
 		if (st_pipes == NULL)
 		{
-			st_pipes = (t_pipes *)malloc(sizeof(*st_pipes));
+			st_pipes = ft_new_stpipe();
 			head = st_pipes;
 		}
 		st_pipes->cmd = *args_pipe;
 		st_pipes->fds[0] = 0;
-		st_pipes->fds[1] = 1;		
+		st_pipes->fds[1] = 1;
 		args_pipe++;
 		if (*args_pipe != NULL)
 		{
-			st_pipes->next = (t_pipes *)malloc(sizeof(*st_pipes));
+			st_pipes->next = ft_new_stpipe();
 			st_pipes = st_pipes->next;
 		}
-		else
-			st_pipes->next = NULL;
 	}
 	return (head);
 }
