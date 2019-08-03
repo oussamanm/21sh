@@ -18,6 +18,18 @@
 # include <string.h>
 # include <sys/types.h>
 # include <dirent.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+
+//**** Error Msg
+# define FIL_NS "No such file or directory"
+# define FIL_PD "Permission denied"
+# define VRB_IA "Invalid argument"
+# define CMD_NF "Command not found"
+# define CMD_NV "not a valid identifier"
+# define FIL_NU "no such user or named directory: "
+# define FIL_ND "not a directory"
+# define SYN_ER "syntax error" 
 
 typedef	struct		s_list
 {
@@ -25,6 +37,8 @@ typedef	struct		s_list
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
+
+
 int					ft_toupper(int c);
 int					ft_tolower(int c);
 char				*ft_strstr(const char *haystack, const char *needle);
@@ -91,6 +105,10 @@ void				ft_lstprint(t_list *lst);
 char				*ft_nstrdup(const char *s1, size_t n);
 
 int					ft_find_file(char *path, char *file);
+int					ft_check_file(char *file, int mode);
+int					ft_open_file(char *file, int type);
+int		ft_exist_fd(int fd);
+
 int					ft_check_char(char *str, char c);
 int					ft_find_char(char *str, char c);
 int					ft_check_str(const char *src, const char *needle);
@@ -109,7 +127,7 @@ int					ft_put_strr(char **str);
 char				**ft_strr_dup(char **chaine, int len);
 int					ft_strrlen(char **argv);
 void				ft_strrdel(char **str);
-char	**ft_strr_new(int len);
+char				**ft_strr_new(int len);
 char				*ft_strnew_char(size_t size, char c);
 char				*ft_strjoir(char *s1, char *s2, int rm);
 int					ft_isspace(char c);
@@ -119,5 +137,9 @@ char				*ft_rm_char(char *str, int index);
 int		ft_putchar_err(int c);
 int		ft_chrlen(const char *str, char c);
 char	*ft_strfreejoin(char *s1, char *s2);
+int			ft_isalldigit(char *str);
+int			ft_isallalphanum(char *str);
+int			ft_isallprint(char *str);
+void		ft_print_error(char *msg, char *para1, char *para2, int rm);
 
 #endif

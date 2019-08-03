@@ -4,7 +4,8 @@ SRC = ./src/
 OBJS = ft_built_env.o ft_builtins.o ft_error_handler.o\
 	ft_func_minish.o ft_quote.o ft_strsplit.o ft_strsplit_q.o\
 	ft_variable.o minishell.o ft_signals.o\
-	ft_lexer.o ft_pipe.o ft_execution.o\
+	ft_lexer.o ft_pipe.o ft_execution.o ft_parser.o\
+	ft_redirection.o\
 	read_line/addition.o\
 	read_line/auto_completion.o\
 	read_line/copy_paste.o\
@@ -22,7 +23,8 @@ OBJS = ft_built_env.o ft_builtins.o ft_error_handler.o\
 	read_line/reset_position.o\
 	read_line/selection1.o\
 	read_line/selection2.o\
-	read_line/termcap.o
+	read_line/termcap.o\
+	read_line/heredoc_line.o
 
 
 FLAG = -Wall -Wextra -Werror 
@@ -36,9 +38,9 @@ OBJS_21SH = $(addprefix ./src/, $(OBJS))
 all : $(NAME)
 
 $(NAME) : $(LIBFT_PATH)/$(LIBFT) $(OBJS_21SH)
-	@gcc -g $(FLAG) $(OBJS_21SH) -I $(INCL) $(LIBFT_PATH)/$(LIBFT) -o $(NAME) -ltermcap 
+	@gcc -g $(FLAG) $(OBJS_21SH) -I $(INCL) -I $(LIBFT_PATH) $(LIBFT_PATH)/$(LIBFT) -o $(NAME) -ltermcap 
 %.o : %.c
-	@gcc $(FLAG) -I $(INCL) -c $< -o $@
+	@gcc $(FLAG) -I $(INCL) -I $(LIBFT_PATH) -c $< -o $@
 
 $(LIBFT_PATH)/$(LIBFT) :
 	@make -C $(LIBFT_PATH)

@@ -33,3 +33,55 @@ int			ft_find_file(char *path, char *file)
 	closedir(dir);
 	return (0);
 }
+
+int		ft_check_file(char *file, int mode) /// mode == 0 :read || else : write
+{
+	int bl;
+	struct stat st_stat;
+
+	mode = (mode == 0) ? R_OK : W_OK;
+	bl = 0;
+	if (access(file, F_OK) == 0)
+	{
+		if (lstat(file, &st_stat) == 0 && S_ISDIR(st_stat.st_mode) && ++bl)
+			ft_print_error("Is a directory", NULL, file, 0);
+		else if (access(file, mode) != 0 && ++bl)
+			ft_print_error(FIL_PD, NULL, file, 0);
+	}
+	else if (mode == R_OK && ++bl)
+		ft_print_error(FIL_NS, NULL, file, 0);
+	return (bl);
+}
+
+int		ft_open_file(char *file, int type) /// type : rd=0 wr=1  +app=3 rdwr=4
+{
+	int fd;
+	int flag;
+
+	flag = 0;
+	if (file == NULL)
+		return (-1);
+	fd = -1;
+	if (ft_check_file(file, type) == 0)
+	{
+		if (type == 0 || type == 1)
+			flag = type;
+		else if (type == 2)
+			flag = type | O_APPEND;
+		else if (type == 3)
+			flag = O_RDWR;
+		if ((fd = open(file, flag | O_CREAT, 0644)) == -1)
+			ft_putendl_fd("Error in open File ", 2);
+	}
+	return (fd);
+}
+
+int		ft_exist_fd(int fd)
+{
+	if (read(fd, NULL, 0) == -1 && write(fd, NULL, 0) == -1)
+	{
+		ft_print_error("Bad file descriptor", "21sh :", ft_itoa(fd), 2);
+		return (0);
+	}
+	return (1);
+}

@@ -13,7 +13,7 @@
 #ifndef _21SH_H
 # define _21SH_H
 
-# include "../libs/libft/libft.h"
+# include "libft.h"
 # include <sys/types.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -28,6 +28,7 @@
 # include <curses.h>
 
 int fd_err;
+
 
 //**** Helper Macro
 	# define BUFF_SIZE 10
@@ -46,17 +47,7 @@ int fd_err;
 	# define M_DQUOTE 39
 	# define P_TK st_tokens->prev
 	# define ERRO_IN_AND -12
-//
 
-//**** Error Msg
-	# define FIL_NS "No such file or directory"
-	# define FIL_PD "Permission denied"
-	# define VRB_IA "Invalid argument"
-	# define CMD_NF "Command not found"
-	# define CMD_NV "not a valid identifier"
-	# define FIL_NU "no such user or named directory: "
-	# define FIL_ND "not a directory"
-	# define SYN_ER "syntax error" 
 	# define PRINT(x) printf("\n***/in %d/***\n",x);
 	# define DPRINT(x,y) dprintf(fd_err, x,y);
 //
@@ -239,12 +230,24 @@ typedef struct			s_pipes
 	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx);
 	void	ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx);
 	t_tokens	*ft_lexer(char **args);
+//
+
+///*** Redirection
+	void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_apply_hered(t_redir *st_redi);
+
 	int		ft_error_redir(t_tokens *st_tokens);
+	t_redir		*ft_new_redir();
 
 //
 
-///*** Parser Red
-	int		ft_parse_cmd(t_pipes *st_pipes);
+///*** Parser Red; ft_read_tokens,ft_apply_redi,ft_update_args
+	int				ft_parse_cmd(t_pipes *st_pipes);
 	
 //
 
