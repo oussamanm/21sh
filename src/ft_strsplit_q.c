@@ -12,18 +12,18 @@
 
 #include "21sh.h"
 
+
 ///*** Check if quote isn't correct
-/*char		*ft_check_quot(char *str)
+int		ft_check_quot(char *str)
 {
 	int i;
 	int temp;
 	int quote;
-	char *str_read;
 
 	i = 0;
 	quote = 0;
 	if (!str || !*str)
-		return (-1);
+		return (0);
 	while (str[i])
 	{
 		if (quote == 0 && (str[i] == '\'' || str[i] == '"'))
@@ -36,16 +36,12 @@
 				quote = 0;
 			}
 			else
-			{
-				ft_putstr("\n ==> ");
-				str_read = ft_read_quot(quote)
-				return (str);
-			}
+				return (quote);
 		}
 		i++;
 	}
-	return (str);
-}*/
+	return (0);
+}
 
 ///*** Split with quoting
 char			**ft_str_split_q(char *str, char *c)
