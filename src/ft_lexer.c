@@ -437,7 +437,7 @@ void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
 
 void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
 {
-	//char *content;
+	char *content;
 
 	/// add error of here doc syntax
 	ft_init_redi(st_redir, 4);
@@ -449,11 +449,12 @@ void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
 	if (st_tokens->next != NULL && st_tokens->next->value && ft_isallprint(st_tokens->next->value))
 	{
 		st_tokens->next->is_arg = 1;
+		//content = ft_read_hered(st_tokens->next->value);
 		ft_strdel(&(st_tokens->next->value));
-		//content = ft_cont_hered();
-		//st_tokens->next->value = content;
-		//st_redir->fd_file = content;
-		st_redir->fd_file = ft_strdup("Hello Wolrdddd \n");
+		content = ft_strdup("HEllo world ...........\n");
+		st_tokens->next->value = content;
+		st_redir->fd_file = content;
+		st_redir->fd_des = -2;
 	}
 }
 ///*** PARSER *****////
