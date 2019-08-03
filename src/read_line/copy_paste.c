@@ -27,6 +27,7 @@ void    ft_get_save(char *s, t_select *select)
         start = select->end;
         end = select->start;
     }
+	ft_strdel(&select->save);
     select->save = ft_strsub(s, start, end - start + 1);
 }
 

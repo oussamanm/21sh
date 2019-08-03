@@ -51,17 +51,15 @@ char			*ft_strtrim(char const *s)
 
 	if (s == NULL || s[0] == '\0')
 		return (NULL);
-	else
-	{
-		len = ft_strlen(s);
-		cnt1 = ft_firstsp(s);
-		if (cnt1 == len)
-			return (NULL);
-		cnt2 = ft_lastsp((len - cnt1 - 1), &s[cnt1]);
-		if (!(n_s = (char *)malloc(sizeof(*s) * (len - cnt1 - cnt2 + 1))))
-			return (NULL);
-		ft_strncpy(n_s, &s[cnt1], (len - cnt1 - cnt2));
-		n_s[len - cnt1 - cnt2] = '\0';
-	}
+	n_s = NULL;
+	len = ft_strlen(s);
+	cnt1 = ft_firstsp(s);
+	if (cnt1 == len)
+		return (NULL);
+	cnt2 = ft_lastsp((len - cnt1 - 1), &s[cnt1]);
+	if (!(n_s = (char *)malloc(sizeof(char) * (len - cnt1 - cnt2 + 1))))
+		return (NULL);
+	ft_strncpy(n_s, &s[cnt1], (len - cnt1 - cnt2));
+	n_s[len - cnt1 - cnt2] = '\0';
 	return (n_s);
 }

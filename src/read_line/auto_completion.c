@@ -59,10 +59,8 @@ char	*ft_search_in_thepath(char *path, char *begin)
 	int j;
 
 	j = -1;
-	fprintf(g_fd, "tb == ||");
 	if (!(tb = ft_strsplit(path, ':')))
 		return (NULL);
-	fprintf(g_fd, "tb == |%s|\n", tb[0]);
 	while (tb[++j])
 		if ((ret = ft_search_in_dir(begin, tb[j])))
 			return(ret);
