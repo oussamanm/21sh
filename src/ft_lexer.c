@@ -39,6 +39,7 @@ t_tokens	*ft_new_token()
 	st_token->prev = NULL;
 	st_token->next = NULL;
 	st_token->indx = -1;
+	st_token->is_arg = 0;
 	return (st_token);
 }
 
@@ -165,7 +166,7 @@ void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
 	i = 0;
 	while (arg[i] != '\0')
 	{
-		if (arg[i + 1] == ' ' || arg[i + 1] == '\t' || arg[i + 1] == '\0' || arg[i + 1] == '&' || arg[i + 1] == '|')
+		if (arg[i + 1] == ' ' || arg[i + 1] == '\t' || arg[i + 1] == '\0' || arg[i + 1] == '&' || arg[i + 1] == '|' || arg[i + 1] == '>' || arg[i + 1] == '<')
 		{
 			temp = ft_strsub(arg, 0, i + 1);
 			ft_fill_token(st_tokens, T_TXT, temp, indx);
@@ -211,7 +212,7 @@ t_tokens	*ft_lexer(char **args)
 	// free last node // and protect it
 	st_tokens->prev->next = NULL;
 	free(st_tokens);
-	/*
+	
 		st_tokens = st_head;
 		while (st_tokens != NULL)
 		{
@@ -220,7 +221,7 @@ t_tokens	*ft_lexer(char **args)
 		}
 		printf("\n--------------\n");
 	//exit(0);
-	*/
+	
 	return (st_head);
 }
 

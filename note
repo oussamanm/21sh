@@ -102,8 +102,6 @@ If the digits in word do not specify a file descriptor open for output, a redire
 Open file for reading and writing on standard input (or n).
 
 
-
-
-
-echo llo &>> mok
-ls -la 1>&-
+>qwe : doesn't create the file
+4<>author
+echo hello <>author

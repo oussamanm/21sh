@@ -6,7 +6,7 @@
 /*   By: onouaman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 06:15:04 by onouaman          #+#    #+#             */
-/*   Updated: 2019/05/03 18:51:07 by onouaman         ###   ########.fr       */
+/*   Updated: 2019/08/03 04:24:20 by onouaman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void		ft_buil_env(char **args, char ***env)
 		ft_put_strr(*env);
 	while (args != NULL && args[i] != NULL)
 	{
-		if (ft_find_char(args[i] , '=') > 0)
+		if (ft_find_char(args[i], '=') > 0)
 			ft_putendl(args[i]);
 		else
 			break ;

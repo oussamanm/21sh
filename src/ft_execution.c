@@ -54,7 +54,7 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 	}
 	if (ft_check_redi(st_pipes)) /// Check if exist redirection
 		if (ft_parse_cmd(st_pipes) == PARSE_KO)
-			return (-1);
+			return (-2);
 	if (str_arg != NULL)
 	{
 		execve(str_arg, st_pipes->args, env);
