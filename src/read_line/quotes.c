@@ -12,85 +12,62 @@
 
 #include "read_line.h"
 
-int     ft_check_quotes(char *s)
+///*** Check if quote isn't correct
+int		ft_check_quot(char *str)
 {
-    int i;
-    int q;
+	int i;
+	int temp;
+	int quote;
 
-    i = 0;
-    q = 0;
-    while (s[i])
-    {
-        if (s[i] == '\'')
-        {
-            q = 1;
-            while (s[++i])
-            {
-                if (s[i] == '\'')
-				{
-					q = 0;
-					break ;
-				}
-            }
-		}
-		else if (s[i] == '\"')
+	i = 0;
+	quote = 0;
+	if (!str || !*str)
+		return (0);
+	while (str[i])
+	{
+		if (quote == 0 && (str[i] == '\'' || str[i] == '"'))
+			quote = str[i];
+		if (str[i] == quote)
 		{
-			q = 2;
-            while (s[++i])
-            {
-                if (s[i] == '\"')
-				{
-					q = 0;
-					break ;
-				}
-            }
+			if ((temp = ft_find_char(&str[i + 1], quote)) != -1)
+			{
+				i += (temp + 1);
+				quote = 0;
+			}
+			else
+				return (quote);
 		}
-		else
-        	i++;
-    }
-    return (q);
+		i++;
+	}
+	return (0);
 }
 
-void    ft_quotes(char **line, t_select *select, int q)
+void    ft_quotes(char **line, t_select *select, t_history *his)
 {
-	t_history his;
 	char	*s;
-//	int		c;
+	int		c;
+	int		q;
 
-	his.history = ft_alloc_tab();
-	his.his_count = 0;
-//	while (1337)
-//	{
-	*line = ft_strjoin(*line, "\n");
-	if (q == 1)
+	if ((q = ft_check_quot(*line)) == 0)
+		return ;
+	while (1337)
 	{
-		ft_putstr("heredoc> ");
-		s = ft_read_line(&his, select, 9);
+		*line = ft_strjoir(*line, "\n", 1);
+		if (q == '\'')
+		{	
+			ft_putstr("quote> ");
+			s = ft_read_line(his, select, 7);
+		}
+		else if (q == '"')
+		{
+			ft_putstr("dquote> ");
+			s = ft_read_line(his, select, 8);
+		}
+		*line = ft_strjoir(*line, s, 3);
+		c = ft_check_quot(*line);
+		if (c == 0)
+			break ;
+		else
+			q = c;
 	}
-	else if (q == 2)
-	{
-		ft_putstr("pipe> ");
-		s = ft_read_line(&his, select, 6);
-	}
-	else if (q == 3)
-	{	
-		ft_putstr("quote> ");
-		s = ft_read_line(&his, select, 7);
-	}
-	else if (q == 4)
-	{
-		ft_putstr("dquote> ");
-		s = ft_read_line(&his, select, 8);
-	}
-	*line = ft_strjoin(*line, s);
-//		c = ft_check_quotes(s);
-//		if ((c == 1 && q == 1) || (c == 2 && q == 2))
-//			break ;
-//		if (ft_strcmp(s, ""))
-//		{	
-//			ft_stock_history(his.history, s, his.his_count);
-//			if (his.his_count < MAX_HISTORY)
-//				his.his_count++;
-//		}
-//	}
 }

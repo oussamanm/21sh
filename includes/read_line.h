@@ -113,7 +113,7 @@ void			ft_get_new_pos(t_cursor *pos, int len_sa);
 void			ft_move_by_word(t_cursor *pos, char *s, char *buf);
 void			ft_home_end(t_cursor *pos, char *s, char *buf);
 void			ft_move_by_lines(t_cursor *pos, char *s, char *buf);
-void			ft_quotes(char **line, t_select *select, int q);
+void			ft_quotes(char **line, t_select *select, t_history *his);
 char			**ft_alloc_tab(void);
 void			ft_win_change(int signal);
 void			ft_print_with_reverse_mode(char *s, int start, int end, t_cursor *pos);
@@ -128,6 +128,8 @@ void			ft_print_touch_and_join(t_cursor *pos, char *buf, char **s);
 void			ft_move_right(int n);
 char			*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s);
 char			*ft_auto_completion(t_cursor *pos, t_history *his, char *s);
+void			ft_save_address(t_history **his, t_select **select);
+
 
 #endif
 

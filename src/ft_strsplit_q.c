@@ -13,35 +13,6 @@
 #include "21sh.h"
 
 
-///*** Check if quote isn't correct
-int		ft_check_quot(char *str)
-{
-	int i;
-	int temp;
-	int quote;
-
-	i = 0;
-	quote = 0;
-	if (!str || !*str)
-		return (0);
-	while (str[i])
-	{
-		if (quote == 0 && (str[i] == '\'' || str[i] == '"'))
-			quote = str[i];
-		if (str[i] == quote)
-		{
-			if ((temp = ft_find_char(&str[i + 1], quote)) != -1)
-			{
-				i += (temp + 1);
-				quote = 0;
-			}
-			else
-				return (quote);
-		}
-		i++;
-	}
-	return (0);
-}
 
 ///*** Split with quoting
 char			**ft_str_split_q(char *str, char *c)

@@ -83,42 +83,66 @@ int			ft_parse_error(char *str_cmds)
 	return (0);
 }
 
+void		ft_save_address(t_history **his, t_select **select)
+{
+	static t_history *p_his;
+	static t_select *p_select;
+
+	if (*his != NULL && *select != NULL)
+	{
+		p_his = *his;
+		p_select = *select;
+	}
+	else
+	{
+		*his = p_his;
+		*select = p_select;
+	}
+}
+
+void		ft_initial_read_line(t_history **his, t_select **select)
+{
+	*his = ft_memalloc(sizeof(t_history));
+	*select = ft_memalloc(sizeof(t_select));
+	(*select)->start = -1;
+	(*select)->end = -1;
+	(*select)->save = NULL;
+	(*his)->history = ft_alloc_tab();
+	(*his)->his_count = 0;
+	ft_save_address(his, select);
+}
+
 int			main(void)
 {
 	extern char	**environ;
 	char		*str_cmds;
-	t_history	his;
-	t_select	select;
+	t_history	*his;
+	t_select	*select;
 
 	/// Initail error 
 	ft_intia_err("/dev/ttys001");
-	select.start = -1;
-	select.end = -1;
-	select.save = NULL;
-	his.history = ft_alloc_tab();
-	his.his_count = 0;
-
 	///Initial interface : tgetent
 	if (ft_set_termcap() == -1)
 		ft_err_exit("ERROR in seting Temcap");
 
 	///Call functions signal
+	ft_initial_read_line(&his, &select);
 	ft_call_signal();
-
+	
 	/// Duplicate environ
 	environ = ft_strr_dup(environ, ft_strrlen(environ));
-	his.path = ft_get_vrb("PATH", environ);
+	his->path = ft_get_vrb("PATH", environ);
 
 	while (1337)
 	{
 		ft_putstr("\033[0;32m21sh $>\033[0m ");
 		// fill str_arg with command Entred And print prompt
-		if ((str_cmds = ft_read_line(&his, &select, 8)) != NULL)
+		if ((str_cmds = ft_read_line(his, select, 8)) != NULL)
 		{
-			ft_stock_history(his.history, str_cmds, his.his_count);
-			if (his.his_count < MAX_HISTORY)
-				his.his_count++;
-
+			ft_quotes(&str_cmds, select, his);
+			ft_stock_history(his->history, str_cmds, his->his_count);
+			if (his->his_count < MAX_HISTORY)
+				his->his_count++;
 			/// Check all error ; | redir 
 			if (ft_parse_error(str_cmds))
 			{
