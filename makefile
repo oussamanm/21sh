@@ -25,7 +25,8 @@ OBJS = ft_built_env.o ft_builtins.o ft_error_handler.o\
 	read_line/selection2.o\
 	read_line/termcap.o\
 	read_line/clear_readline.o\
-	read_line/heredoc_line.o
+	read_line/heredoc_line.o\
+	read_line/cut.c
 
 
 FLAG = -Wall -Wextra -Werror 

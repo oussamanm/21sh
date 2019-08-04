@@ -130,6 +130,9 @@ char			*ft_auto_completion(t_cursor *pos, t_history *his, char *s);
 void			ft_save_address(t_history **his, t_select **select);
 void			ft_clear_readline_struct(void);
 char			*ft_read_heredoc(char *eol);
+void			ft_cut(t_cursor *pos, t_select *select, char **s);
+void			ft_get_save(char *s, t_select *select);
+
 
 #endif
 
