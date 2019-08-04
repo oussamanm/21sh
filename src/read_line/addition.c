@@ -16,7 +16,7 @@ char	*ft_line_edd(char *s, t_cursor *pos, char c)
 {
 	char *new;
 
-	if (!(new = ft_memalloc(sizeof(char) *  ft_strlen(s) + 2)))
+	if (!(new = ft_memalloc(sizeof(char) * ft_strlen(s) + 2)))
 		return (NULL);
 	ft_strncpy(new, s, pos->index);
 	new[pos->index] = c;
@@ -26,7 +26,7 @@ char	*ft_line_edd(char *s, t_cursor *pos, char c)
 	pos->index++;
 	pos->num_lines = ft_get_num_of_lines(pos->num_col, new, pos->p);
 	if (pos->x == pos->num_col - 1)
-	{	
+	{
 		pos->x = 0;
 		pos->y++;
 	}

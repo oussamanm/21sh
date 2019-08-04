@@ -89,7 +89,6 @@ void    ft_selection(char *s, t_cursor *pos, char *buf, t_select *select)
 	down = 0;
     len = ft_strlen(s);
 	pos->num_lines = ft_get_num_of_lines(pos->num_col, s, pos->p);
-	dprintf(fd_err, "start == %d  end == %d \t s = %s \n", select->end, select->start, s);
     if (SEL_RI == CAST(buf) && pos->index < len)
 	{
 		ft_pos_of_right_select(pos, &down);
