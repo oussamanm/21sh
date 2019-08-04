@@ -65,7 +65,7 @@ int		ft_open_file(char *file, int type) /// type : rd=0 wr=1  +app=3 rdwr=4
 	if (ft_check_file(file, type) == 0)
 	{
 		if (type == 0 || type == 1)
-			flag = type;
+			flag = type | O_TRUNC;
 		else if (type == 2)
 			flag = type | O_APPEND;
 		else if (type == 3)

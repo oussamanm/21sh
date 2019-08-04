@@ -12,7 +12,7 @@
 
 #include "21sh.h"
 
-void	ft_rm_quot(char **str)
+/*void	ft_rm_quot(char **str)
 {
 	int i;
 	int index;
@@ -43,6 +43,8 @@ void	ft_rm_quot(char **str)
 		i++;
 	}
 }
+*/
+
 ////*** Function to Change sub_string with string
 char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 {

@@ -39,15 +39,14 @@ all: $(NAME)
 
 
 $(NAME):
-	gcc $(FLAG) -c $(SRC) $(addprefix ./helper_func/, $(SRC_H)) -I $(INCLD)
-	ar rc $(NAME) $(OBJS) $(OBJ_H)
-	ranlib $(NAME)
+	@gcc $(FLAG) -c $(SRC) $(addprefix ./helper_func/, $(SRC_H)) -I $(INCLD)
+	@ar rc $(NAME) $(OBJS) $(OBJ_H)
+	@ranlib $(NAME)
 
 clean:
-	rm -f *.o
+	@rm -f *.o
 
 fclean: clean
-	rm -f a.out
-	rm -f libft.a
+	@rm -f libft.a
 
 re: fclean all

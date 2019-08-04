@@ -70,16 +70,36 @@ static int		ft_apply_redi(t_pipes *st_pipes)
 			if (lst_redi->fd_des == -1 || !ft_exist_fd(lst_redi->fd_des))
 				return (REDI_KO);
 			if (dup2(lst_redi->fd_des , lst_redi->fd_red) == -1)
-				ft_err_exit("Error in dub \n");
+				return (0 && ft_putendl_fd("Error in dub", 2));
 		}
 		if (lst_redi->fd_err != -1 && lst_redi->fd_des != -1)
 		{
 			if (dup2(lst_redi->fd_des, lst_redi->fd_err) == -1)
-				ft_err_exit("Error in dub \n");
+				return (0 && ft_putendl_fd("Error in dub", 2));
 		}
 		lst_redi = lst_redi->next;
 	}
 	return (REDI_OK);
+}
+
+void		ft_update_tokens(t_tokens *st_tokens)
+{
+	char *temp;
+	t_tokens *st_temp;
+
+	st_temp = st_tokens;
+	while (st_temp)
+	{
+		if (st_temp->token == 1)
+		{
+			dprintf(fd_err, "\ntoken->value = %s \n",st_temp->value);
+			temp = ft_strsub(st_temp->value , 1, ft_strlen(st_temp->value) - 2);
+			ft_strdel(&(st_temp->value));
+			st_temp->value = temp;
+			dprintf(fd_err, "New token->value = %s \n",st_temp->value);
+		}
+		st_temp = st_temp->next;
+	}
 }
 
 static void     ft_update_args(t_pipes *st_pipes)
@@ -111,23 +131,25 @@ static void     ft_update_args(t_pipes *st_pipes)
 
 int             ft_parse_cmd(t_pipes *st_pipes)
 {
+	/// Remove quotes from tokens
+	ft_update_tokens(st_pipes->st_tokens);
+
 	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_pipes->st_tokens);
-	
+	/*
 		t_redir *temp;
 		temp = st_pipes->st_redir;
 		while (temp)
 		{
-			printf("----TYEP REDIRECTION = %d\n",temp->type_red);
-			printf("\tfd_red = %d\n",temp->fd_red);
-			printf("\tfd_des = %d\n",temp->fd_des);
-			printf("\tfd_err = %d\n",temp->fd_err);
-			printf("\tfd_close = %d\n",temp->fd_close);
-			printf("\tfd_file = %s\n",temp->fd_file);
-			printf("\tis_arg = %d\n",st_pipes->st_tokens->is_arg);
+			dprintf(fd_err,"----TYEP REDIRECTION = %d\n",temp->type_red);
+			dprintf(fd_err,"\tfd_red = %d\n",temp->fd_red);
+			dprintf(fd_err,"\tfd_des = %d\n",temp->fd_des);
+			dprintf(fd_err,"\tfd_err = %d\n",temp->fd_err);
+			dprintf(fd_err,"\tfd_close = %d\n",temp->fd_close);
+			dprintf(fd_err,"\tfd_file = %s\n",temp->fd_file);
 			temp = temp->next;
 		}
-	
+	*/
 	// Apply Redirection
 	if (ft_apply_redi(st_pipes) == REDI_KO)
 		return (PARSE_KO);

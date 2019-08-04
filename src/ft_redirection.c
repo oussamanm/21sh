@@ -212,7 +212,8 @@ void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
 		content = ft_read_heredoc(st_tokens->next->value);
 		ft_strdel(&(st_tokens->next->value));
 		st_tokens->next->value = content;
-		st_redir->fd_file = ft_strdup(content);
+		st_redir->fd_file = content;
+		//st_redir->fd_file = ft_strdup(content);
 		st_redir->fd_des = -2;
 	}
 }

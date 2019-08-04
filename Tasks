@@ -25,7 +25,7 @@
 ///////////********* TASKS ********///////////////
 
 
-- Delete quoting before exec cmd
+- ;
 - ‘<<-’, then all leading tab characters are stripped from input lines and the line containing delimiter.
 - Change variable in here_doc
 
@@ -35,3 +35,44 @@
 - variable inside value of variable (incres i)
 cat <<eof1; cat <<eof2
 
+
+
+
+
+************* test
+-------------------------------------
+
+[n] > file
+Redirect standard output (or n) to file.
+
+>file
+>    asdasd
+>0
+>     .0 --?---
+>"file"
+> 'file'
+>          "file2"
+>   ./
+> ~
+                                "2">err  ("2" is not an argument)
+2    > err
+                                2>""
+------------------------------------
+
+[n1] >& n2 :
+Duplicate standard output (or n1) to n2.
+
+>&file
+&>file
+&>      file
+& >   file   => job controle
+&&>file      => logical operator 
+&>1file         
+>&2file
+1>"&2"
+1>&1
+2>& 0
+file>&file
+                                file&>file : do append in the second time :::: add flag o-trun
+"file"&>file
+                                1> &file : syntax error near unexpected token `&' , no space between '>' '&'

@@ -120,7 +120,8 @@ int			main(void)
 	t_select	*select;
 
 	/// Initail error 
-	ft_intia_err("/dev/ttys001");
+	ft_intia_err("/dev/ttys003");
+
 	///Initial interface : tgetent
 	if (ft_set_termcap() == -1)
 		ft_err_exit("ERROR in seting Temcap");
@@ -139,6 +140,7 @@ int			main(void)
 		// fill str_arg with command Entred And print prompt
 		if ((str_cmds = ft_read_line(his, select, 8)) != NULL)
 		{
+			/// Check and correction arg
 			ft_quotes(&str_cmds, select, his);
 			ft_stock_history(his->history, str_cmds, his->his_count);
 			if (his->his_count < MAX_HISTORY)

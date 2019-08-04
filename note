@@ -61,8 +61,10 @@ Close standard output (or n).
     Close standard input (or n).
         
 ----------------
-[n] <> file :   60 + 62
+[n] <> file :
     Open file for reading and writing on standard input (or n).
+
+----------------
 
 - 
 - Create function to change token with value_asci 
