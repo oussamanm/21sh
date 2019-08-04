@@ -52,29 +52,26 @@ char	*ft_key_call_function(t_history *his, t_select *select, char *s, char *buf)
 
 char	*ft_read_line(t_history *his, t_select *select, int p)
 {
-	char	buf[6];	
-	char	*s;
+	char	buf[6];
 	char	*tmp;
 
-	ft_initial(&s, p);
+	ft_initial(p);
 	ft_bzero(buf, 6);
 	//g_fd = fopen("/dev/ttys001", "a+");
 	while (read(0, buf, 6) > 0)
 	{
 		if (ENTER == CAST(buf))
 		{
-			ft_enter(&pos1, select, s);
+			ft_enter(&pos1, select, pos1.cmd);
 			break ;
 		}
-		s = ft_key_call_function(his, select, s, buf);
-		(pos1.cmd != NULL) ? free(pos1.cmd) : 0;
-		pos1.cmd = ft_strdup(s);
+		if (!(pos1.cmd = ft_key_call_function(his, select, pos1.cmd, buf)))
+			break ;
 		ft_bzero(buf, 6);
 	}
 	free(pos1.end);
-	ft_strdel(&pos1.cmd);
-	tmp = s;
-	s = ft_strtrim(s);
+	tmp = pos1.cmd;
+	pos1.cmd = ft_strtrim(pos1.cmd);
 	ft_strdel(&tmp);
-	return (s);
+	return (pos1.cmd);
 }

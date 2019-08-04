@@ -64,7 +64,7 @@ void    ft_quotes(char **line, t_select *select, t_history *his)
 		}
 		*line = ft_strjoir(*line, s, 3);
 		c = ft_check_quot(*line);
-		if (c == 0)
+		if ((c = ft_check_quot(*line)) == 0)
 			break ;
 		else
 			q = c;
