@@ -103,5 +103,8 @@ Open file for reading and writing on standard input (or n).
 
 
 >qwe : doesn't create the file
-4<>author
-echo hello <>author
+
+
+
+>hello akjshd >hello2 &>&4
+Token = <-88> : &>�

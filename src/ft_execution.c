@@ -41,6 +41,8 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 	char	*str_arg;
 
 	str_arg = NULL;
+	if (st_pipes->args == NULL || st_pipes->args[0] == NULL)
+		return (-2);
 	/// Check Error : perm , no sush , ...
 	if (!ft_check_char(st_pipes->args[0], '/'))
 		str_arg = ft_find_path((st_pipes->args)[0], env);
@@ -52,9 +54,6 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 		else if (str_arg && access(str_arg, X_OK) != 0)
 			ft_print_error(FIL_PD, NULL, str_arg, 2);
 	}
-	if (ft_check_redi(st_pipes)) /// Check if exist redirection
-		if (ft_parse_cmd(st_pipes) == PARSE_KO)
-			return (-2);
 	if (str_arg != NULL)
 	{
 		execve(str_arg, st_pipes->args, env);
@@ -95,6 +94,9 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 		ft_err_exit("Error in Fork new process \n");
 	if (pid == 0)
 	{
+		if (ft_check_redi(st_pipes)) /// Check if exist redirection
+			if (ft_parse_cmd(st_pipes) == PARSE_KO)
+				return ;
 		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// Builten ECHO (executed in child)
 			ft_buil_echo(st_pipes->args);
 		else

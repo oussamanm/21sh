@@ -40,7 +40,8 @@ OBJS_21SH = $(addprefix ./src/, $(OBJS))
 all : $(NAME)
 
 $(NAME) : $(LIBFT_PATH)/$(LIBFT) $(OBJS_21SH)
-	@gcc -g $(FLAG) $(OBJS_21SH) -I $(INCL) -I $(LIBFT_PATH) $(LIBFT_PATH)/$(LIBFT) -o $(NAME) -ltermcap 
+	@gcc -g $(FLAG) $(OBJS_21SH) -I $(INCL) -I $(LIBFT_PATH) $(LIBFT_PATH)/$(LIBFT) -o $(NAME) -ltermcap
+	mv $(SRC)/*.o $(SRC)/read_line/*.o ./libs/
 %.o : %.c
 	@gcc $(FLAG) -I $(INCL) -I $(LIBFT_PATH) -c $< -o $@
 
@@ -49,7 +50,8 @@ $(LIBFT_PATH)/$(LIBFT) :
 
 clean :
 	@make clean -C $(LIBFT_PATH)
-	@rm -f $(SRC)/*.o $(SRC)/read_line/*.o
+	#@rm -f $(SRC)/*.o $(SRC)/read_line/*.o
+	rm -f ./libs/*.o
 
 fclean : clean
 	@make fclean -C $(LIBFT_PATH)

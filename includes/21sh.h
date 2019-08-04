@@ -81,8 +81,6 @@ int fd_err;
 	# define T_RED_HER_D	-120
 	# define T_RED_BOTH		-122
 
-	# define T_AND 3
-	# define T_MIN 4
 //
 
 //**** Parsing
