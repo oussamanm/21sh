@@ -49,11 +49,11 @@ void	ft_get_end_of_line_pos(t_cursor *pos, char *s, int num_col)
 	int x;
 	int y;
 
-	i = 0;
+	i = -1;
 	x = pos->p;
 	y = 0;
-	ft_mmmm(&pos->end);
-	while (s[i])
+	ft_init_size_end_line(pos);
+	while (s[++i])
 	{
 		if (x == num_col - 1 || s[i] == '\n')
 		{
@@ -63,7 +63,6 @@ void	ft_get_end_of_line_pos(t_cursor *pos, char *s, int num_col)
 		}
 		else
 			x++;
-		i++;
 	}
 	pos->end[y] = x;
 }

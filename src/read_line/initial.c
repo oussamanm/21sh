@@ -33,13 +33,27 @@ int		ft_get_size_windz(void)
 	return (ws.ws_col);
 }
 
-void	ft_mmmm(int **d)
+void	ft_mmmm(int **d, int size)
 {
 	int i;
 
 	i = 0;
-	while (i < 20)
+	while (i < size)
 		(*d)[i++] = -1;
+}
+
+void	ft_init_size_end_line(t_cursor *pos)
+{
+	if (pos->num_lines > MAX_LINES)
+	{
+		if (pos->end)
+			free(pos->end);
+		if (!(pos->end = ft_memalloc(sizeof(int) * (pos->num_lines + MAX_LINES))))
+			return ;
+		ft_mmmm(&pos->end, pos->num_lines + MAX_LINES);
+	}
+	else
+		ft_mmmm(&pos->end, MAX_LINES);
 }
 
 void	ft_initial(int p)
@@ -50,7 +64,7 @@ void	ft_initial(int p)
 	pos1.x = p;
 	pos1.y = 0;
 	pos1.num_col = ft_get_size_windz();
-	if (!(pos1.end = ft_memalloc(sizeof(int) * 20)))
+	if (!(pos1.end = ft_memalloc(sizeof(int) * MAX_LINES)))
 		return ;
-	ft_mmmm(&pos1.end);
+	ft_mmmm(&pos1.end, MAX_LINES);
 }

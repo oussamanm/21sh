@@ -12,12 +12,14 @@
 
 #include "read_line.h"
 
-char	*ft_line_edd(char *s, t_cursor *pos, char c)
+char	*ft_line_edd(char *s, t_cursor *pos, char c, t_select *select)
 {
 	char *new;
 
 	if (!(new = ft_memalloc(sizeof(char) * ft_strlen(s) + 2)))
 		return (NULL);
+	if (select->start != -1 && select->end != -1)
+		ft_remove_selections(pos, select, s);
 	ft_strncpy(new, s, pos->index);
 	new[pos->index] = c;
 	ft_strcpy(new + pos->index + 1, s + pos->index);

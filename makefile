@@ -1,3 +1,12 @@
+
+_lCYAN = \x1b[96m
+_lYELLOW = \x1b[93m
+_lGREEN = \x1b[92m
+_lBLUE = \x1b[94m
+_RED = \x1b[31m
+_BOLD = \x1b[1m
+_END = \x1b[0m
+
 NAME = 21sh
 
 SRC = ./src/
@@ -40,6 +49,18 @@ OBJS_21SH = $(addprefix ./src/, $(OBJS))
 all : $(NAME)
 
 $(NAME) : $(LIBFT_PATH)/$(LIBFT) $(OBJS_21SH)
+	@echo "$(_lGREEN)										"
+	@echo " ▄▄▄▄▄▄▄▄▄▄▄    ▄▄▄▄     ▄▄▄▄▄▄▄▄▄▄▄ ▄         ▄ "
+	@echo "▐░░░░░░░░░░░▌ ▄█░░░░▌   ▐░░░░░░░░░░░▐░▌       ▐░▌"
+	@echo " ▀▀▀▀▀▀▀▀▀█░▌▐░░▌▐░░▌   ▐░█▀▀▀▀▀▀▀▀▀▐░▌       ▐░▌"
+	@echo "          ▐░▌ ▀▀ ▐░░▌   ▐░▌         ▐░▌       ▐░▌"
+	@echo "          ▐░▌    ▐░░▌   ▐░█▄▄▄▄▄▄▄▄▄▐░█▄▄▄▄▄▄▄█░▌"
+	@echo " ▄▄▄▄▄▄▄▄▄█░▌    ▐░░▌   ▐░░░░░░░░░░░▐░░░░░░░░░░░▌"
+	@echo "▐░░░░░░░░░░░▌    ▐░░▌    ▀▀▀▀▀▀▀▀▀█░▐░█▀▀▀▀▀▀▀█░▌"
+	@echo "▐░█▀▀▀▀▀▀▀▀▀     ▐░░▌             ▐░▐░▌       ▐░▌"
+	@echo "▐░█▄▄▄▄▄▄▄▄▄ ▄▄▄▄█░░█▄▄▄ ▄▄▄▄▄▄▄▄▄█░▐░▌       ▐░▌"
+	@echo "▐░░░░░░░░░░░▐░░░░░░░░░░░▐░░░░░░░░░░░▐░▌       ▐░▌"
+	@echo " ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀ ▀         ▀  $(_END)"
 	@gcc -g $(FLAG) $(OBJS_21SH) -I $(INCL) -I $(LIBFT_PATH) $(LIBFT_PATH)/$(LIBFT) -o $(NAME) -ltermcap
 	mv $(SRC)/*.o $(SRC)/read_line/*.o ./libs/
 %.o : %.c
@@ -47,6 +68,8 @@ $(NAME) : $(LIBFT_PATH)/$(LIBFT) $(OBJS_21SH)
 
 $(LIBFT_PATH)/$(LIBFT) :
 	@make -C $(LIBFT_PATH)
+
+
 
 clean :
 	@make clean -C $(LIBFT_PATH)

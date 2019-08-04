@@ -12,7 +12,6 @@
 
 #include "read_line.h"
 
-
 void	ft_enter(t_cursor *pos, t_select *select, char *s)
 {
 	if (select->start != -1 && select->end != -1)
@@ -21,7 +20,7 @@ void	ft_enter(t_cursor *pos, t_select *select, char *s)
 	ft_putchar('\n');
 }
 
-char	*ft_key_call_function(t_history *his, t_select *select, char *s, char *buf)
+char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 {
 	if (TAB == CAST(buf))
 		s = ft_auto_completion(&pos1, his, s);
@@ -43,8 +42,8 @@ char	*ft_key_call_function(t_history *his, t_select *select, char *s, char *buf)
 		ft_selection(s, &pos1, buf, select);
 	else if (COPY == CAST(buf) || PASTE == CAST(buf) || CUT == CAST(buf))
 		ft_copy_paste(buf, &s, &pos1, select);
-	else if (ft_isprint(buf[0]) && (size_t)pos1.index != ft_strlen(s))
-		s = ft_line_edd(s, &pos1, buf[0]);
+	else if (ft_isprint(buf[0]) && pos1.index != (int)ft_strlen(s))
+		s = ft_line_edd(s, &pos1, buf[0], select);
 	else
 		ft_print_touch_and_join(&pos1, buf, &s);
 	return (s);
@@ -65,7 +64,7 @@ char	*ft_read_line(t_history *his, t_select *select, int p)
 			ft_enter(&pos1, select, pos1.cmd);
 			break ;
 		}
-		if (!(pos1.cmd = ft_key_call_function(his, select, pos1.cmd, buf)))
+		if (!(pos1.cmd = ft_key_call_func(his, select, pos1.cmd, buf)))
 			break ;
 		ft_bzero(buf, 6);
 	}

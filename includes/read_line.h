@@ -28,6 +28,7 @@
 # include <sys/ioctl.h>
 
 # define MAX_HISTORY 20
+# define MAX_LINES 20
 
 # define ENTER 10
 # define DEL 127
@@ -105,7 +106,7 @@ int				ft_get_num_of_lines(int num_col, char *s, int p);
 void			ft_set_last_position(t_cursor pos, int num_lines);
 void			ft_move_cursor_zero(t_cursor pos);
 void			ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select);
-void			ft_mmmm(int **d);
+void			ft_mmmm(int **d, int size);
 void			ft_putstr_term(int num_col, char *s, t_cursor *pos);
 void			ft_get_end_of_line_pos(t_cursor *pos, char *s, int num_col);
 void			ft_get_new_pos(t_cursor *pos, int len_sa);
@@ -122,7 +123,7 @@ char			*ft_delcolomn(char *s, t_cursor *pos);
 void			ft_initial(int p);
 void			ft_stock_history(char **history, char *line, int his_count);
 void			ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos);
-char			*ft_line_edd(char *s, t_cursor *pos, char c);
+char			*ft_line_edd(char *s, t_cursor *pos, char c, t_select *select);
 void			ft_print_touch_and_join(t_cursor *pos, char *buf, char **s);
 void			ft_move_right(int n);
 char			*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s);
@@ -132,6 +133,8 @@ void			ft_clear_readline_struct(void);
 char			*ft_read_heredoc(char *eol);
 void			ft_cut(t_cursor *pos, t_select *select, char **s);
 void			ft_get_save(char *s, t_select *select);
+void			ft_init_size_end_line(t_cursor *pos);
+
 
 
 #endif
