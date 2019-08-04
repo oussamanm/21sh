@@ -45,8 +45,8 @@ char		**ft_strr_new(int len)
 	i = 0;
 	if ((args = (char **)malloc(sizeof(char *) * (len + 1))) == NULL)
 	{
-		ft_putstr("Error in allocation of args\n");
-		exit(0);
+		ft_putendl_fd("Error in allocation of args\n", 2);
+		return (NULL);
 	}
 	while (i < len)
 	{

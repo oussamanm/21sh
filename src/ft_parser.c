@@ -97,11 +97,9 @@ static void     ft_update_args(t_pipes *st_pipes)
 			count++;
 		st_temp = st_temp->next;
 	}
-
 	st_temp = st_pipes->st_tokens;
 	ft_strrdel(st_pipes->args);
 	st_pipes->args = ft_strr_new(count);
-
 	while (st_temp != NULL && st_temp->value != NULL)
 	{
 		if (!(st_temp->token < 0 || st_temp->is_arg == 1))
@@ -116,7 +114,6 @@ int             ft_parse_cmd(t_pipes *st_pipes)
 	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_pipes->st_tokens);
 	
-	
 		t_redir *temp;
 		temp = st_pipes->st_redir;
 		while (temp)
@@ -127,11 +124,11 @@ int             ft_parse_cmd(t_pipes *st_pipes)
 			printf("\tfd_err = %d\n",temp->fd_err);
 			printf("\tfd_close = %d\n",temp->fd_close);
 			printf("\tfd_file = %s\n",temp->fd_file);
+			printf("\tis_arg = %d\n",st_pipes->st_tokens->is_arg);
 			temp = temp->next;
 		}
 	
 	// Apply Redirection
-
 	if (ft_apply_redi(st_pipes) == REDI_KO)
 		return (PARSE_KO);
 

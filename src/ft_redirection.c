@@ -98,7 +98,7 @@ void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 	ft_init_redi(st_redir, 1);
 	if (st_tokens->token == T_RED_OUT_S) // 7>file
 	{
-		if (st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value) && (st_tokens->prev->is_arg = 1))
+		if (st_tokens->prev && st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value) && (st_tokens->prev->is_arg = 1))
 			st_redir->fd_red = ft_atoi(st_tokens->prev->value);
 		st_redir->fd_des = -2;
 		st_redir->fd_file = st_tokens->next->value;
