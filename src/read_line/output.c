@@ -70,6 +70,11 @@ void	ft_putstr_term(int num_col, char *s, t_cursor *pos)
 	}
 }
 
+/*
+** - function print and join the enter characters set the new cursor
+** parameters.
+*/
+
 char	*ft_putline(char c, char *s, t_cursor *pos)
 {
 	char *new;
@@ -96,6 +101,11 @@ char	*ft_putline(char c, char *s, t_cursor *pos)
 	ft_strdel(&s);
 	return (new);
 }
+
+/*
+** - function filter the key pressed by the user and call the function
+** ft_putline.
+*/
 
 void	ft_print_touch_and_join(t_cursor *pos, char *buf, char **s)
 {

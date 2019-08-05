@@ -39,6 +39,8 @@ void	ft_read_line_exit(t_cursor *pos, t_history *his, t_select *select)
         free(select->save);
     if (his->history)
         ft_free_tab(his->history);
+	if (ft_set_to_default() == -1)
+		ft_putendl("reset the terminal parameters error");
 }
 
 /*

@@ -18,6 +18,13 @@ int		my_outc(int c)
 	return (1);
 }
 
+int		ft_set_to_default()
+{
+	if (tcsetattr(0, TCSANOW, &pos1.term) == ERR)
+		return (-1);
+	return (1);
+}
+
 int		ft_set_termcap()
 {
 	struct termios term;
@@ -25,6 +32,8 @@ int		ft_set_termcap()
 	if (tgetent(NULL, getenv("TERM")) != 1)
 		return (-1);
 	if (tcgetattr(0, &term) == ERR)
+		return (-1);
+	if (tcgetattr(0, &pos1.term) == ERR)
 		return (-1);
 	term.c_lflag &= ~(ICANON);
 	term.c_lflag &= ~(ECHO);

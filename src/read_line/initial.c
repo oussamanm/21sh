@@ -33,7 +33,7 @@ int		ft_get_size_windz(void)
 	return (ws.ws_col);
 }
 
-void	ft_mmmm(int **d, int size)
+void	ft_init(int **d, int size)
 {
 	int i;
 
@@ -50,11 +50,15 @@ void	ft_init_size_end_line(t_cursor *pos)
 			free(pos->end);
 		if (!(pos->end = ft_memalloc(sizeof(int) * (pos->num_lines + MAX_LINES))))
 			return ;
-		ft_mmmm(&pos->end, pos->num_lines + MAX_LINES);
+		ft_init(&pos->end, pos->num_lines + MAX_LINES);
 	}
 	else
-		ft_mmmm(&pos->end, MAX_LINES);
+		ft_init(&pos->end, MAX_LINES);
 }
+
+/*
+** - function initial all parameters of the cursor struct.
+*/
 
 void	ft_initial(int p)
 {
@@ -66,5 +70,5 @@ void	ft_initial(int p)
 	pos1.num_col = ft_get_size_windz();
 	if (!(pos1.end = ft_memalloc(sizeof(int) * MAX_LINES)))
 		return ;
-	ft_mmmm(&pos1.end, MAX_LINES);
+	ft_init(&pos1.end, MAX_LINES);
 }

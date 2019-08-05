@@ -71,6 +71,10 @@ int		ft_len_last_word(t_cursor *pos, char *s)
 	return (len - 1);
 }
 
+/*
+** -function move the cursor to the next word or to last word.
+*/
+
 void	ft_move_by_word(t_cursor *pos, char *s, char *buf)
 {
 	int num_col;

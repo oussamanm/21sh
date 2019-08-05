@@ -57,6 +57,11 @@ void	ft_last_line(t_cursor *pos, char *s)
 	}
 }
 
+/*
+** -function move the cursor to the next line when we press 
+** ALT down or the last when we press ALT Up.
+*/
+
 void	ft_move_by_lines(t_cursor *pos, char *s, char *buf)
 {
     int num_col;

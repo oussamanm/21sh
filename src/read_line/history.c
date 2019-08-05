@@ -12,6 +12,10 @@
 
 #include "read_line.h"
 
+/*
+** - function stock the line returned by the read line function.
+*/
+
 void	ft_stock_history(char **history, char *line, int his_count)
 {
 	int i;
@@ -35,6 +39,12 @@ void	ft_stock_history(char **history, char *line, int his_count)
 		history[MAX_HISTORY - 1] = ft_strdup(line);
 	}
 }
+
+/*
+** -function clear the displayed line and print the old line stocked in
+** the history table .
+** -set the new position parameters of the cursor. 
+*/
 
 void	ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos)
 {

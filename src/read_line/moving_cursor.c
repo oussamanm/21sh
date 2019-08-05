@@ -49,6 +49,11 @@ void	ft_right_touch(t_cursor *pos, int size)
 	}
 }
 
+/*
+** - function move the cursor to the right character or to the left
+** character inside the shell line.
+*/
+
 void	ft_see_touch(char *buf, char *s, t_cursor *pos, t_select *select)
 {
 	int		size;
