@@ -45,7 +45,7 @@ int fd_err;
 	# define PATHSIZE 1024
 	# define M_QUOTE 34
 	# define M_DQUOTE 39
-	# define P_TK st_tokens->prev
+	# define PREV st_tokens->prev
 	# define ERRO_IN_AND -12
 
 	# define PRINT(x) printf("\n***/in %d/***\n",x);
