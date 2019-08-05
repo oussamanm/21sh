@@ -45,6 +45,29 @@
 }
 */
 
+///*** Remove Quote from args 	***///
+void		ft_remove_quot(char **args)
+{
+	char *temp;
+	int i;
+	char *arg;
+
+	if (args == NULL)
+		return ;
+	i = 0;
+	while (args[i] != NULL)
+	{
+		arg = args[i];
+		if (arg != NULL && (arg[0] == '\'' || arg[0] == '"'))
+		{
+			temp = ft_strsub(arg , 1, ft_strlen(arg) - 2);
+			ft_strdel(&arg);
+			args[i] = temp;
+		}
+		i++;
+	}
+}
+
 ////*** Function to Change sub_string with string
 char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 {

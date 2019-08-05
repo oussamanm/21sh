@@ -75,7 +75,7 @@ Duplicate standard output (or n1) to n2.
 file>&file
                         file&>file : do append in the second time :::: add flag o-trun OK
 "file"&>file
-                        1> &file : syntax error near unexpected token `&' , no space between '>' '&'
+                        1> &file : syntax error near unexpected token `&' , no space between '>' '&' OK
                         pwd >"$qweqwe qwe" OK (error was in ft_swap_vrb in cond who collect vrb) OK
 -------------------------------------
 

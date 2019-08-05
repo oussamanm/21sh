@@ -82,7 +82,7 @@ static int		ft_apply_redi(t_pipes *st_pipes)
 	return (REDI_OK);
 }
 
-void		ft_update_tokens(t_tokens *st_tokens)
+static void		ft_update_tokens(t_tokens *st_tokens)
 {
 	char *temp;
 	t_tokens *st_temp;
