@@ -238,11 +238,13 @@ typedef struct			s_pipes
 	void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens);
 	void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens);
 	void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens);
-	void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens);
-	void	ft_apply_hered(t_redir *st_redi);
 
 	int		ft_error_redir(t_tokens *st_tokens);
-	t_redir		*ft_new_redir();
+	t_redir	*ft_new_redir();
+	void	ft_init_redi(t_redir *st_redir, int type_red);
+	void	ft_redi_out_h(t_redir *st_redir, t_tokens *st_tokens);
+	void	ft_apply_hered(t_redir *st_redi);
+
 
 //
 

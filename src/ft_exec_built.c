@@ -23,8 +23,7 @@ void		ft_init_built(t_pipes *st_pipes, char ***env)
 	while (++i < 3)
 		tmp[i] = dup(i);
 	/// Call builtens
-	if (ft_call_built(st_pipes, env) == REDI_KO)
-		return ;
+	ft_call_built(st_pipes, env);
 	/// Resete STD_*
 	i = -1;
 	while (++i < 3)

@@ -12,39 +12,6 @@
 
 #include "21sh.h"
 
-/*void	ft_rm_quot(char **str)
-{
-	int i;
-	int index;
-	int	bl_quot;
-
-	i = 0;
-	bl_quot = 0;
-	index = 0;
-	while(STR(i))
-	{
-		if (bl_quot && STR(i) == '|')
-		{
-			*str = ft_add_char(*str, i++, '\\', 1);
-		}
-		if (!bl_quot && M_CHECK(STR(i), 34, 39))
-		{
-			bl_quot = STR(i);
-			index = i;
-		}
-		else if (bl_quot && STR(i) == bl_quot)
-		{
-			ft_memmove(&STR(i), &STR(i + 1), ft_strlen(&STR(i + 1)) + 1);
-			ft_memmove(&STR(index), &STR(index + 1), ft_strlen(&STR(index + 1)) + 1);
-			i -= 2;
-			bl_quot = 0;
-			index = 0;
-		}
-		i++;
-	}
-}
-*/
-
 ///*** Remove Quote from args 	***///
 void		ft_remove_quot(char **args)
 {
@@ -87,8 +54,7 @@ char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 		free(remp);
 	return (rtn);
 }
-/*
-*/
+
 ////*** Swap Variable with value
 char	*ft_swap_vrb(char *arg, int *index, char **environ)
 {
