@@ -60,8 +60,8 @@ void	ft_cut_complete(t_cursor *pos, t_select *select, char **s)
 }
 
 /*
-** -
-**
+** - function cut a string from our line and set the cursor in the right
+** position after modify.
 */
 
 void	ft_cut(t_cursor *pos, t_select *select, char **s)

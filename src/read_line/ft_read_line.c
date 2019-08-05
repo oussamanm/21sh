@@ -12,6 +12,11 @@
 
 #include "read_line.h"
 
+/*
+** - function clear the our line from the selection.
+** - move the cursor in the last of the line.
+*/
+
 void	ft_enter(t_cursor *pos, t_select *select, char *s)
 {
 	if (select->start != -1 && select->end != -1)
@@ -19,6 +24,10 @@ void	ft_enter(t_cursor *pos, t_select *select, char *s)
 	ft_putstr_term(pos->num_col, s + pos->index, pos);
 	ft_putchar('\n');
 }
+
+/*
+** - function call the functions needed to edit our line.
+*/
 
 char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 {
@@ -52,6 +61,11 @@ char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 		ft_print_touch_and_join(&pos1, buf, &s);
 	return (s);
 }
+
+/*
+** - function filter the keys tap by the user and call all functions needed.
+** - return the line to our shell.
+*/
 
 char	*ft_read_line(t_history *his, t_select *select, int p)
 {
