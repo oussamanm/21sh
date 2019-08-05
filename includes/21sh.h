@@ -198,6 +198,8 @@ typedef struct			s_pipes
 ///*** Quote
 	void				ft_rm_quot(char **str);
 	char				*ft_corr_args(char *argv, char **environ);
+	void				ft_remove_quot(char **args);
+
 //
 
 
@@ -252,6 +254,7 @@ typedef struct			s_pipes
 	int			ft_cmd_exec(t_pipes *st_pipes, char **env);
 	void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env);
 	int			ft_call_cmdss(char *str_arg, char ***environ);
+	int			ft_check_redi(t_pipes *st_pipes);
 //
 
 ///*** Exec builtens
@@ -263,6 +266,5 @@ typedef struct			s_pipes
 ////*** Free
 	void		ft_clear_cmds(t_pipes *st_pipes);
 	void		ft_clear_tokens(t_tokens *st_tokens);
-	void		ft_clear_cmds(t_pipes *st_pipes);
 //
 #endif

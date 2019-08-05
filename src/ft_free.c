@@ -45,20 +45,3 @@ void		ft_clear_cmds(t_pipes *st_pipes)
 		free(st_temp);
 	}
 }
-
-void	ft_lst_del(t_pipes **lst)
-{
-	t_list *temp;
-
-	if (!lst)
-		return ;
-	while (*lst)
-	{
-		temp = (*lst)->next;
-        ft_strdel((*lst)->cmd);
-		free(*lst);
-		*lst = NULL;
-		*lst = temp;
-	}
-	lst = NULL;
-}
