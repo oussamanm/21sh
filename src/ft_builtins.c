@@ -61,6 +61,7 @@ void		ft_buil_cd(char **arg, char ***env)
 {
 	char	*path;
 	char	buff[1024];
+	char	*temp;
 
 	if (*arg == NULL)
 		path = ft_get_vrb("HOME", *env);
@@ -68,18 +69,11 @@ void		ft_buil_cd(char **arg, char ***env)
 		path = ft_strdup(arg[0]);
 	if (ft_error_cd(path, arg) != 1)
 	{
-		ft_set_vrb(ft_strjoir("OLDPWD", getcwd(buff, 1024), 0), env, 1);
+		temp = ft_strjoir("OLDPWD", "=", 0);
+		ft_set_vrb(ft_strjoir(temp, getcwd(buff, 1024), 1), env, 1);
 		chdir(path);
-		ft_set_vrb(ft_strjoir("PWD", getcwd(buff, 1024), 0), env, 1);
+		temp = ft_strjoir("PWD", "=", 0);
+		ft_set_vrb(ft_strjoir(temp, getcwd(buff, 1024), 1), env, 1);
 	}
 	ft_strdel(&path);
-}
-
-char		*getpwd(void)
-{
-	char *path;
-
-	path = ft_memalloc(PATHSIZE);
-	getcwd(path, PATHSIZE);
-	return (path);
 }

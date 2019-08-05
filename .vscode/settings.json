@@ -6,7 +6,8 @@
         "stdlib.h": "c",
         "stdio.h": "c",
         "dirent.h": "c",
-        "types.h": "c"
+        "types.h": "c",
+        "read_line.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

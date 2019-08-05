@@ -63,6 +63,28 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 	return (-1);
 }
 
+void		ft_remove_quot(char **args)
+{
+	char *temp;
+	int i;
+	char *arg;
+
+	i = 0;
+	while (args[i] != NULL)
+	{
+		arg = args[i];
+		if (arg != NULL && (arg[0] == '\'' || arg[0] == '"'))
+		{
+			//dprintf(fd_err, "arg = %s \n",arg);
+			temp = ft_strsub(arg , 1, ft_strlen(arg) - 2);
+			ft_strdel(&arg);
+			args[i] = temp;
+			//dprintf(fd_err, "args[i] = %s \n",args[i]);
+		}
+		i++;
+	}
+}
+
 ///*** Check if cmd is builtens and splite
 void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 {
@@ -72,6 +94,10 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	
 	pid = 0;
 	i = -1;
+
+	///*** remove quote from cmd
+	ft_remove_quot(st_pipes->args);
+
 	///************* in case : Builtens
 	if (st_pipes != NULL && ft_check_built((st_pipes->args)[0]))
 	{
@@ -96,7 +122,7 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	{
 		if (ft_check_redi(st_pipes)) /// Check if exist redirection
 			if (ft_parse_cmd(st_pipes) == PARSE_KO)
-				return ;
+				exit(0);
 		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// Builten ECHO (executed in child)
 			ft_buil_echo(st_pipes->args);
 		else
@@ -166,8 +192,8 @@ int			ft_check_built(char *arg)
 	return (rtn);
 }
 
-///*** Check if there is a pipe
-int		ft_call_cmdss(char *str_arg, char ***environ)
+///*** Check if there is a pipe , split and fill args, check error lexer
+int			ft_call_cmdss(char *str_arg, char ***environ)
 {
 	char		**args_pipe;
 	t_pipes		*st_pipes;
@@ -184,7 +210,7 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 	while (st_temp)
 	{
 		/// split cmd with whitespace
-		st_temp->args = ft_str_split_q(st_temp->cmd, " ");
+		st_temp->args = ft_str_split_q(st_temp->cmd, " \t");
 	
 		// Call Lexer and return list of tokens
 		st_temp->st_tokens = ft_lexer(st_temp->args);
@@ -192,7 +218,7 @@ int		ft_call_cmdss(char *str_arg, char ***environ)
 		/// Check error from created tokens
 		if (ft_error_redir(st_temp->st_tokens))
 		{
-			/// free st_pipes -> tokens -> args
+			/// clear st_pipes
 			ft_clear_cmds(st_pipes);
 			return (-1);
 		}

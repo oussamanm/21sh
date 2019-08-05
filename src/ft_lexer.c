@@ -174,15 +174,15 @@ t_tokens	*ft_lexer(char **args)
 	// free last node // and protect it
 	st_tokens->prev->next = NULL;
 	free(st_tokens);
-	
+	/*
 		st_tokens = st_head;
 		while (st_tokens != NULL)
 		{
-			printf("Token = <%d> : %s\n",st_tokens->token,st_tokens->value);
+			dprintf(fd_err, "Token = <%d> : %s\n",st_tokens->token,st_tokens->value);
 			st_tokens = st_tokens->next;
 		}
-		printf("\n--------------\n");
+		dprintf(fd_err,"\n--------------\n");
 	//exit(0);
-	
+	*/
 	return (st_head);
 }

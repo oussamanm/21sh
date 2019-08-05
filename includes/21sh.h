@@ -162,7 +162,6 @@ typedef struct			s_pipes
 	void				ft_buil_setenv(char **args, char ***env);
 	void				ft_buil_unsetenv(char *arg, char ***env);
 	int					ft_print_var(char *arg, char **env);
-	char				*getpwd(void);
 //
 
 ///*** Variable
