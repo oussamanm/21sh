@@ -35,7 +35,11 @@ char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 	else if (DEL == CAST(buf))
 		s = ft_delcolomn(s, &pos1);
 	else if (UP == CAST(buf) || DO == CAST(buf))
+	{
+		if (select->start != -1 && select->end != -1)
+			ft_remove_selections(&pos1, select, s);
 		ft_print_history(his, buf, &s, &pos1);
+	}
 	else if (LE == CAST(buf) || RI == CAST(buf))
 		ft_see_touch(buf, s, &pos1, select);
 	else if (SEL_RI == CAST(buf) || SEL_LE == CAST(buf))

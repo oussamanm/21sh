@@ -16,12 +16,16 @@ void	ft_remove_selections(t_cursor *pos, t_select *select, char *s)
 {
 	int		num_col;
 	int		num_lines;
+	int		save;
 
 	num_col = ft_get_size_windz();
 	num_lines = ft_get_num_of_lines(num_col, s, pos->p);
 	ft_move_cursor_zero(*pos);
 	tputs(tgetstr("cd", NULL), 0, my_outc);
-	ft_putstr(s);
+	save = pos->x;
+	pos->x = 8;
+	ft_putstr_term(num_col, s, pos);
+	pos->x = save;
 	select->start = -1;
 	select->end = -1;
 	ft_set_last_position(*pos, num_lines);

@@ -20,6 +20,7 @@ void	ft_catch_signal(int signal)
 		ft_putchar('\n');
 	else
 	{
+		ft_putstr_term(pos1.num_col, pos1.cmd + pos1.index, &pos1);
 		ft_putstr("\n\033[0;32m21sh $>\033[0m ");
 		free(pos1.end);
 		if (!(pos1.end = ft_memalloc(sizeof(int) * 20)))

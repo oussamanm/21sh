@@ -12,11 +12,10 @@
 
 #include "read_line.h"
 
-void	ft_pos_of_left_select(t_cursor *pos, int *up)
+void	ft_pos_of_left_select(t_cursor *pos)
 {
 	if (pos->x == 0 && pos->index != 0)
 	{
-		*up = 1;
 		pos->y--;
 		pos->x = pos->end[pos->y];
 	}
@@ -30,23 +29,24 @@ void	ft_first_left_select(t_cursor *pos, t_select *select, char *s)
 	{
 		select->start = pos->index;
 		select->end = pos->index;
-		ft_print_with_reverse_mode(s , select->start, select->end, pos);
+		ft_print_with_reverse_mode(s, select->start, select->end, pos);
 	}
 	else
 		ft_putstr_term(pos->num_col, s, pos);
 }
 
-void	ft_remove_last_select_left(t_cursor *pos, t_select *select, char *s, int up)
+void	ft_remove_last_select_left(t_cursor *pos, t_select *select, char *s, int *let)
 {
 	int len;
 
 	len = ft_strlen(s);
 	select->end--;
-	if (up)
+	if (pos->x == 0 && pos->index != 0)
 		ft_movecur_up_and_right(1, pos->num_col);
 	else
 		tputs(tgetstr("le", NULL), 0, my_outc);
 	tputs(tgetstr("cd", NULL), 0, my_outc);
+	ft_pos_of_left_select(pos);
 	ft_putstr_term(pos->num_col, s + select->end + 1, pos);
 	if ((select->start == select->end + 1) &&
 		(pos->index < len - 1 && pos->index > select->end + 1))
@@ -54,6 +54,7 @@ void	ft_remove_last_select_left(t_cursor *pos, t_select *select, char *s, int up
 		select->start = -1;
 		select->end = -1;
 	}
+	*let = 1;
 }
 
 void	ft_select_left_one(t_cursor *pos, t_select *select, char *s)
@@ -66,25 +67,26 @@ void	ft_select_left_one(t_cursor *pos, t_select *select, char *s)
 void	ft_left_selection(char *s, t_cursor *pos, t_select *select)
 {
 	int len;
-	int up;
+	int let;
 
-	up = 0;
+	let = 0;
 	len = ft_strlen(s);
 	pos->num_lines = ft_get_num_of_lines(pos->num_col, s, pos->p);
-	if (pos->index <= len && pos->index >= 0)
+	if (pos->index <= len && pos->index >= 0 && len != 0)
 	{
 		tputs(tgetstr("cd", NULL), 0, my_outc);
-		ft_pos_of_left_select(pos, &up);
 		if (select->end == -1 && select->start == -1)
 			ft_first_left_select(pos, select, s);
 		else if ((select->start < select->end) || ((select->start == select->end)
 			&& (pos->index < len - 1 && pos->index >= select->end)))	
-			ft_remove_last_select_left(pos, select, s, up);
+			ft_remove_last_select_left(pos, select, s, &let);
 		else if ((select->start > select->end) || ((select->start == select->end)
 			&& (pos->index == len - 1 || pos->index < select->end)))
 			ft_select_left_one(pos, select, s);
+		ft_get_end_of_line_pos(pos, s, pos->num_col);
+		(!let) ? ft_pos_of_left_select(pos) : 0;
 		ft_set_last_position(*pos, pos->num_lines);
-		if (pos->index != 0)
-			pos->index--;
+		(pos->index != 0) ? pos->index-- : 0;
 	}
+	dprintf(fd_err, "left numcol == %d pos->x == %d pos->y == %d num_line == %d real == %d pos->index == %d\n", pos->end[pos->y],pos->x,pos->y, pos->num_lines, pos->end[pos->num_lines - 1], pos->index);
 }

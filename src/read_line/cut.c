@@ -11,8 +11,31 @@
 /* ************************************************************************** */
 
 #include "read_line.h"
+#include  "21sh.h"
 
-void	ft_cut_complete(t_cursor *pos, t_select *select, char **s, int len)
+char	*ft_remove_strinstr(char *s, int start, int end)
+{
+	char *new;
+	int len;
+	int i;
+	int j;
+
+	len = ft_strlen(s);
+	if (!(new = ft_memalloc(sizeof(char) * (len - (end - start + 1) + 2))))
+		return (NULL);
+	ft_bzero(new, len - (end - start + 1) + 2);
+	i = -1;
+	while (++i < start && s[i])
+		new[i] = s[i];
+	j = end + 1;
+	while (j < len)
+		new[i++] = s[j++];
+	new[i] = '\0';
+	free(s);
+	return (new);
+}
+
+void	ft_cut_complete(t_cursor *pos, t_select *select, char **s)
 {
 	int len_sa;
 
@@ -32,25 +55,22 @@ void	ft_cut_complete(t_cursor *pos, t_select *select, char **s, int len)
 		pos->index--;
 	}
 	tputs(tgetstr("cd", NULL), 0, my_outc);
-	ft_memmove(*s + pos->index, *s + select->end + 1, len);
+	*s = ft_remove_strinstr(*s, select->start, select->end);
 	ft_putstr_term(pos->num_col, *s + pos->index, pos);
-	ft_get_end_of_line_pos(pos, *s, pos->num_col);
-	pos->num_lines = ft_get_num_of_lines(pos->num_col, *s, pos->p);
-	ft_set_last_position(*pos, pos->num_lines);
 }
+
+/*
+** -
+**
+*/
 
 void	ft_cut(t_cursor *pos, t_select *select, char **s)
 {
-	int len;
-
-	len = ft_strlen(*s);
 	ft_get_save(*s, select);
 	if (select->start >= select->end && (pos->index < select->end || pos->index == 0))
 	{
-		if (pos->index == 0)
-			ft_memmove(*s + pos->index, *s + select->start + 1, len);
-		else
-			ft_memmove(*s + pos->index + 1, *s + select->start + 1, len);
+		if (!(*s = ft_remove_strinstr(*s, select->end, select->start)))
+			return ;
 		if (pos->x == pos->end[pos->y])
 			tputs(tgetstr("do", NULL), 0, my_outc);
 		else if (pos->index != 0)
@@ -60,10 +80,10 @@ void	ft_cut(t_cursor *pos, t_select *select, char **s)
 			ft_putstr(*s + pos->index);
 		else
 			ft_putstr(*s + pos->index + 1);
-		pos->num_lines = ft_get_num_of_lines(pos->num_col, *s, pos->p);
-		ft_get_end_of_line_pos(pos, *s, pos->num_col);
-		ft_set_last_position(*pos, pos->num_lines);
 	}
 	else
-		ft_cut_complete(pos, select, s, len);
+		ft_cut_complete(pos, select, s);
+	ft_get_end_of_line_pos(pos, *s, pos->num_col);
+	pos->num_lines = ft_get_num_of_lines(pos->num_col, *s, pos->p);
+	ft_set_last_position(*pos, pos->num_lines);
 }

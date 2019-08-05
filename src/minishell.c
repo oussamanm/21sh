@@ -121,7 +121,6 @@ int			main(void)
 
 	/// Initail error 
 	ft_intia_err("/dev/ttys003");
-
 	///Initial interface : tgetent
 	if (ft_set_termcap() == -1)
 		ft_err_exit("ERROR in seting Temcap");
