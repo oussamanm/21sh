@@ -82,7 +82,7 @@ static int		ft_apply_redi(t_pipes *st_pipes)
 	return (REDI_OK);
 }
 
-void		ft_update_tokens(t_tokens *st_tokens)
+static void		ft_update_tokens(t_tokens *st_tokens)
 {
 	char *temp;
 	t_tokens *st_temp;
@@ -92,11 +92,9 @@ void		ft_update_tokens(t_tokens *st_tokens)
 	{
 		if (st_temp->token == 1)
 		{
-			dprintf(fd_err, "\ntoken->value = %s \n",st_temp->value);
 			temp = ft_strsub(st_temp->value , 1, ft_strlen(st_temp->value) - 2);
 			ft_strdel(&(st_temp->value));
 			st_temp->value = temp;
-			dprintf(fd_err, "New token->value = %s \n",st_temp->value);
 		}
 		st_temp = st_temp->next;
 	}

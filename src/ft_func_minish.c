@@ -97,27 +97,6 @@ char	*ft_strsubb(char const *s, unsigned int start, size_t len)
 
 
 /*
-** edit string by adding buffer to line in the given position
-*/
-
-void	edit_str(char **line, char *copy, int pos)
-{
-	char	*begin;
-	char	*end;
-	int		len;
-
-	len = ft_strlen(*line);
-	if (pos > len)
-		pos--;
-	begin = ft_strsubb(*line, 0, pos);
-	end = ft_strjoin(copy, *line + pos);
-	free(*line);
-	*line = ft_strjoin(begin, end);
-	free(begin);
-	free(end);
-}
-
-/*
 ** Convert table of string to list
 */
 

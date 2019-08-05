@@ -11,6 +11,16 @@
 /* ************************************************************************** */
 
 #include "21sh.h"
+#include "read_line.h"
+
+///*** Builten exit : free env , free readline, clear struct t_pipes ***///
+void		ft_built_exit(t_pipes *st_pipes, char ***env)
+{
+	ft_strrdel(*env);
+	ft_clear_readline_struct();
+	ft_clear_cmds(st_pipes);
+	exit(0);
+}
 
 void		ft_buil_echo(char **arg)
 {
