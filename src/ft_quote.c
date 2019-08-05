@@ -12,38 +12,28 @@
 
 #include "21sh.h"
 
-/*void	ft_rm_quot(char **str)
+///*** Remove Quote from args 	***///
+void		ft_remove_quot(char **args)
 {
+	char *temp;
 	int i;
-	int index;
-	int	bl_quot;
+	char *arg;
 
+	if (args == NULL)
+		return ;
 	i = 0;
-	bl_quot = 0;
-	index = 0;
-	while(STR(i))
+	while (args[i] != NULL)
 	{
-		if (bl_quot && STR(i) == '|')
+		arg = args[i];
+		if (arg != NULL && (arg[0] == '\'' || arg[0] == '"'))
 		{
-			*str = ft_add_char(*str, i++, '\\', 1);
-		}
-		if (!bl_quot && M_CHECK(STR(i), 34, 39))
-		{
-			bl_quot = STR(i);
-			index = i;
-		}
-		else if (bl_quot && STR(i) == bl_quot)
-		{
-			ft_memmove(&STR(i), &STR(i + 1), ft_strlen(&STR(i + 1)) + 1);
-			ft_memmove(&STR(index), &STR(index + 1), ft_strlen(&STR(index + 1)) + 1);
-			i -= 2;
-			bl_quot = 0;
-			index = 0;
+			temp = ft_strsub(arg , 1, ft_strlen(arg) - 2);
+			ft_strdel(&arg);
+			args[i] = temp;
 		}
 		i++;
 	}
 }
-*/
 
 ////*** Function to Change sub_string with string
 char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
@@ -64,8 +54,7 @@ char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 		free(remp);
 	return (rtn);
 }
-/*
-*/
+
 ////*** Swap Variable with value
 char	*ft_swap_vrb(char *arg, int *index, char **environ)
 {
@@ -80,7 +69,7 @@ char	*ft_swap_vrb(char *arg, int *index, char **environ)
 	index_vrb = *index + 1;
 	while (arg[++(*index)])
 	{
-		if (!ft_isalpha(arg[*index]) && ft_isalnum(arg[*index]) && arg[*index] == '_')
+		if (!ft_isalpha(arg[*index]) && !ft_isalnum(arg[*index]) && arg[*index] != '_')
 			break ;
 		i++;
 	}

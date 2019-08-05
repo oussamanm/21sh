@@ -18,7 +18,7 @@
 */
 
 
-///*** Check redirection
+///*** Check redirection		***///
 int			ft_check_redi(t_pipes *st_pipes)
 {
 	t_tokens *st_temp;
@@ -35,12 +35,14 @@ int			ft_check_redi(t_pipes *st_pipes)
 	return (0);
 }
 
-///*** Execute Command 
+///*** Execute Command			***///
 int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 {
 	char	*str_arg;
+	int		i;
 
 	str_arg = NULL;
+	i = 0;
 	if (st_pipes->args == NULL || st_pipes->args[0] == NULL)
 		return (-2);
 	/// Check Error : perm , no sush , ...
@@ -49,81 +51,48 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 	else
 	{
 		str_arg = ft_strdup(st_pipes->args[0]);
-		if (access(str_arg, F_OK) != 0)
+		if (access(str_arg, F_OK) != 0 && ++i)
 			ft_print_error(FIL_NS, NULL, str_arg, 2);
-		else if (str_arg && access(str_arg, X_OK) != 0)
+		else if (str_arg && access(str_arg, X_OK) != 0 && ++i)
 			ft_print_error(FIL_PD, NULL, str_arg, 2);
 	}
-	if (str_arg != NULL)
+	if (i == 0 && str_arg != NULL)
 	{
 		execve(str_arg, st_pipes->args, env);
 		ft_strdel(&str_arg);
 		exit (0);
 	}
-	return (-1);
-}
-
-void		ft_remove_quot(char **args)
-{
-	char *temp;
-	int i;
-	char *arg;
-
-	i = 0;
-	while (args[i] != NULL)
-	{
-		arg = args[i];
-		if (arg != NULL && (arg[0] == '\'' || arg[0] == '"'))
-		{
-			//dprintf(fd_err, "arg = %s \n",arg);
-			temp = ft_strsub(arg , 1, ft_strlen(arg) - 2);
-			ft_strdel(&arg);
-			args[i] = temp;
-			//dprintf(fd_err, "args[i] = %s \n",args[i]);
-		}
-		i++;
-	}
+	return ((i == 0) ? -1 : -2); /// i = -1 : command not found | i == -2 : ERR in EXECUTABLE
 }
 
 ///*** Check if cmd is builtens and splite
 void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 {
 	int pid;
-	int i;
-	int tmp[3];
 	
 	pid = 0;
-	i = -1;
-
 	///*** remove quote from cmd
 	ft_remove_quot(st_pipes->args);
-
 	///************* in case : Builtens
 	if (st_pipes != NULL && ft_check_built((st_pipes->args)[0]))
 	{
-		/// Save STD_*
-		while (++i < 3)
-			tmp[i] = dup(i);
-		/// Call builtens
-		if (ft_call_built(st_pipes, env) == REDI_KO)
-			return ;
-		/// Resete STD_*
-		i = -1;
-		while (++i < 3)
-			if (dup2(tmp[i], i) == -1 || close(tmp[i]) == -1)
-				ft_putendl_fd("Error in dup or close \n", 2); // Dont exit
+		ft_init_built(st_pipes, env);
 		return ;
 	}
-
 	///************* in case : cmd , Create new Child process
 	if (fork_it == 1 && (pid = fork()) == -1)
 		ft_err_exit("Error in Fork new process \n");
 	if (pid == 0)
 	{
 		ft_signal_default();
+<<<<<<< HEAD
 		if (ft_check_redi(st_pipes)) /// Check if exist redirection
 			if (ft_parse_cmd(st_pipes) == PARSE_KO)
 				exit(0);
+=======
+		if (ft_check_redi(st_pipes) && ft_parse_cmd(st_pipes) == PARSE_KO) /// Check if exist redirection
+			exit(0);
+>>>>>>> cd8fb7d526a34e5c07addc8a5f7a63aeb7765e33
 		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// Builten ECHO (executed in child)
 			ft_buil_echo(st_pipes->args);
 		else
@@ -131,66 +100,9 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 				ft_print_error(CMD_NF, "21sh: ", (st_pipes->args)[0], 0);	/// Command not found
 		exit(0);
 	}
-	if (pid > 0)
-	{
-		g_sign = 1;
-		wait(NULL);
-		g_sign = 0;
-	}
-}
-
-///*** Call Builtens (close fds of redirection)
-int			ft_call_built(t_pipes *st_pipes, char ***env)
-{
-	int		rtn;
-
-	rtn = 0;
-	if (st_pipes == NULL || st_pipes->args == NULL)
-		return (-1);
-	/// Call Parser : to  read token and fill st_redi
-	if (ft_check_redi(st_pipes)) /// Check if exist redirection
-		if (ft_parse_cmd(st_pipes) == PARSE_KO)
-			return (REDI_KO);
-	/// Close all fds opned
-	while (st_pipes->st_redir != NULL)
-	{
-		if (st_pipes->st_redir->fd_des != -1)
-			close(st_pipes->st_redir->fd_des);
-		st_pipes->st_redir = st_pipes->st_redir->next;
-	}
-	if (ft_strcmp((st_pipes->args)[0], "exit") == 0)
-	{
-		ft_strrdel(*env);
-		ft_clear_readline_struct();
-		ft_clear_cmds(st_pipes);
-		exit(0);
-	}
-	if (ft_strcmp((st_pipes->args)[0], "env") == 0 && (rtn = 1))
-		ft_buil_env(&(st_pipes->args)[1], env);
-	if (ft_strcmp((st_pipes->args)[0], "setenv") == 0 && (rtn = 1))
-		ft_buil_setenv(&(st_pipes->args)[1], env);
-	if (ft_strcmp((st_pipes->args)[0], "unsetenv") == 0 && (rtn = 1))
-		ft_buil_unsetenv(st_pipes->args[1], env);
-	if (ft_strcmp((st_pipes->args)[0], "cd") == 0 && (rtn = 1))
-		ft_buil_cd(&(st_pipes->args)[1], env);
-	return (rtn);
-}
-
-///*** Check if Command builtens
-int			ft_check_built(char *arg)
-{
-	int		rtn;
-
-	rtn = 0;
-	if (arg == NULL)
-		return (-1);
-	if (!ft_strcmp(arg, "exit") || !ft_strcmp(arg, "env"))
-		rtn++;
-	else if (!ft_strcmp(arg, "setenv") || !ft_strcmp(arg, "unsetenv"))
-		rtn++;
-	else if (!ft_strcmp(arg, "cd"))
-		rtn++;
-	return (rtn);
+	g_sign = 1;
+	wait(NULL);
+	g_sign = 0;
 }
 
 ///*** Check if there is a pipe , split and fill args, check error lexer
@@ -231,38 +143,4 @@ int			ft_call_cmdss(char *str_arg, char ***environ)
 		ft_split_cmd(1, st_pipes, environ);
 	ft_clear_cmds(st_pipes);
 	return (1);
-}
-
-void		ft_clear_tokens(t_tokens *st_tokens)
-{
-	t_tokens *st_temp;
-
-	if (!st_tokens)
-		return ;
-	while (st_tokens)
-	{
-		st_temp = st_tokens;
-		ft_strdel(&(st_tokens->value));
-		st_tokens = st_tokens->next;
-		(st_temp != NULL) ? free(st_temp) : NULL;
-	}
-}
-
-void		ft_clear_cmds(t_pipes *st_pipes)
-{
-	t_pipes *st_temp;
-
-	while (st_pipes)
-	{
-		st_temp = st_pipes;
-		/// free args
-		ft_strrdel(st_pipes->args);
-		/// free cmd
-		ft_strdel(&(st_pipes->cmd));
-		/// free st_tokens
-		ft_clear_tokens(st_pipes->st_tokens);
-		st_pipes = st_pipes->next;
-		/// free old node
-		free(st_temp);
-	}
 }

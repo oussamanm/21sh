@@ -58,6 +58,7 @@ void		ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx)
 	(*st_tokens)->prev = prev;
 }
 
+///*** ft_upd_token : append - to redirection if separated
 void		ft_upd_token(t_tokens *st_tokens, int token, char *value)
 {
 	if (st_tokens == NULL)
@@ -71,7 +72,7 @@ void		ft_upd_token(t_tokens *st_tokens, int token, char *value)
 
 ///*** LEXER *****////
 
-void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx)
+void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
 {
 	int i;
 	int quote;
@@ -96,10 +97,10 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 	int k;
 	char str[5];
 
-	i = 0;
+	i = -1;
 	k = 0;
 	ft_bzero(str, 5);
-	while (arg[i] != '\0')
+	while (arg[++i] != '\0')
 	{
 		if (arg[i] == '&' && i != 2)
 			str[k++] = '&';
@@ -108,20 +109,19 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 		else if (arg[i] == '>' || arg[i] == '<')
 		{
 			str[k++] = arg[i];
-			if ((arg[i + 1] == arg[i] /*|| arg[i + 1] == '<'*/) && ++i) /// Redirection >> OR Here doc	<<
+			if (arg[i + 1] == arg[i] && ++i) /// Redirection >> OR Here doc	<<
 				str[k++] = arg[i];
 		}
 		else if (arg[i] == '-' && k == 2 && str[1] == '&') // Check dash if in pos 2 " >>- || >&- "
 			str[k++] = '-';
 		else if (i-- || 1)
 			break ;
-		i++;
 	}
 	ft_fill_token(st_tokens, ft_sum_asci(str) * -1, ft_strdup(str), indx);
 	*j += i;
 }
 
-void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
+void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
 {
 	int i;
 	char *temp;
@@ -129,7 +129,9 @@ void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
 	i = 0;
 	while (arg[i] != '\0')
 	{
-		if (arg[i + 1] == ' ' || arg[i + 1] == '\t' || arg[i + 1] == '\0' || arg[i + 1] == '&' || arg[i + 1] == '|' || arg[i + 1] == '>' || arg[i + 1] == '<')
+		if (arg[i + 1] == ' ' || arg[i + 1] == '\t' || arg[i + 1] == '\0' ||
+			arg[i + 1] == '&' || arg[i + 1] == '|' ||
+				arg[i + 1] == '>' || arg[i + 1] == '<')
 		{
 			temp = ft_strsub(arg, 0, i + 1);
 			ft_fill_token(st_tokens, T_TXT, temp, indx);
@@ -148,14 +150,14 @@ t_tokens	*ft_lexer(char **args)
 	int i;
 	int j;
 
-	i = 0;
+	i = -1;
 	st_tokens = ft_new_token();
 	st_head = st_tokens;
-	while (args[i] != '\0')
+	while (args[++i] != '\0')
 	{
-		j = 0;
+		j = -1;
 		arg = args[i];
-		while (arg[j] != '\0')
+		while (arg[++j] != '\0')
 		{
 			if (arg[j] == '"' || arg[j] == '\'')						// Quotes
 				ft_lexer_quot(&st_tokens, &arg[j], &j, i);
@@ -167,12 +169,9 @@ t_tokens	*ft_lexer(char **args)
 				ft_upd_token(st_tokens->prev, T_RED_OUT_B, ">&-");
 			else
 				ft_lexer_txt(&st_tokens, &arg[j], &j, i);				// Text
-			j++;
 		}
-		i++;
 	}
-	// free last node // and protect it
-	st_tokens->prev->next = NULL;
+	(st_tokens->prev != NULL) ? (st_tokens->prev->next = NULL) : NULL;
 	free(st_tokens);
 	/*
 		st_tokens = st_head;
@@ -182,7 +181,7 @@ t_tokens	*ft_lexer(char **args)
 			st_tokens = st_tokens->next;
 		}
 		dprintf(fd_err,"\n--------------\n");
-	//exit(0);
+		//exit(0);
 	*/
 	return (st_head);
 }

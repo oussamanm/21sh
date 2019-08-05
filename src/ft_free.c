@@ -12,19 +12,36 @@
 
 #include "21sh.h"
 
-void	ft_lst_del(t_pipes **lst)
+void		ft_clear_tokens(t_tokens *st_tokens)
 {
-	t_list *temp;
+	t_tokens *st_temp;
 
-	if (!lst)
+	if (!st_tokens)
 		return ;
-	while (*lst)
+	while (st_tokens)
 	{
-		temp = (*lst)->next;
-        ft_strdel((*lst)->cmd);
-		free(*lst);
-		*lst = NULL;
-		*lst = temp;
+		st_temp = st_tokens;
+		ft_strdel(&(st_tokens->value));
+		st_tokens = st_tokens->next;
+		(st_temp != NULL) ? free(st_temp) : NULL;
 	}
-	lst = NULL;
+}
+
+void		ft_clear_cmds(t_pipes *st_pipes)
+{
+	t_pipes *st_temp;
+
+	while (st_pipes)
+	{
+		st_temp = st_pipes;
+		/// free args
+		ft_strrdel(st_pipes->args);
+		/// free cmd
+		ft_strdel(&(st_pipes->cmd));
+		/// free st_tokens
+		ft_clear_tokens(st_pipes->st_tokens);
+		st_pipes = st_pipes->next;
+		/// free old node
+		free(st_temp);
+	}
 }

@@ -67,10 +67,10 @@ void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 		{
 			/// Duplcating STD_IN on Read end of pipe
 			if (st_pipes != st_head && dup2(st_pipes->fds[0] , 0) == -1)
-				ft_err_exit("Error in dub STD_IN");
+				ft_putendl_fd("Error in dub STD_IN", 2);
 			/// Duplcating STD_OUT on Write end of pipe
 			if (dup2(st_pipes->fds[1] , 1) == -1)
-				ft_err_exit("Error in dub STD_OUT");
+				ft_putendl_fd("Error in dub STD_OUT", 2);
 			/// Close all fds
 			ft_close_pipes(st_head);
 			// Execve
@@ -82,7 +82,7 @@ void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 		{
 			/// Duplcating STD_IN on Read end of pipe
 			if (dup2(st_pipes->fds[0] , 0) == -1)
-				perror("Error in dub STD_IN");
+				ft_putendl_fd("Error in dub STD_IN", 2);
 			/// Close all fds
 			ft_close_pipes(st_head);	
 			/// Execve

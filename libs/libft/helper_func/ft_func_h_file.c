@@ -60,7 +60,10 @@ int		ft_open_file(char *file, int type) /// type : rd=0 wr=1  +app=3 rdwr=4
 
 	flag = 0;
 	if (file == NULL)
+	{
+		ft_print_error("No such file or directory", "21sh :", " ", 0);
 		return (-1);
+	}
 	fd = -1;
 	if (ft_check_file(file, type) == 0)
 	{
