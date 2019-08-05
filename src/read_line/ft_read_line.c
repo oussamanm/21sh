@@ -25,7 +25,7 @@ void	ft_enter(t_cursor *pos, t_select *select, char *s)
 	ft_putchar('\n');
 }
 
-char	*ft_call_complete(t_history *his, t_select *select, char *s, char *buf)
+char	*ft_call_complete(t_select *select, char *s, char *buf)
 {
 	if (LE == CAST(buf) || RI == CAST(buf))
 		ft_see_touch(buf, s, &pos1, select);
@@ -65,7 +65,7 @@ char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 		ft_print_history(his, buf, &s, &pos1);
 	}
 	else
-		s = ft_call_complete(his, select, s, buf);
+		s = ft_call_complete(select, s, buf);
 	return (s);
 }
 
