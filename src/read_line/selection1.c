@@ -57,11 +57,11 @@ void	ft_first_right_select(t_cursor *pos, t_select *select, char *s)
 {
 	select->start = pos->index;
 	select->end = pos->index;
-	ft_print_with_reverse_mode(s ,pos->index, pos->index, pos);
+	ft_print_with_reverse_mode(s, pos->index, pos->index, pos);
 	pos->index++;
 }
 
-void	ft_remove_last_select_right(t_cursor *pos, t_select *select, char *s, int *let)
+void	ft_remove_right(t_cursor *pos, t_select *select, char *s, int *let)
 {
 	if (select->end != 0)
 	{
@@ -86,29 +86,27 @@ void	ft_remove_last_select_right(t_cursor *pos, t_select *select, char *s, int *
 	*let = 1;
 }
 
-void    ft_selection(char *s, t_cursor *pos, char *buf, t_select *select)
+void	ft_selection(char *s, t_cursor *pos, char *buf, t_select *select)
 {
-    int len;
+	int len;
 	int let;
 
-	let = 0;
-    len = ft_strlen(s);
+	len = ft_strlen(s);
 	pos->num_lines = ft_get_num_of_lines(pos->num_col, s, pos->p);
 	pos->i = pos->index;
-    if (SEL_RI == CAST(buf) && pos->index < len)
+	if (SEL_RI == CAST(buf) && pos->index < len && !(let = 0))
 	{
 		if (select->end == -1 && select->start == -1)
 			ft_first_right_select(pos, select, s);
 		else if (select->start < select->end ||
 		(select->start == select->end && pos->index > select->end))
-		{	
+		{
 			select->end++;
-			ft_print_with_reverse_mode(s ,pos->index, pos->index, pos);
-			pos->index++;
+			ft_print_with_reverse_mode(s, pos->index, pos->index++, pos);
 		}
 		else if (select->start > select->end ||
 			(select->start == select->end && pos->index < select->end))
-			ft_remove_last_select_right(pos, select, s, &let);
+			ft_remove_right(pos, select, s, &let);
 		ft_get_end_of_line_pos(pos, s, pos->num_col);
 		(let) ? 0 : ft_pos_of_right_select(pos);
 		ft_set_last_position(*pos, pos->num_lines);

@@ -41,7 +41,7 @@ int		ft_check_quot(char *str)
 	return (0);
 }
 
-void    ft_quotes(char **line, t_select *select, t_history *his)
+void	ft_quotes(char **line, t_select *select, t_history *his)
 {
 	char	*s;
 	int		c;
@@ -53,7 +53,7 @@ void    ft_quotes(char **line, t_select *select, t_history *his)
 	{
 		*line = ft_strjoir(*line, "\n", 1);
 		if (q == '\'')
-		{	
+		{
 			ft_putstr("quote> ");
 			s = ft_read_line(his, select, 7);
 		}
@@ -62,8 +62,7 @@ void    ft_quotes(char **line, t_select *select, t_history *his)
 			ft_putstr("dquote> ");
 			s = ft_read_line(his, select, 8);
 		}
-		if (s)
-			*line = ft_strjoir(*line, s, 3);
+		(s) ? *line = ft_strjoir(*line, s, 3) : 0;
 		if (s != NULL && (c = ft_check_quot(*line)) == 0)
 			break ;
 		else

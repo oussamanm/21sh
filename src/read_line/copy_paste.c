@@ -16,7 +16,7 @@
 ** - function get save of the selection line when we tap COPY or CUT key.
 */
 
-void    ft_get_save(char *s, t_select *select)
+void	ft_get_save(char *s, t_select *select)
 {
 	int start;
 	int end;
@@ -63,17 +63,17 @@ void	ft_remove_selection(t_cursor *pos, char *s)
 
 char	*ft_paste_in_str(char *s, t_select *select, int index)
 {
-	int	i;
-	int j;
-	int len;
-	char *fr;
+	int		i;
+	int		j;
+	int		len;
+	char	*fr;
 
 	i = 0;
 	j = 0;
 	len = ft_strlen(s) + ft_strlen(select->save);
 	fr = ft_strnew(len + 1);
 	while (i < index)
-	{	
+	{
 		fr[i] = s[i];
 		i++;
 	}
@@ -111,7 +111,7 @@ void	ft_get_new_pos(t_cursor *pos, int len_sa)
 ** position.
 */
 
-void    ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select)
+void	ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select)
 {
 	int len;
 	int len_sa;

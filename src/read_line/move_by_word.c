@@ -34,12 +34,12 @@ int		ft_len_next_word(t_cursor *pos, char *s)
 	i = pos->index;
 	len = 0;
 	while (s[i] && s[i] != ' ' && s[i] != '\n')
-	{	
+	{
 		len++;
 		i++;
 	}
 	while (s[i] && (s[i] == ' ' || s[i] == '\n'))
-	{	
+	{
 		len++;
 		i++;
 	}
@@ -54,17 +54,17 @@ int		ft_len_last_word(t_cursor *pos, char *s)
 	i = pos->index;
 	len = 0;
 	while (i >= 0 && s[i] != ' ' && s[i] != '\n')
-	{	
+	{
 		len++;
 		i--;
 	}
 	while (i >= 0 && (s[i] == ' ' || s[i] == '\n'))
-	{	
+	{
 		len++;
 		i--;
 	}
 	while (i >= 0 && s[i] != ' ' && s[i] != '\n')
-	{	
+	{
 		len++;
 		i--;
 	}
@@ -95,7 +95,7 @@ void	ft_move_by_word(t_cursor *pos, char *s, char *buf)
 	}
 	if (LE_WOR == CAST(buf))
 	{
-		len_move = 	ft_len_last_word(pos, s);
+		len_move = ft_len_last_word(pos, s);
 		tputs(tgetstr("cd", NULL), 0, my_outc);
 		ft_putstr_term(num_col, s + pos->index, pos);
 		ft_get_new_pos_r(pos, len_move);

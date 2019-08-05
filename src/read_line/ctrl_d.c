@@ -31,39 +31,39 @@ void	ft_free_tab(char **tableau)
 
 void	ft_read_line_exit(t_cursor *pos, t_history *his, t_select *select)
 {
-    if (pos->end)
-        free(pos->end);
-    if (pos->cmd)
-        free(pos->cmd);
-    if (select->save)
-        free(select->save);
-    if (his->history)
-        ft_free_tab(his->history);
+	if (pos->end)
+		free(pos->end);
+	if (pos->cmd)
+		free(pos->cmd);
+	if (select->save)
+		free(select->save);
+	if (his->history)
+		ft_free_tab(his->history);
 	if (ft_set_to_default() == -1)
 		ft_putendl("reset the terminal parameters error");
+	ft_putstr("exit\n");
 }
 
 /*
-** - function exit from our shell when we have empty line. 
+** - function exit from our shell when we have empty line.
 ** - else the function remove a character from the index of our cursor.
 ** return the new line.
 */
 
 char	*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s)
 {
-    char	*new;
+	char	*new;
 	int		len;
 
-    if (!ft_strcmp(s, ""))
-    {
-        ft_read_line_exit(pos, his, select);
-		ft_putstr("exit\n");
+	if (!ft_strcmp(s, ""))
+	{
+		ft_read_line_exit(pos, his, select);
 		exit(0);
-    }
+	}
 	len = ft_strlen(s);
 	if (pos->index < len && pos->index >= 0)
 	{
-        tputs(tgetstr("cd", NULL), 0, my_outc);
+		tputs(tgetstr("cd", NULL), 0, my_outc);
 		if (!(new = ft_memalloc(sizeof(char) * len)))
 			return (NULL);
 		ft_strncpy(new, s, pos->index);

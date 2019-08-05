@@ -18,14 +18,14 @@ int		my_outc(int c)
 	return (1);
 }
 
-int		ft_set_to_default()
+int		ft_set_to_default(void)
 {
 	if (tcsetattr(0, TCSANOW, &pos1.term) == ERR)
 		return (-1);
 	return (1);
 }
 
-int		ft_set_termcap()
+int		ft_set_termcap(void)
 {
 	struct termios term;
 

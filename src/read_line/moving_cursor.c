@@ -59,7 +59,7 @@ void	ft_see_touch(char *buf, char *s, t_cursor *pos, t_select *select)
 	int		size;
 
 	size = ft_strlen(s);
-	if (select->end != -1 && select->start -1)
+	if (select->end != -1 && select->start != -1)
 		ft_remove_selections(pos, select, s);
 	if (LE == CAST(buf) && pos->x == 0)
 	{

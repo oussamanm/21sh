@@ -11,14 +11,13 @@
 /* ************************************************************************** */
 
 #include "read_line.h"
-#include  "21sh.h"
 
 char	*ft_remove_strinstr(char *s, int start, int end)
 {
-	char *new;
-	int len;
-	int i;
-	int j;
+	char	*new;
+	int		len;
+	int		i;
+	int		j;
 
 	len = ft_strlen(s);
 	if (!(new = ft_memalloc(sizeof(char) * (len - (end - start + 1) + 2))))
@@ -43,7 +42,7 @@ void	ft_cut_complete(t_cursor *pos, t_select *select, char **s)
 	while (len_sa--)
 	{
 		if (pos->x == 0)
-		{	
+		{
 			pos->y--;
 			pos->x = pos->end[pos->y];
 			ft_movecur_up_and_right(1, pos->x);
@@ -67,7 +66,8 @@ void	ft_cut_complete(t_cursor *pos, t_select *select, char **s)
 void	ft_cut(t_cursor *pos, t_select *select, char **s)
 {
 	ft_get_save(*s, select);
-	if (select->start >= select->end && (pos->index < select->end || pos->index == 0))
+	if (select->start >= select->end &&
+		(pos->index < select->end || pos->index == 0))
 	{
 		if (!(*s = ft_remove_strinstr(*s, select->end, select->start)))
 			return ;

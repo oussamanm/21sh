@@ -36,7 +36,7 @@ void	ft_first_left_select(t_cursor *pos, t_select *select, char *s)
 		ft_putstr_term(pos->num_col, s, pos);
 }
 
-void	ft_remove_last_select_left(t_cursor *pos, t_select *select, char *s, int *let)
+void	ft_remove_left(t_cursor *pos, t_select *select, char *s, int *let)
 {
 	int len;
 
@@ -63,7 +63,7 @@ void	ft_select_left_one(t_cursor *pos, t_select *select, char *s)
 	if (select->end != 0)
 		select->end--;
 	pos->i = select->end;
-	ft_print_with_reverse_mode(s ,select->end, select->start, pos);
+	ft_print_with_reverse_mode(s, select->end, select->start, pos);
 }
 
 void	ft_left_selection(char *s, t_cursor *pos, t_select *select)
@@ -79,11 +79,13 @@ void	ft_left_selection(char *s, t_cursor *pos, t_select *select)
 		tputs(tgetstr("cd", NULL), 0, my_outc);
 		if (select->end == -1 && select->start == -1)
 			ft_first_left_select(pos, select, s);
-		else if ((select->start < select->end) || ((select->start == select->end)
-			&& (pos->index < len - 1 && pos->index >= select->end)))	
-			ft_remove_last_select_left(pos, select, s, &let);
-		else if ((select->start > select->end) || ((select->start == select->end)
-			&& (pos->index == len - 1 || pos->index < select->end)))
+		else if ((select->start < select->end)
+			|| ((select->start == select->end)
+				&& (pos->index < len - 1 && pos->index >= select->end)))
+			ft_remove_left(pos, select, s, &let);
+		else if ((select->start > select->end)
+			|| ((select->start == select->end)
+				&& (pos->index == len - 1 || pos->index < select->end)))
 			ft_select_left_one(pos, select, s);
 		ft_get_end_of_line_pos(pos, s, pos->num_col);
 		(!let) ? ft_pos_of_left_select(pos) : 0;

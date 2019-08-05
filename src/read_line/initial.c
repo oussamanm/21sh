@@ -14,8 +14,8 @@
 
 char	**ft_alloc_tab(void)
 {
-	int i;
-	char **tb;
+	int		i;
+	char	**tb;
 
 	i = 0;
 	if (!(tb = (char **)malloc(sizeof(char *) * MAX_HISTORY + 1)))
@@ -29,6 +29,7 @@ char	**ft_alloc_tab(void)
 int		ft_get_size_windz(void)
 {
 	struct winsize ws;
+
 	ioctl(0, TIOCGWINSZ, &ws);
 	return (ws.ws_col);
 }
@@ -44,11 +45,14 @@ void	ft_init(int **d, int size)
 
 void	ft_init_size_end_line(t_cursor *pos)
 {
+	int n;
+
 	if (pos->num_lines > MAX_LINES)
 	{
 		if (pos->end)
 			free(pos->end);
-		if (!(pos->end = ft_memalloc(sizeof(int) * (pos->num_lines + MAX_LINES))))
+		n = pos->num_lines + MAX_LINES;
+		if (!(pos->end = ft_memalloc(sizeof(int) * n)))
 			return ;
 		ft_init(&pos->end, pos->num_lines + MAX_LINES);
 	}
