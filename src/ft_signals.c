@@ -37,6 +37,12 @@ void	ft_catch_signal(int signal)
 
 void ft_call_signal()
 {
+	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, ft_catch_signal);
     signal(SIGWINCH, ft_win_change);
+}
+
+void	ft_signal_default()
+{
+	signal(SIGQUIT, SIG_DFL);
 }

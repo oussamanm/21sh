@@ -65,6 +65,7 @@ typedef struct	s_cursor
 	int num_col;
 	int *end;
 	char *cmd;
+	int i;
 }				t_cursor;
 
 typedef	struct	s_select

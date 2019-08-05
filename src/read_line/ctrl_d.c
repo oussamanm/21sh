@@ -55,6 +55,7 @@ char	*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s)
     if (!ft_strcmp(s, ""))
     {
         ft_read_line_exit(pos, his, select);
+		ft_putstr("exit\n");
 		exit(0);
     }
 	len = ft_strlen(s);

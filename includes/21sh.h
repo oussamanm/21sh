@@ -204,6 +204,7 @@ typedef struct			s_pipes
 ///*** Signals
 	void 				ft_call_signal();
 	void				ft_call_handler();
+	void				ft_signal_default();
 
 //
 

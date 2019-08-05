@@ -29,6 +29,7 @@ void	ft_first_left_select(t_cursor *pos, t_select *select, char *s)
 	{
 		select->start = pos->index;
 		select->end = pos->index;
+		pos->i = pos->index;
 		ft_print_with_reverse_mode(s, select->start, select->end, pos);
 	}
 	else
@@ -61,6 +62,7 @@ void	ft_select_left_one(t_cursor *pos, t_select *select, char *s)
 {
 	if (select->end != 0)
 		select->end--;
+	pos->i = select->end;
 	ft_print_with_reverse_mode(s ,select->end, select->start, pos);
 }
 
@@ -88,5 +90,4 @@ void	ft_left_selection(char *s, t_cursor *pos, t_select *select)
 		ft_set_last_position(*pos, pos->num_lines);
 		(pos->index != 0) ? pos->index-- : 0;
 	}
-	dprintf(fd_err, "left numcol == %d pos->x == %d pos->y == %d num_line == %d real == %d pos->index == %d\n", pos->end[pos->y],pos->x,pos->y, pos->num_lines, pos->end[pos->num_lines - 1], pos->index);
 }

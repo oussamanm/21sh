@@ -62,9 +62,9 @@ void    ft_quotes(char **line, t_select *select, t_history *his)
 			ft_putstr("dquote> ");
 			s = ft_read_line(his, select, 8);
 		}
-		*line = ft_strjoir(*line, s, 3);
-		c = ft_check_quot(*line);
-		if ((c = ft_check_quot(*line)) == 0)
+		if (s)
+			*line = ft_strjoir(*line, s, 3);
+		if (s != NULL && (c = ft_check_quot(*line)) == 0)
 			break ;
 		else
 			q = c;

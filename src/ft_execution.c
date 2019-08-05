@@ -120,6 +120,7 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 		ft_err_exit("Error in Fork new process \n");
 	if (pid == 0)
 	{
+		ft_signal_default();
 		if (ft_check_redi(st_pipes)) /// Check if exist redirection
 			if (ft_parse_cmd(st_pipes) == PARSE_KO)
 				exit(0);

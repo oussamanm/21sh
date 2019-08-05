@@ -17,6 +17,8 @@ void	ft_stock_history(char **history, char *line, int his_count)
 	int i;
 
 	i = 1;
+	if (!line || !history)
+		return ;
 	if (his_count < MAX_HISTORY)
 	{
 		free(history[his_count]);
@@ -36,7 +38,7 @@ void	ft_stock_history(char **history, char *line, int his_count)
 
 void	ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos)
 {
-	if ((UP == CAST(buf) && his->his_count == 0)
+	if (!(*s) || (UP == CAST(buf) && his->his_count == 0)
 		|| (DO == CAST(buf) && !his->history[his->his_count + 1]))
 		return ;
 	pos->num_col = ft_get_size_windz();
@@ -49,7 +51,8 @@ void	ft_print_history(t_history *his, char *buf, char **s, t_cursor *pos)
 	}
 	else
 		his->his_count++;
-	ft_putstr(his->history[his->his_count]);
+	pos->x = pos->p;
+	ft_putstr_term(pos->num_col, his->history[his->his_count], pos);
 	ft_get_end_of_line_pos(pos, his->history[his->his_count], pos->num_col);
 	pos->num_lines = ft_get_num_of_lines(pos->num_col, his->history[his->his_count], pos->p);
 	pos->index = ft_strlen(his->history[his->his_count]);
