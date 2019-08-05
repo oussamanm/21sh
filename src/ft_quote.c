@@ -80,7 +80,7 @@ char	*ft_swap_vrb(char *arg, int *index, char **environ)
 	index_vrb = *index + 1;
 	while (arg[++(*index)])
 	{
-		if (!ft_isalpha(arg[*index]) && ft_isalnum(arg[*index]) && arg[*index] == '_')
+		if (!ft_isalpha(arg[*index]) && !ft_isalnum(arg[*index]) && arg[*index] != '_')
 			break ;
 		i++;
 	}

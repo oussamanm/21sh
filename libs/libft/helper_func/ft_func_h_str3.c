@@ -102,10 +102,7 @@ int			ft_isallprint(char *str)
 void		ft_print_error(char *msg, char *para1, char *para2, int rm)
 {
 	if (msg == NULL)
-	{
-		ft_putstr("Opss MSG_ERROR is NULL \n");
 		return ;
-	}
 	if (para1 != NULL)
 		ft_putstr_fd(para1, 2);
 	if (para2 != NULL)

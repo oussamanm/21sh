@@ -150,6 +150,8 @@ int			main(void)
 			{
 				/// Correction args : Expansions + Correct Quoting
 				str_cmds = ft_corr_args(str_cmds, environ);
+				dprintf(fd_err,"str_cmds after correc_erg = %p \n",str_cmds);
+				dprintf(fd_err,"str_cmds after correc_erg = %s \n",str_cmds);
 				///  Splite line entred with {;,&&,||,&} and Execute cmds
 				ft_call_cmdss(str_cmds, &environ);
 			}

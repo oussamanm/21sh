@@ -98,7 +98,7 @@ void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 	ft_init_redi(st_redir, 1);
 	if (st_tokens->token == T_RED_OUT_S) // 7>file
 	{
-		if (st_tokens->prev && st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value) && (st_tokens->prev->is_arg = 1))
+		if (st_tokens->prev && st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value) && st_tokens->prev->token == 0 && (st_tokens->prev->is_arg = 1))
 			st_redir->fd_red = ft_atoi(st_tokens->prev->value);
 		st_redir->fd_des = -2;
 		st_redir->fd_file = st_tokens->next->value;
@@ -222,6 +222,8 @@ int		ft_error_redir(t_tokens *st_tokens)
 {
 	while (st_tokens != NULL)
 	{
+		if (st_tokens->token == T_RED_OUT_S && st_tokens->next && st_tokens->next->token == T_TXT && st_tokens->next->value && st_tokens->next->value[0] == '&')
+			return (ft_putendl_fd("syntax error near unexpected token `&'", 2));
 		if (st_tokens->token == -124 && st_tokens->next && st_tokens->next->token == T_TXT)
 			if (st_tokens->next->indx != st_tokens->indx && st_tokens->next->next && st_tokens->next->next->token < 0)
 				return (ft_putendl_fd("syntax error near unexpected token 'st_tokens->next->token'", 2));
@@ -233,7 +235,11 @@ int		ft_error_redir(t_tokens *st_tokens)
 			return (ft_putendl_fd("syntax error near unexpected token `&'", 2));
 		/// error token redi || null after Redirection
 		if (st_tokens->token < 0 && (st_tokens->next == NULL || st_tokens->next->token < 0) && st_tokens->token != -145 && st_tokens->token != -143) /// check arg after redi !(execpt >&- , <&-)
+		{
+			dprintf(fd_err, "Hi bb , |%p| \n",st_tokens->next);
+			
 			return (ft_putendl_fd("syntax error near unexpected token `last token'", 2));
+		}
 		/// error ><
 		if (st_tokens->token <= -122 && ft_strncmp(st_tokens->value, "><", 2) == 0)
 			return (ft_putendl_fd("syntax error near unexpected token `<'", 2));
