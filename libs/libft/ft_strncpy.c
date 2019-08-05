@@ -20,6 +20,8 @@ char	*ft_strncpy(char *dst, const char *src, size_t len)
 	unsigned char	*n_src;
 
 	i = 0;
+	if (dst == NULL || src == NULL)
+		return (NULL);
 	n_dst = (unsigned char *)dst;
 	n_src = (unsigned char *)src;
 	lensrc = ft_strlen(src);

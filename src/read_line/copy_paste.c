@@ -12,6 +12,10 @@
 
 #include "read_line.h"
 
+/*
+** - function get save of the selection line when we tap COPY or CUT key.
+*/
+
 void    ft_get_save(char *s, t_select *select)
 {
 	int start;
@@ -31,6 +35,13 @@ void    ft_get_save(char *s, t_select *select)
 	select->save = ft_strsub(s, start, end - start + 1);
 }
 
+/*
+** function remove the selection :
+** - first move the cursor in the index 0 and clear from the cursor position.
+** - display our line without reverse video.
+** - set our cursor in the right position.
+*/
+
 void	ft_remove_selection(t_cursor *pos, char *s)
 {
 	int len;
@@ -44,6 +55,11 @@ void	ft_remove_selection(t_cursor *pos, char *s)
 	pos->x = x_save;
 	ft_set_last_position(*pos, pos->num_lines);
 }
+
+/*
+** - function add string inside our line start from the index geven
+** in parameters
+*/
 
 char	*ft_paste_in_str(char *s, t_select *select, int index)
 {
@@ -70,6 +86,10 @@ char	*ft_paste_in_str(char *s, t_select *select, int index)
 	return (fr);
 }
 
+/*
+** - save the next position of the cursor when we add a string in our line.
+*/
+
 void	ft_get_new_pos(t_cursor *pos, int len_sa)
 {
 	while (len_sa--)
@@ -84,6 +104,13 @@ void	ft_get_new_pos(t_cursor *pos, int len_sa)
 	}
 }
 
+/*
+** - function get save from our line when select an element.
+** - call funtion ft_cut when we need it.
+** - paste string in our line and displat it and move the cursor in the
+** position.
+*/
+
 void    ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select)
 {
 	int len;
@@ -93,8 +120,6 @@ void    ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select)
 	if (COPY == CAST(buf) && select->start != -1 && select->end != -1)
 	{
 		ft_get_save(*s, select);
-		select->start = -1;
-		select->end = -1;
 		ft_remove_selection(pos, *s);
 	}
 	if (CUT == CAST(buf) && select->start != -1 && select->end != -1)
@@ -111,4 +136,6 @@ void    ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select)
 		pos->num_lines = ft_get_num_of_lines(pos->num_col, *s, pos->p);
 		ft_set_last_position(*pos, pos->num_lines);
 	}
+	select->start = -1;
+	select->end = -1;
 }

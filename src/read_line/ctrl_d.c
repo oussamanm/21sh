@@ -24,6 +24,11 @@ void	ft_free_tab(char **tableau)
 	free(tableau);
 }
 
+/*
+** - function free all elements of the read line function need when we quit
+** from our shell.
+*/
+
 void	ft_read_line_exit(t_cursor *pos, t_history *his, t_select *select)
 {
     if (pos->end)
@@ -35,6 +40,12 @@ void	ft_read_line_exit(t_cursor *pos, t_history *his, t_select *select)
     if (his->history)
         ft_free_tab(his->history);
 }
+
+/*
+** - function exit from our shell when we have empty line. 
+** - else the function remove a character from the index of our cursor.
+** return the new line.
+*/
 
 char	*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s)
 {

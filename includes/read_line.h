@@ -26,6 +26,7 @@
 # include <stdlib.h>
 # include <curses.h>
 # include <sys/ioctl.h>
+#include "21sh.h"
 
 # define MAX_HISTORY 20
 # define MAX_LINES 20

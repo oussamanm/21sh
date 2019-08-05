@@ -12,6 +12,12 @@
 
 #include "read_line.h"
 
+/*
+** - function add the character c in the line ( s )
+** - dispaly the new char in our shell and set new position of our cursor
+** - put the cursor in the right position
+*/
+
 char	*ft_line_edd(char *s, t_cursor *pos, char c, t_select *select)
 {
 	char *new;
