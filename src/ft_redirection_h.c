@@ -12,10 +12,9 @@
 
 #include "21sh.h"
 
-///*** Helper Function for Redirection *****////
-
-
-///*** New list redirection ***///
+/*
+** ft_new_redir : New list redirection : O
+*/
 t_redir		*ft_new_redir()
 {
 	t_redir	*st_redir;
@@ -25,7 +24,9 @@ t_redir		*ft_new_redir()
 	return (st_redir);
 }
 
-///*** Initiale vrb of rediretion ***///
+/*
+** ft_init_redi : Initiale vrb of rediretion : O
+*/
 void		ft_init_redi(t_redir *st_redir, int type_red)
 {
 	if (st_redir == NULL)
@@ -47,7 +48,9 @@ void		ft_init_redi(t_redir *st_redir, int type_red)
 	st_redir->fd_file = NULL;
 }
 
-///*** helper function for ft_redi_out (>& || &>) ***///
+/*
+** ft_redi_out_h: helper function for ft_redi_out (>& || &>) : O
+*/
 void	ft_redi_out_h(t_redir *st_redir, t_tokens *st_tokens)
 {
 	if (PREV && PREV->indx == st_tokens->indx &&
@@ -65,7 +68,9 @@ void	ft_redi_out_h(t_redir *st_redir, t_tokens *st_tokens)
 	st_tokens->next->is_arg = 1;
 }
 
-///*** Apply redirection her_doc ***///
+/*
+** ft_apply_hered: Apply redirection her_doc : O
+*/
 void	ft_apply_hered(t_redir *st_redi)
 {
 	int fds[2];
@@ -80,36 +85,53 @@ void	ft_apply_hered(t_redir *st_redi)
 	st_redi->fd_des = fds[0];
 }
 
-///*** Check Error syntax of redirection
+/*
+** ft_error_redir_h: helper funct for ft_error_redir : O
+*/
+int		ft_error_redir_h(t_tokens *st_tokens)
+{
+	if (st_tokens->token == T_RED_APP_S && NEXT && NEXT->token == T_TXT)
+		if (NEXT->indx != st_tokens->indx && NEXT->next && NEXT->next->token < 0)
+			return (ft_putendl_fd("syntax error near unexpected token ", 2));
+	/// >>> || <<<
+	if (st_tokens->token < T_RED_APP_M)
+		return (ft_putendl_fd("syntax error near unexpected token ", 2));
+	/// error ><
+	if (st_tokens->token <= -122 && !ft_strncmp(st_tokens->value, "><", 2))
+		return (ft_putendl_fd("syntax error near unexpected token `<'", 2));
+	return (0);
+}
+
+/*
+** ft_error_redir: Check Error syntax of redirection rtn > 0 => error
+*/
 int		ft_error_redir(t_tokens *st_tokens)
 {
 	while (st_tokens != NULL)
 	{
-		if (st_tokens->token == T_RED_OUT_S && st_tokens->next && st_tokens->next->token == T_TXT && st_tokens->next->value && st_tokens->next->value[0] == '&')
+		if (st_tokens->token == T_RED_OUT_S && NEXT && NEXT->token == T_TXT &&
+			NEXT->value && NEXT->value[0] == '&')
 			return (ft_putendl_fd("syntax error near unexpected token `&'", 2));
-		if (st_tokens->token == -124 && st_tokens->next && st_tokens->next->token == T_TXT)
-			if (st_tokens->next->indx != st_tokens->indx && st_tokens->next->next && st_tokens->next->next->token < 0)
-				return (ft_putendl_fd("syntax error near unexpected token 'st_tokens->next->token'", 2));
-		/// >>> || <<<
-		if (st_tokens->token < -169)
-			return (ft_putendl_fd("syntax error near unexpected token ", 2));
+		if (ft_error_redir_h(st_tokens))
+			return (1);
 		/// & after redir
-		if (st_tokens->token < 0 && ft_check_char(st_tokens->value, ERRO_IN_AND))
+		if (st_tokens->token < 0 &&
+			ft_check_char(st_tokens->value, ERRO_IN_AND))
 			return (ft_putendl_fd("syntax error near unexpected token `&'", 2));
 		/// error token redi || null after Redirection
-		if (st_tokens->token < 0 && (st_tokens->next == NULL || st_tokens->next->token < 0) && st_tokens->token != -145 && st_tokens->token != -143) /// check arg after redi !(execpt >&- , <&-)
-			return (ft_putendl_fd("syntax error near unexpected token `last token'", 2));
-		/// error ><
-		if (st_tokens->token <= -122 && ft_strncmp(st_tokens->value, "><", 2) == 0)
-			return (ft_putendl_fd("syntax error near unexpected token `<'", 2));
+		if (st_tokens->token < 0 && (NEXT == NULL || NEXT->token < 0) &&
+			st_tokens->token != -145 && st_tokens->token != -143) /// check arg after redi !(execpt >&- , <&-)
+			return (ft_putendl_fd("syntax error near unexpected token", 2));
 		/// error nbr != 1 before >&file
-		if (st_tokens->token == T_RED_OUT_A && st_tokens->next  && !ft_isalldigit(st_tokens->next->value) && PREV && PREV->indx == st_tokens->indx
+		if (st_tokens->token == T_RED_OUT_A && NEXT &&
+			!ft_isalldigit(NEXT->value) && PREV && PREV->indx == st_tokens->indx
 			&& ft_isalldigit(PREV->value) && ft_atoi(PREV->value) != 1)
 			return (ft_putendl_fd("ambiguous redirect", 2));
 		/// &... after redir
-		if ((st_tokens->token == T_RED_OUT_A || st_tokens->token == T_RED_HER_D) && st_tokens->next && st_tokens->next->value && st_tokens->next->value[0] == '&')
+		if ((st_tokens->token == T_RED_OUT_A || st_tokens->token == T_RED_HER_D)
+			&& NEXT && NEXT->value && NEXT->value[0] == '&')
 			return (ft_putendl_fd("syntax error near unexpected token `&'", 2));
-		st_tokens = st_tokens->next;
+		st_tokens = NEXT;
 	}
 	return (0);
 }

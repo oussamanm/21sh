@@ -13,7 +13,7 @@
 #include "21sh.h"
 
 /*
-**	Function PIPES 
+**	ft_close_pipes : close all pipes created  : O
 */
 void		ft_close_pipes(t_pipes *st_pipes)
 {
@@ -27,6 +27,9 @@ void		ft_close_pipes(t_pipes *st_pipes)
 	}
 }
 
+/*
+**	ft_create_pipes : create all pipes needed : O
+*/
 void		ft_create_pipes(t_pipes *st_pipes)
 {
 	t_pipes *st_head;
@@ -48,50 +51,39 @@ void		ft_create_pipes(t_pipes *st_pipes)
 	}
 }
 
+/*
+**	ft_apply_pipe : PIPE
+*/
 void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 {
-	t_pipes *st_head;
-	int parent;
-	int child;
+	t_pipes	*st_head;
+	int		parent;
 
 	st_head = st_pipes;
-	/// Create child , to exec the last cmd and the other cmds
 	if ((parent = fork()) == -1)
 		ft_err_exit("Error in Fork \n");
-
-	/// Initiale Pipes_line
 	(parent == 0) ? ft_create_pipes(st_pipes) : NULL;
-
 	while (parent == 0 && st_pipes != NULL)
 	{
-		/// Create other Childs
-		if ((child = fork()) == 0)
+		if (fork() == 0)
 		{
-			/// Duplcating STD_IN on Read end of pipe
 			if (st_pipes != st_head && dup2(st_pipes->fds[0] , 0) == -1)
 				ft_putendl_fd("Error in dub STD_IN", 2);
-			/// Duplcating STD_OUT on Write end of pipe
 			if (dup2(st_pipes->fds[1] , 1) == -1)
 				ft_putendl_fd("Error in dub STD_OUT", 2);
-			/// Close all fds
 			ft_close_pipes(st_head);
-			// Execve
 			ft_split_cmd(0, st_pipes, environ);
 			exit(0);
 		}
 		st_pipes = st_pipes->next;
 		if (st_pipes->next == NULL) /// parent_child
 		{
-			/// Duplcating STD_IN on Read end of pipe
 			if (dup2(st_pipes->fds[0] , 0) == -1)
 				ft_putendl_fd("Error in dub STD_IN", 2);
-			/// Close all fds
 			ft_close_pipes(st_head);	
-			/// Execve
 			ft_split_cmd(0, st_pipes, environ);
 			exit(0);
 		}
 	}
-	if (parent > 0)
-		wait(NULL);
+	(parent > 0) ? (void )wait(NULL) : NULL;
 }

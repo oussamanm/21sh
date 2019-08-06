@@ -26,7 +26,7 @@ static int		ft_getlen(char const *str, char *c)
 	return (i);
 }
 
-int		ft_count_word(const char *str, char *c)
+int				ft_count_word(const char *str, char *c)
 {
 	int i;
 	int rtn;
@@ -84,7 +84,7 @@ char	**ft_str_split(char const *s, char *c)
 	j = 0;
 	if (s == NULL || c == NULL)
 		return (NULL);
-	if (!(s_re = (char **)malloc(sizeof(*s_re) * (ft_count_word(s, c) + 1))))
+	if (!(s_re = (char **)malloc(sizeof(char *) * (ft_count_word(s, c) + 1))))
 		return (NULL);
 	while (s[i] != '\0')
 	{

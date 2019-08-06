@@ -44,61 +44,6 @@ char	*ft_find_path(char *arg, char **env)
 	return (NULL);
 }
 
-/*
-** delete a char of string in a giving position
-*/
-
-char	*delete_char(char *str, int pos)
-{
-	while (str[pos])
-	{
-		str[pos] = str[pos + 1];
-		pos++;
-	}
-	return (str);
-}
-
-int		key_is_str(char *buff)
-{
-	int i;
-
-	i = -1;
-	while (buff[++i])
-	{
-		if ((buff[i] < 32 || buff[i] > 126) && buff[i] != '\n')
-			return (0);
-	}
-	return (1);
-}
-
-char	*ft_strsubb(char const *s, unsigned int start, size_t len)
-{
-	int		i;
-	char	*str;
-
-	if (s != NULL)
-	{
-		str = (char*)malloc(len + 1);
-		if (str == NULL)
-			return (NULL);
-		i = 0;
-		while (i < (int)len && s[start] != '\0')
-		{
-			str[i] = s[start];
-			i++;
-			start++;
-		}
-		str[i] = '\0';
-		return (str);
-	}
-	return (NULL);
-}
-
-
-/*
-** Convert table of string to list
-*/
-
 t_pipes		*ft_new_stpipe()
 {
 	t_pipes *st_pipes;
@@ -114,6 +59,9 @@ t_pipes		*ft_new_stpipe()
 	return (st_pipes);
 }
 
+/*
+** Convert table of string to list
+*/
 t_pipes		*ft_strr_list(char **args_pipe)
 {
 	t_pipes *st_pipes;

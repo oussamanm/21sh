@@ -24,8 +24,7 @@
 
 ///////////********* TASKS ********///////////////
 
-
-- cd - : 
+- echo hello world "test        " "$HOME" 'asdasdasd' | wc | cat -e <<eof 
 - ;
 - ‘<<-’, then all leading tab characters are stripped from input lines and the line containing delimiter.
 - Change variable in here_doc
@@ -55,9 +54,9 @@ Redirect standard output (or n) to file.
 >          "file2"
 >   ./
 > ~
-                        "2">err  ("2" is not an argument) OK
+"2">err  ("2" is not an argument) OK
 2    > err
-                        2>"" OK
+2>"" OK
 ------------------------------------
 
 [n1] >& n2 :
@@ -74,10 +73,10 @@ Duplicate standard output (or n1) to n2.
 1>&1
 2>& 0
 file>&file
-                        file&>file : do append in the second time :::: add flag o-trun OK
+file&>file : do append in the second time :::: add flag o-trun OK
 "file"&>file
-                        1> &file : syntax error near unexpected token `&' , no space between '>' '&' OK
-                        pwd >"$qweqwe qwe" OK (error was in ft_swap_vrb in cond who collect vrb) OK
+1> &file : syntax error near unexpected token `&' , no space between '>' '&' OK
+pwd >"$qweqwe qwe" OK (error was in ft_swap_vrb in cond who collect vrb) OK
 -------------------------------------
 
 <

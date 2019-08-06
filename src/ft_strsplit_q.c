@@ -14,7 +14,9 @@
 
 
 
-///*** Split with quoting
+/*
+**	ft_str_split_q : Split with quoting : O
+*/
 char			**ft_str_split_q(char *str, char *c)
 {
 	int		i;
@@ -42,8 +44,10 @@ char			**ft_str_split_q(char *str, char *c)
 	return (s_re);
 }
 
+/*
+**	ft_index_of_first_split : Splite string with string : O
+*/
 
-////****** Splite string with string : Hamza
 int			ft_index_of_first_split(char *s1, char *s2)
 {
 	int i;

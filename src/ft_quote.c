@@ -12,7 +12,9 @@
 
 #include "21sh.h"
 
-///*** Remove Quote from args 	***///
+/*
+**	ft_remove_quot : Remove Quote from args : O
+*/
 void		ft_remove_quot(char **args)
 {
 	int	j;
@@ -41,7 +43,9 @@ void		ft_remove_quot(char **args)
 	}
 }
 
-////*** Function to Change sub_string with string
+/*
+**	ft_str_remp : Function to Change sub_string with string : O
+*/
 char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 {
 	char *rtn;
@@ -61,7 +65,9 @@ char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
 	return (rtn);
 }
 
-////*** Swap Variable with value
+/*
+**  ft_swap_vrb : Swap Variable with value : O
+*/
 char	*ft_swap_vrb(char *arg, int *index, char **environ)
 {
 	int i;
@@ -84,8 +90,7 @@ char	*ft_swap_vrb(char *arg, int *index, char **environ)
 	/// Get value of Variable
 	temp = ft_strsub(arg, index_vrb, i);
 	value = ft_get_vrb(temp, environ);
-	if (value == NULL)
-		value = ft_strnew(1);
+	(value == NULL) ? value = ft_strnew(1) : NULL;
 	/// Change Vrb with value
 	i = ft_strlen(temp);
 	/// incres i by len of value
@@ -96,7 +101,9 @@ char	*ft_swap_vrb(char *arg, int *index, char **environ)
 	return (temp);
 }
 
-////*** Correction cmd_line by change expansions
+/*
+**  ft_corr_args : Correction cmd_line by change expansions : O
+*/
 char 	*ft_corr_args(char *str_cmds, char **environ)
 {
 	int i;

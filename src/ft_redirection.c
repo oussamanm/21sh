@@ -15,7 +15,9 @@
 
 ///*** Redirection *****////
 
-///*** Redirection output >		***///
+/*
+** Redirection output >	 : O
+*/
 void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 {
 	/// Initiale Vrb redirection
@@ -33,10 +35,7 @@ void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 		st_tokens->next->is_arg = 1;
 	}
 	else if (st_tokens->token == T_RED_OUT_A) /// >& || &>
-	{
-		/// norme
 		ft_redi_out_h(st_redir, st_tokens);
-	}
 	else if (st_tokens->token == T_RED_OUT_B) // >&-
 	{
 		if (PREV->indx == st_tokens->indx && ft_isalldigit(PREV->value))
@@ -49,7 +48,9 @@ void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 	}
 }
 
-///*** Redirection input <		***///
+/*
+** Redirection input <	 : O
+*/
 void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens)
 {
 	/// Initiale Vrb redirection
@@ -79,7 +80,9 @@ void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens)
 	}
 }
 
-///*** Redirection append >>	***///
+/*
+** Redirection append >> : O
+*/
 void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
 {
 	ft_init_redi(st_redir, 2);
@@ -108,7 +111,9 @@ void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
 	}
 }
 
-///*** Redirection <>			***///
+/*
+** Redirection input <>	 : O
+*/
 void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
 {
 	ft_init_redi(st_redir, 3);
@@ -122,7 +127,9 @@ void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
 	st_tokens->next->is_arg = 1;
 }
 
-///*** Redirection : Here-doc	***///
+/*
+** Redirection : Here-doc : O
+*/
 void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
 {
 	char *content;

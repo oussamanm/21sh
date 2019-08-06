@@ -46,6 +46,7 @@ int fd_err;
 	# define M_QUOTE 34
 	# define M_DQUOTE 39
 	# define PREV st_tokens->prev
+	# define NEXT st_tokens->next
 	# define ERRO_IN_AND -12
 
 	# define PRINT(x) printf("\n***/in %d/***\n",x);
@@ -189,8 +190,6 @@ typedef struct			s_pipes
 ///*** helper
 	char				*ft_find_path(char *arg, char **env);
 	int					ft_count_word(const char *str, char *c);
-	char				*delete_char(char *str, int pos);
-	int					key_is_str(char *buff);
 	t_pipes				*ft_strr_list(char **args_pipe);
 //
 
