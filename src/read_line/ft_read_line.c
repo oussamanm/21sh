@@ -12,6 +12,11 @@
 
 #include "read_line.h"
 
+/*
+** - function clear the our line from the selection.
+** - move the cursor in the last of the line.
+*/
+
 void	ft_enter(t_cursor *pos, t_select *select, char *s)
 {
 	if (select->start != -1 && select->end != -1)
@@ -19,6 +24,25 @@ void	ft_enter(t_cursor *pos, t_select *select, char *s)
 	ft_putstr_term(pos->num_col, s + pos->index, pos);
 	ft_putchar('\n');
 }
+
+char	*ft_call_complete(t_select *select, char *s, char *buf)
+{
+	if (LE == CAST(buf) || RI == CAST(buf))
+		ft_see_touch(buf, s, &pos1, select);
+	else if (SEL_RI == CAST(buf) || SEL_LE == CAST(buf))
+		ft_selection(s, &pos1, buf, select);
+	else if (COPY == CAST(buf) || PASTE == CAST(buf) || CUT == CAST(buf))
+		ft_copy_paste(buf, &s, &pos1, select);
+	else if (ft_isprint(buf[0]) && pos1.index != (int)ft_strlen(s))
+		s = ft_line_edd(s, &pos1, buf[0], select);
+	else
+		ft_print_touch_and_join(&pos1, buf, &s);
+	return (s);
+}
+
+/*
+** - function call the functions needed to edit our line.
+*/
 
 char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 {
@@ -40,18 +64,15 @@ char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 			ft_remove_selections(&pos1, select, s);
 		ft_print_history(his, buf, &s, &pos1);
 	}
-	else if (LE == CAST(buf) || RI == CAST(buf))
-		ft_see_touch(buf, s, &pos1, select);
-	else if (SEL_RI == CAST(buf) || SEL_LE == CAST(buf))
-		ft_selection(s, &pos1, buf, select);
-	else if (COPY == CAST(buf) || PASTE == CAST(buf) || CUT == CAST(buf))
-		ft_copy_paste(buf, &s, &pos1, select);
-	else if (ft_isprint(buf[0]) && pos1.index != (int)ft_strlen(s))
-		s = ft_line_edd(s, &pos1, buf[0], select);
 	else
-		ft_print_touch_and_join(&pos1, buf, &s);
+		s = ft_call_complete(select, s, buf);
 	return (s);
 }
+
+/*
+** - function filter the keys tap by the user and call all functions needed.
+** - return the line to our shell.
+*/
 
 char	*ft_read_line(t_history *his, t_select *select, int p)
 {
@@ -60,7 +81,6 @@ char	*ft_read_line(t_history *his, t_select *select, int p)
 
 	ft_initial(p);
 	ft_bzero(buf, 6);
-	//g_fd = fopen("/dev/ttys001", "a+");
 	while (read(0, buf, 6) > 0)
 	{
 		if (ENTER == CAST(buf))

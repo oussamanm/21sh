@@ -33,7 +33,7 @@ void	ft_remove_selections(t_cursor *pos, t_select *select, char *s)
 
 void	ft_win_change(int sig)
 {
-    sig = 0;
+	sig = 0;
 	if (pos1.cmd)
 	{
 		pos1.num_col = ft_get_size_windz();
@@ -70,6 +70,11 @@ void	ft_putstr_term(int num_col, char *s, t_cursor *pos)
 	}
 }
 
+/*
+** - function print and join the enter characters set the new cursor
+** parameters.
+*/
+
 char	*ft_putline(char c, char *s, t_cursor *pos)
 {
 	char *new;
@@ -97,11 +102,16 @@ char	*ft_putline(char c, char *s, t_cursor *pos)
 	return (new);
 }
 
+/*
+** - function filter the key pressed by the user and call the function
+** ft_putline.
+*/
+
 void	ft_print_touch_and_join(t_cursor *pos, char *buf, char **s)
 {
 	int i;
 
 	i = 0;
-	while ((ft_isprint(buf[i]) || buf[i] =='\n') && i < 6)
+	while ((ft_isprint(buf[i]) || buf[i] == '\n') && i < 6)
 		*s = ft_putline(buf[i++], *s, pos);
 }

@@ -21,6 +21,8 @@ void		ft_built_exit(t_pipes *st_pipes, char ***env)
 	ft_strrdel(*env);
 	ft_clear_readline_struct();
 	ft_clear_cmds(st_pipes);
+	if (ft_set_to_default() == -1)
+		ft_putendl("reset the terminal parameters error");
 	exit(0);
 }
 

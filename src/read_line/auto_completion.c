@@ -12,15 +12,15 @@
 
 #include "read_line.h"
 
-char    *ft_complete_thename(char *s)
+char	*ft_complete_thename(char *s)
 {
-    char *begin;
+	char *begin;
 
-    if (ft_strlen(s) == 0)
-        return (NULL);
-    if (!(begin = ft_strrchr(s, ' ')))
-        return (ft_strdup(s));
-    return (ft_strdup(begin + 1));
+	if (ft_strlen(s) == 0)
+		return (NULL);
+	if (!(begin = ft_strrchr(s, ' ')))
+		return (ft_strdup(s));
+	return (ft_strdup(begin + 1));
 }
 
 char	ft_looks_like(char *name, char *begin)
@@ -39,42 +39,52 @@ char	ft_looks_like(char *name, char *begin)
 
 char	*ft_search_in_dir(char *begin, char *dirname)
 {
-	DIR *dir;
-	struct dirent *dp;
-	int	ret;
+	DIR				*dir;
+	struct dirent	*dp;
+	int				ret;
 
 	dir = opendir(dirname);
 	while ((dp = readdir(dir)))
 	{
 		if ((ret = ft_looks_like(dp->d_name, begin)) > 0)
+		{
+			closedir(dir);
 			return (ft_strdup(dp->d_name + ret));
+		}
 	}
+	closedir(dir);
 	return (NULL);
 }
 
 char	*ft_search_in_thepath(char *path, char *begin)
 {
-	char **tb;
-	char *ret;
-	int j;
+	char	**tb;
+	char	*ret;
+	int		j;
 
 	j = -1;
 	if (!(tb = ft_strsplit(path, ':')))
 		return (NULL);
 	while (tb[++j])
+	{
 		if ((ret = ft_search_in_dir(begin, tb[j])))
-			return(ret);
+		{
+			ft_free_tab(tb);
+			return (ret);
+		}
+	}
+	ft_free_tab(tb);
 	return (NULL);
 }
 
-char    *ft_auto_completion(t_cursor *pos, t_history *his, char *s)
+char	*ft_auto_completion(t_cursor *pos, t_history *his, char *s)
 {
-    char	*begin;
+	char	*begin;
 	char	*complete;
 	char	*new;
 	int		len;
 
-    if (pos->index != (int)ft_strlen(s) || !(begin = ft_complete_thename(s)))
+	if (pos->index != (int)ft_strlen(s) || !(begin = ft_complete_thename(s)))
 		return (s);
 	complete = ft_search_in_dir(begin, ".");
 	if (!complete)
@@ -87,6 +97,6 @@ char    *ft_auto_completion(t_cursor *pos, t_history *his, char *s)
 	ft_get_end_of_line_pos(pos, new, pos->num_col);
 	ft_get_new_pos(pos, len);
 	pos->index += len;
-	free(begin);
+	ft_strdel(&begin);
 	return (new);
 }

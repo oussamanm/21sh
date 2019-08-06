@@ -32,7 +32,7 @@ int		ft_get_num_of_lines(int num_col, char *s, int p)
 	while (s[i])
 	{
 		if (j == num_col - 1 || s[i] == '\n')
-		{	
+		{
 			num_lines++;
 			j = 0;
 		}
@@ -67,11 +67,15 @@ void	ft_get_end_of_line_pos(t_cursor *pos, char *s, int num_col)
 	pos->end[y] = x;
 }
 
+/*
+** - function set the cursor to right position after printing the line.
+*/
+
 void	ft_set_last_position(t_cursor pos, int num_lines)
 {
 	int y;
 	int real_pos;
-	
+
 	y = num_lines - 1;
 	real_pos = pos.end[num_lines - 1];
 	while (pos.y < y--)

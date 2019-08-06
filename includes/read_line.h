@@ -66,6 +66,7 @@ typedef struct	s_cursor
 	int *end;
 	char *cmd;
 	int i;
+	struct termios term;
 }				t_cursor;
 
 typedef	struct	s_select
@@ -108,7 +109,7 @@ int				ft_get_num_of_lines(int num_col, char *s, int p);
 void			ft_set_last_position(t_cursor pos, int num_lines);
 void			ft_move_cursor_zero(t_cursor pos);
 void			ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select);
-void			ft_mmmm(int **d, int size);
+void			ft_init(int **d, int size);
 void			ft_putstr_term(int num_col, char *s, t_cursor *pos);
 void			ft_get_end_of_line_pos(t_cursor *pos, char *s, int num_col);
 void			ft_get_new_pos(t_cursor *pos, int len_sa);
@@ -136,6 +137,7 @@ char			*ft_read_heredoc(char *eol);
 void			ft_cut(t_cursor *pos, t_select *select, char **s);
 void			ft_get_save(char *s, t_select *select);
 void			ft_init_size_end_line(t_cursor *pos);
+int				ft_set_to_default();
 
 
 

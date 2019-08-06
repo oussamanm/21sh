@@ -12,6 +12,11 @@
 
 #include "read_line.h"
 
+/*
+** - function move our cursor to delete the first left character.
+** - clear the line from the cursor to the end of screen.
+*/
+
 void	ft_move_cursor_fordel(t_cursor *pos)
 {
 	if (pos->x == 0)
@@ -27,6 +32,14 @@ void	ft_move_cursor_fordel(t_cursor *pos)
 	}
 	tputs(tgetstr("cd", NULL), 0, my_outc);
 }
+
+/*
+** - delete a character from our line first the function remove the character
+** from our line, move the cursor in the index 0 and clear the line and print
+** it again.
+** - reset the cursor in the right position after printing.
+** - return our new line.
+*/
 
 char	*ft_delcolomn(char *s, t_cursor *pos)
 {

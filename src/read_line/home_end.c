@@ -12,6 +12,11 @@
 
 #include "read_line.h"
 
+/*
+** - function set the cursor in the begin of line when the key pressed is "home"
+** or in the end of line when the key pressed is "end".
+*/
+
 void	ft_home_end(t_cursor *pos, char *s, char *buf)
 {
 	int num_col;
@@ -30,7 +35,8 @@ void	ft_home_end(t_cursor *pos, char *s, char *buf)
 	{
 		ft_move_cursor_zero(*pos);
 		tputs(tgetstr("cd", NULL), 0, my_outc);
-		ft_putstr(s);
+		pos->x = pos->p;
+		ft_putstr_term(pos->num_col, s, pos);
 		pos->x = pos->end[num_lines - 1];
 		pos->y = num_lines - 1;
 		pos->index = ft_strlen(s);

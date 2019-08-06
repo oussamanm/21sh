@@ -13,12 +13,12 @@
 #include "read_line.h"
 #include "21sh.h"
 
-char    *ft_read_heredoc(char *eol)
+char	*ft_read_heredoc(char *eol)
 {
-	char *s;
-	char *line;
-	t_history *his;
-	t_select *select;
+	char		*s;
+	char		*line;
+	t_history	*his;
+	t_select	*select;
 
 	his = NULL;
 	select = NULL;

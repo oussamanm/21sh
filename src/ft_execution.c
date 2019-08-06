@@ -90,8 +90,9 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	if (pid == 0)
 	{
 		ft_signal_default();
-		if (ft_check_redi(st_pipes) && ft_parse_cmd(st_pipes) == PARSE_KO) /// Check if exist redirection
-			exit(0);
+		if (ft_check_redi(st_pipes)) /// Check if exist redirection
+			if (ft_parse_cmd(st_pipes) == PARSE_KO)
+				exit(0);
 		if (!ft_strcmp(st_pipes->args[0], "echo"))							/// Builten ECHO (executed in child)
 			ft_buil_echo(st_pipes->args);
 		else
