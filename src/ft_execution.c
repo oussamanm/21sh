@@ -18,7 +18,8 @@
 */
 
 
-///*** Check redirection		***///
+/* Check redirection		
+***/
 int			ft_check_redi(t_pipes *st_pipes)
 {
 	t_tokens *st_temp;
@@ -35,7 +36,9 @@ int			ft_check_redi(t_pipes *st_pipes)
 	return (0);
 }
 
-///*** Execute Command			***///
+/*
+** Execute Command			: O
+*/
 int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 {
 	char	*str_arg;
@@ -65,7 +68,9 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 	return ((i == 0) ? -1 : -2); /// i = -1 : command not found | i == -2 : ERR in EXECUTABLE
 }
 
-///*** Check if cmd is builtens and splite
+/*
+** Check if cmd is builtens and splite			: 
+*/
 void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 {
 	int pid;
@@ -99,7 +104,9 @@ void		ft_split_cmd(int fork_it, t_pipes *st_pipes, char ***env)
 	g_sign = 0;
 }
 
-///*** Check if there is a pipe , split and fill args, check error lexer
+/*
+** Check if there is a pipe , split and fill args, check error lexer : 
+*/
 int			ft_call_cmdss(char *str_arg, char ***environ)
 {
 	char		**args_pipe;

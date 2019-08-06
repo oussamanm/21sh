@@ -12,6 +12,9 @@
 
 #include "21sh.h"
 
+/*
+**	Builten env : O
+*/
 void		ft_buil_env(char **args, char ***env)
 {
 	int		i;
@@ -29,6 +32,9 @@ void		ft_buil_env(char **args, char ***env)
 	}
 }
 
+/*
+**	Builten setenv : O
+*/
 void		ft_buil_setenv(char **args, char ***env)
 {
 	if (env == NULL || args == NULL || *args == NULL)
@@ -44,28 +50,30 @@ void		ft_buil_setenv(char **args, char ***env)
 	return ;
 }
 
+/*
+**	Builten setenv : 
+*/
 void		ft_buil_unsetenv(char *arg, char ***env)
 {
-	int		len_arg;
 	int		i;
 	int		len_env;
 
 	len_env = -1;
-	if (!(i = 0) && ((*env) == NULL || (*env)[0] == NULL || arg == NULL))
+	if ((i = -1) == -1 && ((*env) == NULL || (*env)[0] == NULL || !arg))
 		return ;
-	while ((*env)[i] && (*env)[i] != NULL)
+	while ((*env)[++i] != NULL)
 	{
-		len_arg = ft_find_char((*env)[i], '=');
-		len_arg = (len_arg == 1) ? 2 : len_arg;
 		if (ft_find_char(arg, '=') >= 0)
+		{
 			ft_print_error(CMD_NV, "setenv :", arg, 0);
-		else if (ft_strncmp(arg, (*env)[i], len_arg) == 0)
+			return ;
+		}
+		else if (!ft_strncmp(arg, (*env)[i], ft_find_char((*env)[i], '=')))
 		{
 			len_env = ft_strrlen(*env);
 			ft_strdel(&((*env)[i]));
 			break ;
 		}
-		i++;
 	}
 	while (i < (len_env - 1) && (*env)[i + 1] != NULL)
 	{

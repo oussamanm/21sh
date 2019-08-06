@@ -13,6 +13,10 @@
 #include "21sh.h"
 #include "read_line.h"
 
+
+/*
+** ft_catch_signal : CTR + c
+*/
 void	ft_catch_signal(int signal)
 {
 	signal = 0;
@@ -34,6 +38,7 @@ void	ft_catch_signal(int signal)
 		pos1.cmd = ft_strnew(0);
 	}
 }
+
 
 void ft_call_signal()
 {

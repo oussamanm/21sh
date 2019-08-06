@@ -26,6 +26,7 @@ void		ft_close_pipes(t_pipes *st_pipes)
 		st_pipes = st_pipes->next;
 	}
 }
+
 void		ft_create_pipes(t_pipes *st_pipes)
 {
 	t_pipes *st_head;
@@ -46,6 +47,7 @@ void		ft_create_pipes(t_pipes *st_pipes)
 			st_pipes->fds[1] = fds[1];
 	}
 }
+
 void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 {
 	t_pipes *st_head;

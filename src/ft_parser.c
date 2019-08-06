@@ -12,8 +12,26 @@
 
 #include "21sh.h"
 
-///*** PARSER : Read tokens, Apply redirection, Update args  *****////
+/*
+**	ft_call_redire : calls function redirection  : 0
+*/
+void	ft_call_redire(t_redir *st_redir, t_tokens *st_tokens)
+{
+	if (CHECK_TOKEN(st_tokens->token, T_RED_OUT_S, T_RED_OUT_A, T_RED_OUT_B))	/// OUT_PUT
+		ft_redi_out(st_redir, st_tokens);
+	else if (CHECK_TOKEN(st_tokens->token, T_RED_IN_S, T_RED_IN_A, T_RED_IN_B))	/// IN_PUT
+		ft_redi_in(st_redir, st_tokens);
+	else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, T_RED_APP_A))		/// APPEND
+		ft_redi_app(st_redir, st_tokens);
+	else if (st_tokens->token == T_RED_BOTH)									/// <>
+		ft_redi_both(st_redir, st_tokens);
+	else if (st_tokens->token == T_RED_HER_D)									/// HERE_DOC
+		ft_redi_her(st_redir, st_tokens);
+}
 
+/*
+**	ft_read_tokens : Read token and fill struct t_redir with redirection : 0
+*/
 static void     ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 {
 	t_redir		*st_redir;
@@ -34,33 +52,27 @@ static void     ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 				st_redir->next = ft_new_redir();
 				st_redir = st_redir->next;
 			}
-			if (CHECK_TOKEN(st_tokens->token, T_RED_OUT_S, T_RED_OUT_A, T_RED_OUT_B))	/// OUT_PUT
-				ft_redi_out(st_redir, st_tokens);
-			else if (CHECK_TOKEN(st_tokens->token, T_RED_IN_S, T_RED_IN_A, T_RED_IN_B))	/// IN_PUT
-				ft_redi_in(st_redir, st_tokens);
-			else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, T_RED_APP_A))		/// APPEND
-				ft_redi_app(st_redir, st_tokens);
-			else if (st_tokens->token == T_RED_BOTH)									/// <>
-				ft_redi_both(st_redir, st_tokens);
-			else if (st_tokens->token == T_RED_HER_D)					/// HERE_DOC
-				ft_redi_her(st_redir, st_tokens);
+			ft_call_redire(st_redir, st_tokens);
 		}
 		st_tokens = st_tokens->next;
 	}
 	st_pipes->st_redir = head;
 }
 
+/*
+**	ft_apply_redi : apply redirection  : 0
+*/
 static int		ft_apply_redi(t_pipes *st_pipes)
 {
-	t_redir *lst_redi;
+	t_redir	*lst_redi;
 	
 	if (st_pipes == NULL)
 		return (REDI_KO);
 	lst_redi = st_pipes->st_redir;
 	while (lst_redi != NULL)
 	{
-		if (lst_redi->type_red == 4)
-			ft_apply_hered(lst_redi);
+		/// Apply here doc (create pipe and write in (write end of pipe))
+		(lst_redi->type_red == 4) ? ft_apply_hered(lst_redi) : NULL;
 		if (lst_redi->fd_close != -1)
 			close(lst_redi->fd_close);
 		if (lst_redi->fd_red != -1 && lst_redi->fd_des != -1)
@@ -70,22 +82,23 @@ static int		ft_apply_redi(t_pipes *st_pipes)
 			if (lst_redi->fd_des == -1 || !ft_exist_fd(lst_redi->fd_des))
 				return (REDI_KO);
 			if (dup2(lst_redi->fd_des , lst_redi->fd_red) == -1)
-				return (0 && ft_putendl_fd("Error in dub", 2));
+				return (ft_putendl_fd("Error in dub", 2) && 0);
 		}
 		if (lst_redi->fd_err != -1 && lst_redi->fd_des != -1)
-		{
 			if (dup2(lst_redi->fd_des, lst_redi->fd_err) == -1)
-				return (0 && ft_putendl_fd("Error in dub", 2));
-		}
+				return (ft_putendl_fd("Error in dub", 2) && 0);
 		lst_redi = lst_redi->next;
 	}
 	return (REDI_OK);
 }
 
+/*
+**	ft_update_tokens : update token by remove quotes : 0
+*/
 static void		ft_update_tokens(t_tokens *st_tokens)
 {
-	char *temp;
-	t_tokens *st_temp;
+	char		*temp;
+	t_tokens	*st_temp;
 
 	st_temp = st_tokens;
 	while (st_temp)
@@ -100,10 +113,13 @@ static void		ft_update_tokens(t_tokens *st_tokens)
 	}
 }
 
+/*
+**	ft_update_args : update args by remove redirection : 0
+*/
 static void     ft_update_args(t_pipes *st_pipes)
 {
-	int count;
-	int	i;
+	int			count;
+	int			i;
 	t_tokens	*st_temp;
 
 	count = 0;
@@ -127,6 +143,9 @@ static void     ft_update_args(t_pipes *st_pipes)
 	(st_pipes->args)[i] = NULL;
 }
 
+/*
+**	ft_parse_cmd : read tokens and apply redirection : 0
+*/
 int             ft_parse_cmd(t_pipes *st_pipes)
 {
 	/// Remove quotes from tokens
@@ -134,20 +153,7 @@ int             ft_parse_cmd(t_pipes *st_pipes)
 
 	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_pipes->st_tokens);
-	/*
-		t_redir *temp;
-		temp = st_pipes->st_redir;
-		while (temp)
-		{
-			dprintf(fd_err,"----TYEP REDIRECTION = %d\n",temp->type_red);
-			dprintf(fd_err,"\tfd_red = %d\n",temp->fd_red);
-			dprintf(fd_err,"\tfd_des = %d\n",temp->fd_des);
-			dprintf(fd_err,"\tfd_err = %d\n",temp->fd_err);
-			dprintf(fd_err,"\tfd_close = %d\n",temp->fd_close);
-			dprintf(fd_err,"\tfd_file = %s\n",temp->fd_file);
-			temp = temp->next;
-		}
-	*/
+
 	// Apply Redirection
 	if (ft_apply_redi(st_pipes) == REDI_KO)
 		return (PARSE_KO);

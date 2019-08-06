@@ -13,7 +13,9 @@
 #include "21sh.h"
 #include "read_line.h"
 
-///*** Builten exit : free env , free readline, clear struct t_pipes ***///
+/*
+**	Builten exit : free env , free readline, clear struct t_pipes : O
+*/
 void		ft_built_exit(t_pipes *st_pipes, char ***env)
 {
 	ft_strrdel(*env);
@@ -22,6 +24,9 @@ void		ft_built_exit(t_pipes *st_pipes, char ***env)
 	exit(0);
 }
 
+/*
+**	Builten echo : O
+*/
 void		ft_buil_echo(char **arg)
 {
 	int		i;
@@ -43,6 +48,9 @@ void		ft_buil_echo(char **arg)
 	ft_putstr("\n");
 }
 
+/*
+**	Check Error cd builten : O
+*/
 int			ft_error_cd(char *path, char **arg)
 {
 	int			bl_err;
@@ -67,6 +75,10 @@ int			ft_error_cd(char *path, char **arg)
 	return (bl_err);
 }
 
+
+/*
+**	Builten cd : O
+*/
 void		ft_buil_cd(char **arg, char ***env)
 {
 	char	*path;
@@ -77,6 +89,11 @@ void		ft_buil_cd(char **arg, char ***env)
 		path = ft_get_vrb("HOME", *env);
 	else
 		path = ft_strdup(arg[0]);
+	if (*arg != NULL && (*arg)[0] == '-' && (*arg)[1] == '\0')
+	{
+		ft_strdel(&path);
+		path = ft_get_vrb("OLDPWD", *env);
+	}
 	if (ft_error_cd(path, arg) != 1)
 	{
 		temp = ft_strjoir("OLDPWD", "=", 0);

@@ -162,7 +162,6 @@ typedef struct			s_pipes
 	void				ft_buil_env(char **args, char ***env);
 	void				ft_buil_setenv(char **args, char ***env);
 	void				ft_buil_unsetenv(char *arg, char ***env);
-	int					ft_print_var(char *arg, char **env);
 //
 
 ///*** Variable
@@ -223,14 +222,19 @@ typedef struct			s_pipes
 //
 
 ///*** Lexer
-	t_tokens	*ft_new_token();
-	void	ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx);
-	void	ft_err_lexer(t_pipes *st_pipes);
-	void	ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx);
-	void	ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx);
-	void	ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx);
+	void		ft_err_lexer(t_pipes *st_pipes);
+	void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx);
+	void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx);
+	void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx);
 	t_tokens	*ft_lexer(char **args);
+
+	t_tokens	*ft_new_token();
+	void		ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx);
+	int			ft_sum_asci(char str[]);
+	void		ft_upd_token(t_tokens *st_tokens, int token, char *value);
+
 //
+
 
 ///*** Redirection
 	void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens);

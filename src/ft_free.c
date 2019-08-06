@@ -12,6 +12,9 @@
 
 #include "21sh.h"
 
+/**
+**	 Clear struct t_tokens
+*/
 void		ft_clear_tokens(t_tokens *st_tokens)
 {
 	t_tokens *st_temp;
@@ -27,6 +30,9 @@ void		ft_clear_tokens(t_tokens *st_tokens)
 	}
 }
 
+/**
+**	 Clear struct t_pipes
+*/
 void		ft_clear_cmds(t_pipes *st_pipes)
 {
 	t_pipes *st_temp;

@@ -25,6 +25,7 @@
 ///////////********* TASKS ********///////////////
 
 
+- cd - : 
 - ;
 - ‘<<-’, then all leading tab characters are stripped from input lines and the line containing delimiter.
 - Change variable in here_doc
@@ -81,7 +82,12 @@ file>&file
 
 <
 
-------------- 
+-------------------------------------
 >>
--------------
+-------------------------------------
 <<
+
+-------------------------------------
+
+base64 /dev/urandom | head -c 1000 | grep 42 | wc -l | sed -e 's/1/Yes/g' -e 's/0/No/g
+mkdir test ; cd test ; ls -a ; ls | cat | wc -c >fifi ; cat fifi 

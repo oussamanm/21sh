@@ -1,0 +1,26 @@
+	/*
+		st_tokens = st_head;
+		while (st_tokens != NULL)
+		{
+			dprintf(fd_err, "Token = <%d> : %s\n",st_tokens->token,st_tokens->value);
+			st_tokens = st_tokens->next;
+		}
+		dprintf(fd_err,"\n--------------\n");
+		//exit(0);
+	*/
+
+
+    	/*
+		t_redir *temp;
+		temp = st_pipes->st_redir;
+		while (temp)
+		{
+			dprintf(fd_err,"----TYEP REDIRECTION = %d\n",temp->type_red);
+			dprintf(fd_err,"\tfd_red = %d\n",temp->fd_red);
+			dprintf(fd_err,"\tfd_des = %d\n",temp->fd_des);
+			dprintf(fd_err,"\tfd_err = %d\n",temp->fd_err);
+			dprintf(fd_err,"\tfd_close = %d\n",temp->fd_close);
+			dprintf(fd_err,"\tfd_file = %s\n",temp->fd_file);
+			temp = temp->next;
+		}
+	*/

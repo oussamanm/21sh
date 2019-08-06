@@ -77,7 +77,7 @@ int			ft_parse_error(char *str_cmds)
 	/// check | error
 	if (ft_error_separ(str_cmds, '|'))
 	{
-		ft_putstr_fd("syntax error near unexpected token `| hello' \n", 2);
+		ft_putstr_fd("syntax error near unexpected token `|' \n", 2);
 		return (1);
 	}
 	return (0);

@@ -15,9 +15,10 @@
 ///*** Remove Quote from args 	***///
 void		ft_remove_quot(char **args)
 {
-	char *temp;
+	int	j;
 	int i;
 	char *arg;
+	int quote;
 
 	if (args == NULL)
 		return ;
@@ -25,11 +26,16 @@ void		ft_remove_quot(char **args)
 	while (args[i] != NULL)
 	{
 		arg = args[i];
-		if (arg != NULL && (arg[0] == '\'' || arg[0] == '"'))
+		j = -1;
+		while (arg[++j] != '\0')
 		{
-			temp = ft_strsub(arg , 1, ft_strlen(arg) - 2);
-			ft_strdel(&arg);
-			args[i] = temp;
+			if (arg[j] == '\'' || arg[j] == '"')
+			{
+				quote = arg[j];
+				ft_strcpy(&arg[j], &arg[j + 1]);
+				if ((j = ft_find_char(arg, quote)) >= 0)
+					ft_strcpy(&arg[j], &arg[j + 1]);
+			}
 		}
 		i++;
 	}

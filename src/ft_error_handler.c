@@ -25,7 +25,12 @@ void		ft_err_exit(char *str)
 	exit(0);
 }
 
-int			ft_error_separ(char *str_arg, char c) /// return 1 : error
+/*
+** ft_error_separ : Check error syntax (; and |) : O
+** return 1 in case of error
+*/
+
+int			ft_error_separ(char *str_arg, char c)
 {
 	int	temp;
 	char **args;

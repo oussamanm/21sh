@@ -12,6 +12,9 @@
 
 #include "21sh.h"
 
+/*
+** find file in PATH
+*/
 char	*ft_find_path(char *arg, char **env)
 {
 	int		i;
@@ -20,27 +23,23 @@ char	*ft_find_path(char *arg, char **env)
 
 	i = -1;
 	str_paths = NULL;
-	if (env == NULL || arg == NULL)
-		return (NULL);
-	if (env != NULL && *env != NULL)
+	if (env != NULL && *env != NULL && arg)
 	{
 		temp = ft_get_vrb("PATH", env);
 		str_paths = (temp != NULL) ? ft_str_split(temp, ":") : NULL;
 		ft_strdel(&temp);
 	}
-	while (str_paths != NULL && str_paths[++i] != NULL)
+	while (str_paths != NULL && str_paths[++i] != NULL && arg)
 	{
 		str_paths[i] = ft_strjoir(str_paths[i], "/", 1);
 		temp = ft_strjoir(str_paths[i], arg, 0);
-		if (access(temp, F_OK) != 0)
+		if (access(temp, F_OK) == 0)
 		{
-			ft_strdel(&temp);
-			continue ;
+			ft_strrdel(str_paths);
+			return (temp);
 		}
-		ft_strrdel(str_paths);
-		return (temp);
+		ft_strdel(&temp);
 	}
-	ft_strdel(&temp);
 	ft_strrdel(str_paths);
 	return (NULL);
 }

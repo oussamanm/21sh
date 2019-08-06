@@ -12,28 +12,10 @@
 
 #include "21sh.h"
 
-int			ft_print_var(char *arg, char **env)
-{
-	int		len;
 
-	len = 0;
-	if (arg == NULL || env == NULL || arg[0] == '\0')
-		return (0);
-	while (arg[len] != '\0' && arg[len] != '$' && arg[len] != ' ' &&
-			arg[len] != '=' && ft_isalphanum(arg[len]))
-		len++;
-	while (*env != NULL)
-	{
-		if (ft_strnequ(*env, arg, len) && (*env)[len] == '=')
-		{
-			ft_putstr(&(*env)[len + 1]);
-			return (len + 1);
-		}
-		env++;
-	}
-	return (len + 1);
-}
-
+/*
+**	ft_get_vrb : return variable (allocated) || NULL : 0
+*/
 char		*ft_get_vrb(char *vrb, char **env)
 {
 	int		len;
@@ -54,6 +36,9 @@ char		*ft_get_vrb(char *vrb, char **env)
 	return (NULL);
 }
 
+/*
+**	ft_add_vrb : add variable to environ : 0
+*/
 void		ft_add_vrb(char *arg, char ***env)
 {
 	char	**environ;
@@ -72,6 +57,9 @@ void		ft_add_vrb(char *arg, char ***env)
 	return ;
 }
 
+/*
+**	ft_set_vrb : update vrb in environ if exist else create new  : 0
+*/
 void		ft_set_vrb(char *vrb, char ***env, int rm)
 {
 	int		i;

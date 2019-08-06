@@ -12,7 +12,9 @@
 
 #include "21sh.h"
 
-///*** initail builtens : duplicate STD_* , Call builtens , Resete STD_*
+/*
+** initail builtens : duplicate STD_* , Call builtens , Resete STD_* : O
+*/
 void		ft_init_built(t_pipes *st_pipes, char ***env)
 {
 	int i;
@@ -32,7 +34,9 @@ void		ft_init_built(t_pipes *st_pipes, char ***env)
 	return ;
 }
 
-///*** Call Builtens (close fds of redirection) ***//
+/*
+**  Call Builtens (close fds of redirection) : O
+*/
 int			ft_call_built(t_pipes *st_pipes, char ***env)
 {
 	int		rtn;
@@ -63,7 +67,9 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 	return (rtn);
 }
 
-///*** Check if Command builtens
+/*
+**	Check if Command builtens : O
+*/
 int			ft_check_built(char *arg)
 {
 	int		rtn;
