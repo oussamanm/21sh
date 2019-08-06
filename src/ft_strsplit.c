@@ -72,7 +72,7 @@ static int		ft_getindx(char const *str, char *c)
 		return (i);
 }
 
-char	**ft_str_split(char const *s, char *c)
+char			**ft_str_split(char const *s, char *c)
 {
 	int		i;
 	int		j;

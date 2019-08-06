@@ -13,7 +13,7 @@
 #include "21sh.h"
 
 /*
-** find file in PATH
+** find file in PATH : O
 */
 char	*ft_find_path(char *arg, char **env)
 {
@@ -60,7 +60,7 @@ t_pipes		*ft_new_stpipe()
 }
 
 /*
-** Convert table of string to list
+** Convert table of string to list : O
 */
 t_pipes		*ft_strr_list(char **args_pipe)
 {

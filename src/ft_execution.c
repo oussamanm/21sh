@@ -17,9 +17,9 @@
 ** Function Execution
 */
 
-
-/* Check redirection		
-***/
+/*
+** Check if exist redirection : O	
+*/
 int			ft_check_redi(t_pipes *st_pipes)
 {
 	t_tokens *st_temp;

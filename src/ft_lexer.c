@@ -36,7 +36,7 @@ void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
 }
 
 /*
-** ft_lexer_red : lexer for all redirection :
+** ft_lexer_red : lexer for all redirection : O
 */
 void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 {
@@ -53,9 +53,8 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 			str[k++] = '&';
 		else if (arg[i] == '&')
 			str[k++] = ERRO_IN_AND;
-		else if (arg[i] == '>' || arg[i] == '<')
+		else if ((arg[i] == '>' || arg[i] == '<') && (str[k++] = arg[i]))
 		{
-			str[k++] = arg[i];
 			if (arg[i + 1] == arg[i] && ++i) /// Redirection >> OR Here doc	<<
 				str[k++] = arg[i];
 		}

@@ -35,7 +35,7 @@ int			ft_error_separ(char *str_arg, char c)
 	int	temp;
 	char **args;
 
-	if ((args = ft_str_split_q(str_arg, " ;")) == NULL || args[0] == NULL)
+	if ((args = ft_str_split_q(str_arg, " ;")) == NULL || args[0] == NULL) //// check split " ;"
 	{
 		ft_strrdel(args);
 		return (1);

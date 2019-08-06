@@ -51,15 +51,14 @@ void		ft_buil_setenv(char **args, char ***env)
 }
 
 /*
-**	Builten setenv : 
+**	Builten setenv : O
 */
 void		ft_buil_unsetenv(char *arg, char ***env)
 {
 	int		i;
 	int		len_env;
 
-	len_env = -1;
-	if ((i = -1) == -1 && ((*env) == NULL || (*env)[0] == NULL || !arg))
+	if ((i = -1) == -1 && (len_env = -1) && (!(*env) || !*(*env) || !arg))
 		return ;
 	while ((*env)[++i] != NULL)
 	{
