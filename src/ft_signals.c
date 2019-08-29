@@ -6,48 +6,53 @@
 /*   By: onouaman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/25 21:35:32 by onouaman          #+#    #+#             */
-/*   Updated: 2019/06/25 21:35:34 by onouaman         ###   ########.fr       */
+/*   Updated: 2019/08/07 06:09:40 by onouaman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 #include "read_line.h"
-
 
 /*
 ** ft_catch_signal : CTR + c
 */
+
 void	ft_catch_signal(int signal)
 {
-	signal = 0;
+	UNUSED(signal);
 	if (g_sign)
 		ft_putchar('\n');
 	else
 	{
-		ft_putstr_term(pos1.num_col, pos1.cmd + pos1.index, &pos1);
-		ft_putstr("\n\033[0;32m21sh $>\033[0m ");
-		free(pos1.end);
-		if (!(pos1.end = ft_memalloc(sizeof(int) * 20)))
+		ft_putstr_term(g_pos.num_col, g_pos.cmd + g_pos.index, &g_pos);
+		free(g_pos.end);
+		if (!(g_pos.end = ft_memalloc(sizeof(int) * 20)))
 			return ;
-		pos1.index = 0;
-		pos1.p = 8;
-		pos1.x = 8;
-		pos1.y = 0;
-		pos1.num_col = ft_get_size_windz();
-		ft_strdel(&pos1.cmd);
-		pos1.cmd = ft_strnew(0);
+		g_pos.index = 0;
+		g_pos.x = 8;
+		g_pos.y = 0;
+		g_pos.num_col = ft_get_size_windz();
+		ft_strdel(&g_pos.cmd);
+		g_pos.cmd = ft_strnew(0);
+		if (g_pos.p != 8)
+		{
+			g_pos.exit = 1;
+			ioctl(0, TIOCSTI, "\12");
+		}
+		else
+			ft_putstr("\n\033[0;32m21sh $>\033[0m ");
+		g_pos.p = 8;
 	}
 }
 
-
-void ft_call_signal()
+void	ft_call_signal(void)
 {
 	signal(SIGQUIT, SIG_IGN);
 	signal(SIGINT, ft_catch_signal);
-    signal(SIGWINCH, ft_win_change);
+	signal(SIGWINCH, ft_win_change);
 }
 
-void	ft_signal_default()
+void	ft_signal_default(void)
 {
 	signal(SIGQUIT, SIG_DFL);
 }

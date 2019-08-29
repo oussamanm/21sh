@@ -28,23 +28,25 @@ ft_strstr.c ft_strsub.c ft_strtrim.c ft_tolower.c ft_toupper.c ft_chrlen.c
 
 SRC_H = ft_func_h_file.c ft_func_h_str2.c\
 ft_func_h_strr.c ft_func_h_upd.c ft_func_h_str.c ft_func_h_str3.c\
-ft_func_h_strr2.c
+ft_func_h_strr2.c ft_func_h_str4.c
 
 OBJS = $(addprefix , $(SRC:.c=.o))
-OBJ_H = $(addprefix , $(SRC_H:.c=.o))
+OBJ_H = $(addprefix ./helper_func/, $(SRC_H:.c=.o))
+
+header = libft.h
 
 INCLD = ./
 
 all: $(NAME)
 
-
-$(NAME):
-	@gcc $(FLAG) -c $(SRC) $(addprefix ./helper_func/, $(SRC_H)) -I $(INCLD)
+$(NAME): $(OBJS) $(OBJ_H)
 	@ar rc $(NAME) $(OBJS) $(OBJ_H)
 	@ranlib $(NAME)
+%.o : %.c
+	@gcc $(FLAG) -I $(INCLD) -c $< -o $@
 
 clean:
-	@rm -f *.o
+	@rm -f $(OBJS) $(OBJ_H)
 
 fclean: clean
 	@rm -f libft.a

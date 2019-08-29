@@ -21,15 +21,17 @@
 # include <fcntl.h>
 # include <sys/stat.h>
 
-//**** Error Msg
+/*
+**	Error Message
+*/
 # define FIL_NS "No such file or directory"
 # define FIL_PD "Permission denied"
 # define VRB_IA "Invalid argument"
-# define CMD_NF "Command not found"
+# define CMD_NF "¯\\_(ツ)_/¯ Command not found"
 # define CMD_NV "not a valid identifier"
 # define FIL_NU "no such user or named directory: "
 # define FIL_ND "not a directory"
-# define SYN_ER "syntax error" 
+# define SYN_ER "Syntax error"
 
 typedef	struct		s_list
 {
@@ -37,7 +39,6 @@ typedef	struct		s_list
 	size_t			content_size;
 	struct s_list	*next;
 }					t_list;
-
 
 int					ft_toupper(int c);
 int					ft_tolower(int c);
@@ -88,9 +89,9 @@ int					ft_putstr(char const *s);
 void				ft_putendl(char const *s);
 void				ft_putnbr(int n);
 void				ft_putchar_fd(char c, int fd);
-int				ft_putstr_fd(char const *s, int fd);
+int					ft_putstr_fd(char const *s, int fd);
 void				ft_putnbr_fd(int n, int fd);
-int				ft_putendl_fd(char const *s, int fd);
+int					ft_putendl_fd(char const *s, int fd);
 int					ft_strequ(char const *s1, char const *s2);
 t_list				*ft_lstnew(void const *content, size_t content_size);
 void				ft_lstdelone(t_list **alst, void (*del)(void *, size_t));
@@ -107,7 +108,7 @@ char				*ft_nstrdup(const char *s1, size_t n);
 int					ft_find_file(char *path, char *file);
 int					ft_check_file(char *file, int mode);
 int					ft_open_file(char *file, int type);
-int		ft_exist_fd(int fd);
+int					ft_exist_fd(int fd);
 
 int					ft_check_char(char *str, char c);
 int					ft_find_char(char *str, char c);
@@ -134,12 +135,13 @@ int					ft_isspace(char c);
 int					ft_check_charr(char *src, int str[], int exept);
 void				ft_repeat_char(int c, int n);
 char				*ft_rm_char(char *str, int index);
-int		ft_putchar_err(int c);
-int		ft_chrlen(const char *str, char c);
-char	*ft_strfreejoin(char *s1, char *s2);
-int			ft_isalldigit(char *str);
-int			ft_isallalphanum(char *str);
-int			ft_isallprint(char *str);
-void		ft_print_error(char *msg, char *para1, char *para2, int rm);
+int					ft_putchar_err(int c);
+int					ft_chrlen(const char *str, char c);
+char				*ft_strfreejoin(char *s1, char *s2);
+int					ft_isalldigit(char *str);
+int					ft_isallalphanum(char *str);
+int					ft_isallprint(char *str);
+void				ft_print_error(char *msg, char *para1, char *para2, int rm);
+char				*ft_strtrim_and_free(char *s);
 
 #endif

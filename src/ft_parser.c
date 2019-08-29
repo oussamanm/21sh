@@ -10,37 +10,39 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 
 /*
-**	ft_call_redire : calls function redirection  : 0
+**	ft_call_redire : calls function redirection
 */
-void	ft_call_redire(t_redir *st_redir, t_tokens *st_tokens)
+
+void			ft_call_redire(t_redir *st_redir, t_tokens *st_tokens)
 {
-	if (CHECK_TOKEN(st_tokens->token, T_RED_OUT_S, T_RED_OUT_A, T_RED_OUT_B))	/// OUT_PUT
+	if (CHECK_TOKEN(st_tokens->token, T_RED_OUT_S, T_RED_OUT_A, T_RED_OUT_B))
 		ft_redi_out(st_redir, st_tokens);
-	else if (CHECK_TOKEN(st_tokens->token, T_RED_IN_S, T_RED_IN_A, T_RED_IN_B))	/// IN_PUT
+	else if (CHECK_TOKEN(st_tokens->token, T_RED_IN_S, T_RED_IN_A, T_RED_IN_B))
 		ft_redi_in(st_redir, st_tokens);
-	else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M, T_RED_APP_A))		/// APPEND
+	else if (CHECK_TOKEN(st_tokens->token, T_RED_APP_S, T_RED_APP_M,
+		T_RED_APP_A))
 		ft_redi_app(st_redir, st_tokens);
-	else if (st_tokens->token == T_RED_BOTH)									/// <>
+	else if (st_tokens->token == T_RED_BOTH)
 		ft_redi_both(st_redir, st_tokens);
-	else if (st_tokens->token == T_RED_HER_D)									/// HERE_DOC
-		ft_redi_her(st_redir, st_tokens);
 }
 
 /*
-**	ft_read_tokens : Read token and fill struct t_redir with redirection : 0
+**	ft_read_tokens : Read token and fill struct t_redir with redirection
 */
-static void     ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
+
+static void		ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 {
 	t_redir		*st_redir;
 	t_redir		*head;
 
-	head = NULL;
+	st_redir = NULL;
+	head = st_pipes->st_redir;
 	while (st_tokens != NULL)
 	{
-		if (st_tokens->token < 0) /// Redirection
+		if (st_tokens->token < 0 && st_tokens->token != T_RED_HER_D)
 		{
 			if (head == NULL)
 			{
@@ -60,63 +62,43 @@ static void     ft_read_tokens(t_pipes *st_pipes, t_tokens *st_tokens)
 }
 
 /*
-**	ft_apply_redi : apply redirection  : 0
+**	ft_apply_redi : apply redirection
 */
+
 static int		ft_apply_redi(t_pipes *st_pipes)
 {
-	t_redir	*lst_redi;
-	
+	t_redir	*st_r;
+
 	if (st_pipes == NULL)
 		return (REDI_KO);
-	lst_redi = st_pipes->st_redir;
-	while (lst_redi != NULL)
+	st_r = st_pipes->st_redir;
+	while (st_r != NULL)
 	{
-		/// Apply here doc (create pipe and write in (write end of pipe))
-		(lst_redi->type_red == 4) ? ft_apply_hered(lst_redi) : NULL;
-		if (lst_redi->fd_close != -1)
-			close(lst_redi->fd_close);
-		if (lst_redi->fd_red != -1 && lst_redi->fd_des != -1)
+		(st_r->type_red == 4) ? ft_apply_hered(st_r) : NULL;
+		if (st_r->fd_close != -1)
+			close(st_r->fd_close);
+		if (st_r->fd_red != -1 && st_r->fd_des != -1)
 		{
-			if (lst_redi->fd_des == -2)
-				lst_redi->fd_des = ft_open_file(lst_redi->fd_file, lst_redi->type_red);
-			if (lst_redi->fd_des == -1 || !ft_exist_fd(lst_redi->fd_des))
+			if (st_r->fd_des == -2)
+				st_r->fd_des = ft_open_file(st_r->fd_file, st_r->type_red);
+			if (st_r->fd_des == -1 || !ft_exist_fd(st_r->fd_des))
 				return (REDI_KO);
-			if (dup2(lst_redi->fd_des , lst_redi->fd_red) == -1)
+			if (dup2(st_r->fd_des, st_r->fd_red) == -1)
 				return (ft_putendl_fd("Error in dub", 2) && 0);
 		}
-		if (lst_redi->fd_err != -1 && lst_redi->fd_des != -1)
-			if (dup2(lst_redi->fd_des, lst_redi->fd_err) == -1)
+		if (st_r->fd_err != -1 && st_r->fd_des != -1)
+			if (dup2(st_r->fd_des, st_r->fd_err) == -1)
 				return (ft_putendl_fd("Error in dub", 2) && 0);
-		lst_redi = lst_redi->next;
+		st_r = st_r->next;
 	}
 	return (REDI_OK);
 }
 
 /*
-**	ft_update_tokens : update token by remove quotes : 0
+**	ft_update_args : update args by remove redirection
 */
-static void		ft_update_tokens(t_tokens *st_tokens)
-{
-	char		*temp;
-	t_tokens	*st_temp;
 
-	st_temp = st_tokens;
-	while (st_temp)
-	{
-		if (st_temp->token == 1)
-		{
-			temp = ft_strsub(st_temp->value , 1, ft_strlen(st_temp->value) - 2);
-			ft_strdel(&(st_temp->value));
-			st_temp->value = temp;
-		}
-		st_temp = st_temp->next;
-	}
-}
-
-/*
-**	ft_update_args : update args by remove redirection : 0
-*/
-static void     ft_update_args(t_pipes *st_pipes)
+static void		ft_update_args(t_pipes *st_pipes)
 {
 	int			count;
 	int			i;
@@ -144,21 +126,15 @@ static void     ft_update_args(t_pipes *st_pipes)
 }
 
 /*
-**	ft_parse_cmd : read tokens and apply redirection : 0
+**	ft_parse_cmd : read tokens and apply redirection
 */
-int             ft_parse_cmd(t_pipes *st_pipes)
+
+int				ft_parse_cmd(t_pipes *st_pipes)
 {
-	/// Remove quotes from tokens
 	ft_update_tokens(st_pipes->st_tokens);
-
-	// Read Tokens and fill Redirection of node cmd
 	ft_read_tokens(st_pipes, st_pipes->st_tokens);
-
-	// Apply Redirection
 	if (ft_apply_redi(st_pipes) == REDI_KO)
 		return (PARSE_KO);
-
-	// Remove nodes redirection and update args
 	ft_update_args(st_pipes);
 	return (PARSE_OK);
 }

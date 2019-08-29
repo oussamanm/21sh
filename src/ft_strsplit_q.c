@@ -1,28 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strsplit.c                                      :+:      :+:    :+:   */
+/*   ft_strsplit_q.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: onouaman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2019/05/03 06:22:18 by onouaman          #+#    #+#             */
-/*   Updated: 2019/05/03 06:23:35 by onouaman         ###   ########.fr       */
+/*   Created: 2019/08/07 05:28:59 by onouaman          #+#    #+#             */
+/*   Updated: 2019/08/07 05:29:02 by onouaman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
-
-
+#include "shell.h"
 
 /*
-**	ft_str_split_q : Split with quoting : O
+**	ft_str_split_q : Split with quoting :
 */
-char			**ft_str_split_q(char *str, char *c)
+
+char		**ft_str_split_q(char *str, char *c)
 {
 	int		i;
 	char	**s_re;
 	char	save;
-	char *temp;
+	char	*temp;
 
 	i = 0;
 	if (str == NULL || c == NULL)
@@ -45,7 +44,7 @@ char			**ft_str_split_q(char *str, char *c)
 }
 
 /*
-**	ft_index_of_first_split : Splite string with string : O
+**	ft_index_of_first_split : Splite string with string :
 */
 
 int			ft_index_of_first_split(char *s1, char *s2)
@@ -77,10 +76,10 @@ int			ft_index_of_first_split(char *s1, char *s2)
 
 char		**ft_strsplit_by_arr(char *str, char *split)
 {
-	int i;
-	int j;
-	char *tmp;
-	char **resu;
+	int		i;
+	int		j;
+	char	*tmp;
+	char	**resu;
 
 	resu = NULL;
 	tmp = ft_strdup(str);

@@ -54,13 +54,11 @@ void	ft_right_touch(t_cursor *pos, int size)
 ** character inside the shell line.
 */
 
-void	ft_see_touch(char *buf, char *s, t_cursor *pos, t_select *select)
+void	ft_see_touch(char *buf, char *s, t_cursor *pos)
 {
 	int		size;
 
 	size = ft_strlen(s);
-	if (select->end != -1 && select->start != -1)
-		ft_remove_selections(pos, select, s);
 	if (LE == CAST(buf) && pos->x == 0)
 	{
 		pos->index--;

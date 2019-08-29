@@ -10,25 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 #include "read_line.h"
 
 /*
 **	Builten exit : free env , free readline, clear struct t_pipes : O
 */
+
 void		ft_built_exit(t_pipes *st_pipes, char ***env)
 {
 	ft_strrdel(*env);
 	ft_clear_readline_struct();
 	ft_clear_cmds(st_pipes);
-	if (ft_set_to_default() == -1)
-		ft_putendl("reset the terminal parameters error");
 	exit(0);
 }
 
 /*
 **	Builten echo : O
 */
+
 void		ft_buil_echo(char **arg)
 {
 	int		i;
@@ -53,6 +53,7 @@ void		ft_buil_echo(char **arg)
 /*
 **	Check Error cd builten : O
 */
+
 int			ft_error_cd(char *path, char **arg)
 {
 	int			bl_err;
@@ -77,10 +78,10 @@ int			ft_error_cd(char *path, char **arg)
 	return (bl_err);
 }
 
-
 /*
 **	Builten cd : O
 */
+
 void		ft_buil_cd(char **arg, char ***env)
 {
 	char	*path;

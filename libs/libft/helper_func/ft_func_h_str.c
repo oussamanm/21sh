@@ -86,7 +86,7 @@ int		ft_str_alphanum(char *str)
 	return (1);
 }
 
-int		ft_isalphanum(char c) /// check condi . and /
+int		ft_isalphanum(char c)
 {
 	return (ft_isalpha(c) || ft_isalnum(c) || c == '_' || c == '.' || c == '/');
 }

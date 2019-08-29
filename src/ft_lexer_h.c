@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 
 /*
-** Calculate sum of ASCI : O
+** Calculate sum of ASCI :
 */
+
 int			ft_sum_asci(char str[])
 {
-	int sum;
+	int	sum;
 
 	if (str == NULL)
 		return (0);
@@ -31,28 +32,13 @@ int			ft_sum_asci(char str[])
 }
 
 /*
-** New t_tokens : O
+** Fill t_tokens :
 */
-t_tokens	*ft_new_token()
-{
-	t_tokens *st_token;
 
-	st_token = (t_tokens *)malloc(sizeof(t_tokens));
-	st_token->token = 0;
-	st_token->value = NULL;
-	st_token->prev = NULL;
-	st_token->next = NULL;
-	st_token->indx = -1;
-	st_token->is_arg = 0;
-	return (st_token);
-}
-
-/*
-** Fill t_tokens : O
-*/
-void		ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx)
+void		ft_fill_token(t_tokens **st_tokens, int token,
+	char *value, int indx)
 {
-	t_tokens *prev;
+	t_tokens	*prev;
 
 	(*st_tokens)->token = token;
 	(*st_tokens)->value = value;
@@ -64,8 +50,9 @@ void		ft_fill_token(t_tokens **st_tokens, int token, char *value, int indx)
 }
 
 /*
-** ft_upd_token : append - to redirection if separated : O
+** ft_upd_token : append - to redirection if separated :
 */
+
 void		ft_upd_token(t_tokens *st_tokens, int token, char *value)
 {
 	if (st_tokens == NULL)

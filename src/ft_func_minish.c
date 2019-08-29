@@ -10,12 +10,13 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 
 /*
-** find file in PATH : O
+** find file in PATH :
 */
-char	*ft_find_path(char *arg, char **env)
+
+char		*ft_find_path(char *arg, char **env)
 {
 	int		i;
 	char	**str_paths;
@@ -44,7 +45,7 @@ char	*ft_find_path(char *arg, char **env)
 	return (NULL);
 }
 
-t_pipes		*ft_new_stpipe()
+t_pipes		*ft_new_stpipe(void)
 {
 	t_pipes *st_pipes;
 
@@ -62,6 +63,7 @@ t_pipes		*ft_new_stpipe()
 /*
 ** Convert table of string to list : O
 */
+
 t_pipes		*ft_strr_list(char **args_pipe)
 {
 	t_pipes *st_pipes;

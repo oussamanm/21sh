@@ -49,6 +49,7 @@ void	ft_quotes(char **line, t_select *select, t_history *his)
 
 	if ((q = ft_check_quot(*line)) == 0)
 		return ;
+	c = q;
 	while (1337)
 	{
 		*line = ft_strjoir(*line, "\n", 1);
@@ -59,13 +60,12 @@ void	ft_quotes(char **line, t_select *select, t_history *his)
 		}
 		else if (q == '"')
 		{
-			ft_putstr("dquote> ");
-			s = ft_read_line(his, select, 8);
+			ft_putstr("dquotes>> ");
+			s = ft_read_line(his, select, 10);
 		}
-		(s) ? *line = ft_strjoir(*line, s, 3) : 0;
-		if (s != NULL && (c = ft_check_quot(*line)) == 0)
+		(!(g_pos.exit) && s) ? *line = ft_strjoir(*line, s, 3) : 0;
+		if ((s != NULL && (c = ft_check_quot(*line)) == 0) || g_pos.exit)
 			break ;
-		else
-			q = c;
+		q = c;
 	}
 }

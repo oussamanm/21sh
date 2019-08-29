@@ -10,13 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 #include "read_line.h"
 
 /*
-** ft_lexer_quot : lexer for quote : O
+** ft_lexer_quot : lexer for quote
 */
-void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
+
+void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx)
 {
 	int i;
 	int quote;
@@ -27,7 +28,7 @@ void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
 	{
 		if (i != 0 && arg[i] == quote)
 		{
-			ft_fill_token(st_tokens, T_QUO, ft_strsub(arg , 0, i + 1), indx);
+			ft_fill_token(st_tokens, T_QUO, ft_strsub(arg, 0, i + 1), indx);
 			*j += i;
 			return ;
 		}
@@ -36,13 +37,14 @@ void		ft_lexer_quot(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
 }
 
 /*
-** ft_lexer_red : lexer for all redirection : O
+** ft_lexer_red : lexer for all redirection
 */
+
 void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 {
-	int i;
-	int k;
-	char str[5];
+	int		i;
+	int		k;
+	char	str[5];
 
 	i = -1;
 	k = 0;
@@ -55,10 +57,10 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 			str[k++] = ERRO_IN_AND;
 		else if ((arg[i] == '>' || arg[i] == '<') && (str[k++] = arg[i]))
 		{
-			if (arg[i + 1] == arg[i] && ++i) /// Redirection >> OR Here doc	<<
+			if (arg[i + 1] == arg[i] && ++i)
 				str[k++] = arg[i];
 		}
-		else if (arg[i] == '-' && k == 2 && str[1] == '&') // Check dash if in pos 2 " >>- || >&- "
+		else if (arg[i] == '-' && k == 2 && str[1] == '&')
 			str[k++] = '-';
 		else if (i-- || 1)
 			break ;
@@ -68,12 +70,13 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 }
 
 /*
-** ft_lexer_txt : lexer for any txt : O
+** ft_lexer_txt : lexer for any txt
 */
-void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
+
+void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
 {
-	int i;
-	char *temp;
+	int		i;
+	char	*temp;
 
 	i = 0;
 	while (arg[i] != '\0')
@@ -92,26 +95,28 @@ void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx) ///***
 }
 
 /*
-** ft_lexer_h : call funct lexer : 0
+** ft_lexer_h : call funct lexer
 */
+
 void		ft_lexer_h(t_tokens **st_tokens, char *arg, int *j, int i)
 {
-	if (arg[*j] == '"' || arg[*j] == '\'')							// Quotes
+	if (arg[*j] == '"' || arg[*j] == '\'')
 		ft_lexer_quot(st_tokens, &arg[*j], j, i);
-	else if (arg[*j] == '&' && ft_check_char("><", arg[*j + 1]))	// '&' with redirection
+	else if (arg[*j] == '&' && ft_check_char("><", arg[*j + 1]))
 		ft_lexer_red(st_tokens, &arg[*j], j, i);
-	else if (arg[*j] == '>' || arg[*j] == '<')						// Redirection
+	else if (arg[*j] == '>' || arg[*j] == '<')
 		ft_lexer_red(st_tokens, &arg[*j], j, i);
 	else if ((*st_tokens)->prev && (*st_tokens)->prev->token == T_RED_OUT_A &&
-		arg[*j] == '-' && j != 0 && arg[(*j) - 1] == '&') 			// append - to redirection if separated execpt (&>-)
+		arg[*j] == '-' && j != 0 && arg[(*j) - 1] == '&')
 		ft_upd_token((*st_tokens)->prev, T_RED_OUT_B, ">&-");
 	else
-		ft_lexer_txt(st_tokens, &arg[*j], j, i);					// Text
+		ft_lexer_txt(st_tokens, &arg[*j], j, i);
 }
 
 /*
-** ft_lexer : Lexer : 0
+** ft_lexer : Lexer
 */
+
 t_tokens	*ft_lexer(char **args)
 {
 	char		*arg;
@@ -132,5 +137,7 @@ t_tokens	*ft_lexer(char **args)
 	}
 	(st_tokens->prev != NULL) ? (st_tokens->prev->next = NULL) : NULL;
 	free(st_tokens);
+	if (i == 0)
+		return (NULL);
 	return (st_head);
 }

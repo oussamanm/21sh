@@ -29,8 +29,15 @@ void	ft_free_tab(char **tableau)
 ** from our shell.
 */
 
-void	ft_read_line_exit(t_cursor *pos, t_history *his, t_select *select)
+int		ft_read_exit(t_cursor *pos, t_history *his, t_select *select, char **s)
 {
+	ft_putstr("exit\n");
+	ft_putnbr(g_pos.p);
+	if (g_pos.p == 9)
+	{
+		(*s)[0] = -1;
+		return (-1);
+	}
 	if (pos->end)
 		free(pos->end);
 	if (pos->cmd)
@@ -39,9 +46,9 @@ void	ft_read_line_exit(t_cursor *pos, t_history *his, t_select *select)
 		free(select->save);
 	if (his->history)
 		ft_free_tab(his->history);
-	if (ft_set_to_default() == -1)
-		ft_putendl("reset the terminal parameters error");
-	ft_putstr("exit\n");
+	ft_disable();
+	exit(0);
+	return (1);
 }
 
 /*
@@ -56,10 +63,8 @@ char	*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s)
 	int		len;
 
 	if (!ft_strcmp(s, ""))
-	{
-		ft_read_line_exit(pos, his, select);
-		exit(0);
-	}
+		if (ft_read_exit(pos, his, select, &s) == -1)
+			return (s);
 	len = ft_strlen(s);
 	if (pos->index < len && pos->index >= 0)
 	{

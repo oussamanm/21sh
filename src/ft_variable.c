@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
-
+#include "shell.h"
 
 /*
-**	ft_get_vrb : return variable (allocated) || NULL : 0
+**	ft_get_vrb : return variable (allocated) || NULL :
 */
+
 char		*ft_get_vrb(char *vrb, char **env)
 {
 	int		len;
@@ -37,8 +37,9 @@ char		*ft_get_vrb(char *vrb, char **env)
 }
 
 /*
-**	ft_add_vrb : add variable to environ : 0
+**	ft_add_vrb : add variable to environ :
 */
+
 void		ft_add_vrb(char *arg, char ***env)
 {
 	char	**environ;
@@ -58,8 +59,9 @@ void		ft_add_vrb(char *arg, char ***env)
 }
 
 /*
-**	ft_set_vrb : update vrb in environ if exist else create new  : 0
+**	ft_set_vrb : update vrb in environ if exist else create new  :
 */
+
 void		ft_set_vrb(char *vrb, char ***env, int rm)
 {
 	int		i;

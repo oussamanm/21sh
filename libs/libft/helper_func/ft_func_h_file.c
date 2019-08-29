@@ -34,10 +34,14 @@ int			ft_find_file(char *path, char *file)
 	return (0);
 }
 
-int		ft_check_file(char *file, int mode) /// mode == 0 :read || else : write
+/*
+** Check file if exist and check permission read , write
+*/
+
+int			ft_check_file(char *file, int mode)
 {
-	int bl;
-	struct stat st_stat;
+	int			bl;
+	struct stat	st_stat;
 
 	mode = (mode == 0) ? R_OK : W_OK;
 	bl = 0;
@@ -53,7 +57,11 @@ int		ft_check_file(char *file, int mode) /// mode == 0 :read || else : write
 	return (bl);
 }
 
-int		ft_open_file(char *file, int type) /// type : rd=0 wr=1  +app=3 rdwr=4
+/*
+** open file :  type : rd=0, wr=1, app=2, rdwr=3
+*/
+
+int			ft_open_file(char *file, int type)
 {
 	int fd;
 	int flag;
@@ -67,8 +75,10 @@ int		ft_open_file(char *file, int type) /// type : rd=0 wr=1  +app=3 rdwr=4
 	fd = -1;
 	if (ft_check_file(file, type) == 0)
 	{
-		if (type == 0 || type == 1)
+		if (type == 1)
 			flag = type | O_TRUNC;
+		if (type == 0)
+			flag = 0;
 		else if (type == 2)
 			flag = type | O_APPEND;
 		else if (type == 3)
@@ -79,7 +89,7 @@ int		ft_open_file(char *file, int type) /// type : rd=0 wr=1  +app=3 rdwr=4
 	return (fd);
 }
 
-int		ft_exist_fd(int fd)
+int			ft_exist_fd(int fd)
 {
 	if (read(fd, NULL, 0) == -1 && write(fd, NULL, 0) == -1)
 	{

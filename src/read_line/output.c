@@ -12,7 +12,7 @@
 
 #include "read_line.h"
 
-void	ft_remove_selections(t_cursor *pos, t_select *select, char *s)
+void	ft_remove_selections(t_cursor *pos, char *s)
 {
 	int		num_col;
 	int		num_lines;
@@ -23,28 +23,27 @@ void	ft_remove_selections(t_cursor *pos, t_select *select, char *s)
 	ft_move_cursor_zero(*pos);
 	tputs(tgetstr("cd", NULL), 0, my_outc);
 	save = pos->x;
-	pos->x = 8;
+	pos->x = pos->p;
 	ft_putstr_term(num_col, s, pos);
 	pos->x = save;
-	select->start = -1;
-	select->end = -1;
 	ft_set_last_position(*pos, num_lines);
 }
 
 void	ft_win_change(int sig)
 {
 	sig = 0;
-	if (pos1.cmd)
+	if (g_pos.cmd)
 	{
-		pos1.num_col = ft_get_size_windz();
+		g_pos.num_col = ft_get_size_windz();
 		tputs(tgetstr("cl", NULL), 0, my_outc);
 		ft_putstr("\033[0;32m21sh $>\033[0m ");
-		ft_putstr(pos1.cmd);
-		ft_get_end_of_line_pos(&pos1, pos1.cmd, pos1.num_col);
-		pos1.num_lines = ft_get_num_of_lines(pos1.num_col, pos1.cmd, pos1.p);
-		pos1.index = ft_strlen(pos1.cmd);
-		pos1.x = pos1.end[pos1.num_lines - 1];
-		pos1.y = pos1.num_lines - 1;
+		ft_putstr(g_pos.cmd);
+		ft_get_end_of_line_pos(&g_pos, g_pos.cmd, g_pos.num_col);
+		g_pos.num_lines = ft_get_num_of_lines(g_pos.num_col, \
+		g_pos.cmd, g_pos.p);
+		g_pos.index = ft_strlen(g_pos.cmd);
+		g_pos.x = g_pos.end[g_pos.num_lines - 1];
+		g_pos.y = g_pos.num_lines - 1;
 	}
 }
 
@@ -113,5 +112,6 @@ void	ft_print_touch_and_join(t_cursor *pos, char *buf, char **s)
 
 	i = 0;
 	while ((ft_isprint(buf[i]) || buf[i] == '\n') && i < 6)
-		*s = ft_putline(buf[i++], *s, pos);
+		if (!(*s = ft_putline(buf[i++], *s, pos)))
+			return ;
 }

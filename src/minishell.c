@@ -6,98 +6,45 @@
 /*   By: onouaman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 05:54:16 by onouaman          #+#    #+#             */
-/*   Updated: 2019/05/03 18:10:24 by onouaman         ###   ########.fr       */
+/*   Updated: 2019/08/07 06:09:23 by onouaman         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 #include "read_line.h"
 
 /*
 ** Initiale terminle attr , fill struct info and call function Read
 */
 
-char		*get_next_split(char *cmd, char *split)
+int			ft_pipe_error(char *str)
 {
-	char	*keys[6] = {";", "||", "&&", "&", "|", NULL};
-	int		cpt;
-	int		i;
-
-	//if (keys == NULL)
-	//	keys = (char[5][3]){";", "||", "&&", "&", NULL};
-	i = -1;
-	cpt = 0;
-	while (keys[++i])
-	{
-		if (ft_strequ(keys[i], split))
-			cpt = 1;
-		if (cpt && ft_strstr(cmd, keys[i]))
-			return (keys[i]);
-	}
-	return (NULL);
-}
-
-void		ft_parser(char *cmd, char *split, char ***env)
-{
+	char *tmp;
 	int i;
-	char **args;
-	char *next;
 
-	if (split == NULL)
-		return ;
-	if (ft_strequ(split, "|"))
-		ft_call_cmdss(cmd, env);
-	else
+	i = 0;
+	tmp = ft_strtrim(str);
+	while (tmp && tmp[i])
 	{
-		args = ft_strsplit_by_arr(cmd, split);
-		i = -1;
-		while (args[++i])
-		{
-
-			//dprintf(fd_err, "\n args[%d] : %s | split : %s \n", i, args[i], split);
-			if ((next = get_next_split(args[i], split)))
-				ft_parser(args[i], next, env);
-			else
-				ft_call_cmdss(args[i], env);
-		}
-		ft_strrdel(args);		
+		if (tmp[i] == '|' && (i == 0 || tmp[i + 1] == '\0'))
+			return (1);
+		i++;
 	}
+	ft_strdel(&tmp);
+	return (0);
 }
 
 int			ft_parse_error(char *str_cmds)
 {
 	if (str_cmds == NULL)
 		return (1);
-	/// check ; error
-	if (ft_error_separ(str_cmds, ';'))
-	{
-		ft_putstr_fd("syntax error near unexpected token `;' \n", 2);
-		return (1);
-	}
-	/// check | error
-	if (ft_error_separ(str_cmds, '|'))
+
+	if (ft_error_separ(str_cmds, '|'))// || ft_pipe_error(str_cmds))
 	{
 		ft_putstr_fd("syntax error near unexpected token `|' \n", 2);
 		return (1);
 	}
 	return (0);
-}
-
-void		ft_save_address(t_history **his, t_select **select)
-{
-	static t_history *p_his;
-	static t_select *p_select;
-
-	if (*his != NULL && *select != NULL)
-	{
-		p_his = *his;
-		p_select = *select;
-	}
-	else
-	{
-		*his = p_his;
-		*select = p_select;
-	}
 }
 
 void		ft_initial_read_line(t_history **his, t_select **select)
@@ -112,6 +59,73 @@ void		ft_initial_read_line(t_history **his, t_select **select)
 	ft_save_address(his, select);
 }
 
+void		ft_save_address(t_history **his, t_select **select)
+{
+	static t_history	*p_his;
+	static t_select		*p_select;
+
+	if (*his != NULL && *select != NULL)
+	{
+		p_his = *his;
+		p_select = *select;
+	}
+	else
+	{
+		*his = p_his;
+		*select = p_select;
+	}
+}
+
+char			**ft_error_multi(char *str_cmds)
+{
+	char **args;
+	int i;
+
+	i = 0;
+	if (ft_error_separ(str_cmds, ';'))
+	{
+		ft_putstr_fd("syntax error near unexpected token `;' \n", 2);
+		ft_strdel(&str_cmds);		
+		return (NULL);
+	}
+	args = ft_str_split_q(str_cmds, ";");
+	if (args == NULL || *args == NULL)
+	{
+		ft_putstr_fd("syntax error near unexpected tokenl `;' \n", 2);
+		ft_strrdel(args);
+		ft_strdel(&str_cmds);
+		return (NULL);
+	}
+	while (args[i])
+	{
+		if (ft_parse_error(args[i++]))
+		{
+			ft_strrdel(args);
+			ft_strdel(&str_cmds);
+			return (NULL);
+		}
+	}
+	return (args);
+}
+
+void		ft_multi_cmd(char *str_cmds, char ***environ)
+{
+	char	**args;
+	int		i;
+
+	i = 0;
+	if ((args = ft_error_multi(str_cmds)) == NULL)
+		return ;
+	while (args[i] != NULL)
+	{
+		args[i] = ft_corr_args(args[i], *environ);
+		ft_call_cmdss(args[i], environ);
+		i++;
+	}
+	ft_strrdel(args);
+	ft_strdel(&str_cmds);
+}
+
 int			main(void)
 {
 	extern char	**environ;
@@ -119,49 +133,24 @@ int			main(void)
 	t_history	*his;
 	t_select	*select;
 
-	/// Initail error 
-	//ft_intia_err("/dev/ttys003");
-	///Initial interface : tgetent
 	if (ft_set_termcap() == -1)
-		ft_err_exit("ERROR in seting Temcap");
-
-	///Call functions signal
+		ft_err_exit("ERROR in seting Temcap parameters");
 	ft_initial_read_line(&his, &select);
 	ft_call_signal();
-	
-	/// Duplicate environ
 	environ = ft_strr_dup(environ, ft_strrlen(environ));
 	his->path = ft_get_vrb("PATH", environ);
-
 	while (1337)
 	{
 		ft_putstr("\033[0;32m21sh $>\033[0m ");
-		// fill str_arg with command Entred And print prompt
 		if ((str_cmds = ft_read_line(his, select, 8)) != NULL)
 		{
-			/// Check and correction arg
 			ft_quotes(&str_cmds, select, his);
 			ft_stock_history(his->history, str_cmds, his->his_count);
-			if (his->his_count < MAX_HISTORY)
-				his->his_count++;
-			/// Check all error ; | redir 
-			if (!ft_parse_error(str_cmds))
-			{
-				/// Correction args : Expansions + Correct Quoting
-				str_cmds = ft_corr_args(str_cmds, environ);
-				///  Splite line entred with {;,&&,||,&} and Execute cmds
-				ft_call_cmdss(str_cmds, &environ);
-			}
-			ft_strdel(&str_cmds);
+			his->his_count += (his->his_count < MAX_HISTORY) ? 1 : 0;
+			if (!(g_pos.exit))
+				ft_multi_cmd(str_cmds, &environ);
 		}
 	}
 	ft_strrdel(environ);
 	return (0);
-}
-
-void		exit_shell(char **env)
-{
-	UNUSED(env);
-	//ft_strrdel(env);
-	exit(0);
 }

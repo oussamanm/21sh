@@ -10,14 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
-
-void		ft_intia_err(char *tty)
-{
-	fd_err = 0;
-	if ((fd_err = open(tty, O_RDWR)) < 0)
-		ft_putstr("Error in Open func with name of tty!\n");
-}
+#include "shell.h"
 
 void		ft_err_exit(char *str)
 {
@@ -32,10 +25,10 @@ void		ft_err_exit(char *str)
 
 int			ft_error_separ(char *str_arg, char c)
 {
-	int	temp;
-	char **args;
+	int		temp;
+	char	**args;
 
-	if ((args = ft_str_split_q(str_arg, " ;")) == NULL || args[0] == NULL) //// check split " ;"
+	if ((args = ft_str_split_q(str_arg, " ;")) == NULL || *args == NULL)
 	{
 		ft_strrdel(args);
 		return (1);
@@ -59,3 +52,24 @@ int			ft_error_separ(char *str_arg, char c)
 	return (0);
 }
 
+/*
+** Check if exist error syntax of redirection
+*/
+
+int			ft_error_syn(t_pipes *st_pipes)
+{
+	if (st_pipes == NULL)
+		return (0);
+	while (st_pipes)
+	{
+		st_pipes->args = ft_str_split_q(st_pipes->cmd, " \t");
+		st_pipes->st_tokens = ft_lexer(st_pipes->args);
+		if (ft_error_redir(st_pipes->st_tokens))
+		{
+			ft_clear_cmds(st_pipes);
+			return (1);
+		}
+		st_pipes = st_pipes->next;
+	}
+	return (0);
+}

@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 
 /*
-**	ft_close_pipes : close all pipes created  : O
+**	ft_close_pipes : close all pipes created  :
 */
+
 void		ft_close_pipes(t_pipes *st_pipes)
 {
 	while (st_pipes != NULL)
@@ -28,8 +29,9 @@ void		ft_close_pipes(t_pipes *st_pipes)
 }
 
 /*
-**	ft_create_pipes : create all pipes needed : O
+**	ft_create_pipes : create all pipes needed :
 */
+
 void		ft_create_pipes(t_pipes *st_pipes)
 {
 	t_pipes *st_head;
@@ -52,21 +54,23 @@ void		ft_create_pipes(t_pipes *st_pipes)
 }
 
 /*
-**	ft_apply_pipe_h : helper function (norme)
+**	ft_apply_pipe_h : helper function (norme) :
 */
 
-void		ft_apply_pipe_h(t_pipes *st_pipes,t_pipes *st_head, int i, char ***environ)
+void		ft_apply_pipe_h(t_pipes *st_pipes, t_pipes *st_head,
+	int i, char ***environ)
 {
-			if (dup2(st_pipes->fds[i] , i) == -1)
-				ft_putendl_fd("Error in dub STD_", 2);
-			ft_close_pipes(st_head);
-			ft_split_cmd(0, st_pipes, environ);
-			exit(0);
+	if (dup2(st_pipes->fds[i], i) == -1)
+		ft_putendl_fd("Error in dub STD_", 2);
+	ft_close_pipes(st_head);
+	ft_split_cmd(0, st_pipes, environ);
+	exit(0);
 }
 
 /*
-**	ft_apply_pipe : PIPE : O
+**	ft_apply_pipe : PIPE :
 */
+
 void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 {
 	t_pipes	*st_head;
@@ -80,15 +84,15 @@ void		ft_apply_pipe(t_pipes *st_pipes, char ***environ)
 	{
 		if (fork() == 0)
 		{
-			if (st_pipes != st_head && dup2(st_pipes->fds[0] , 0) == -1)
+			if (st_pipes != st_head && dup2(st_pipes->fds[0], 0) == -1)
 				ft_putendl_fd("Error in dub STD_IN", 2);
-			ft_apply_pipe_h(st_pipes, st_head, 1 , environ);
+			ft_apply_pipe_h(st_pipes, st_head, 1, environ);
 		}
 		st_pipes = st_pipes->next;
-		if (st_pipes->next == NULL) /// parent_child
+		if (st_pipes->next == NULL)
 		{
-			ft_apply_pipe_h(st_pipes, st_head, 0 , environ);
+			ft_apply_pipe_h(st_pipes, st_head, 0, environ);
 		}
 	}
-	(parent > 0) ? (void )wait(NULL) : NULL;
+	(parent > 0) ? (void)wait(NULL) : NULL;
 }

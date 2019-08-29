@@ -21,7 +21,7 @@ char	*ft_nstrdup(const char *s1, size_t n)
 	i = 0;
 	if (s1 == NULL)
 		return (NULL);
-	lenstr = strlen(s1);
+	lenstr = ft_strlen(s1);
 	s2 = (char *)malloc(sizeof(char) * (n + 1));
 	if (s2 == NULL)
 		return (NULL);

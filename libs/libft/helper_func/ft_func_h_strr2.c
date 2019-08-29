@@ -39,13 +39,13 @@ char		**alloc_chain(char **env, int nbr)
 
 char		**ft_strr_new(int len)
 {
-	char **args;
-	int i;
+	char	**args;
+	int		i;
 
 	i = 0;
 	if ((args = (char **)malloc(sizeof(char *) * (len + 1))) == NULL)
 	{
-		ft_putendl_fd("Error in allocation of args\n", 2);
+		ft_putendl_fd("Error in allocation\n", 2);
 		return (NULL);
 	}
 	while (i < len)
@@ -56,12 +56,12 @@ char		**ft_strr_new(int len)
 	return (args);
 }
 
-char	*ft_strfreejoin(char *s1, char *s2)
+char		*ft_strfreejoin(char *s1, char *s2)
 {
 	char			*result;
-	unsigned	int	len;
-	unsigned	int	i;
-	unsigned	int	j;
+	unsigned int	len;
+	unsigned int	i;
+	unsigned int	j;
 
 	j = 0;
 	i = 0;

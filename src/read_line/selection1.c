@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "read_line.h"
-#include "21sh.h"
 
 void	ft_print_with_reverse_mode(char *s, int start, int end, t_cursor *pos)
 {

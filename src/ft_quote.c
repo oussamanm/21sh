@@ -10,17 +10,18 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 
 /*
-**	ft_remove_quot : Remove Quote from args : O
+**	ft_remove_quot : Remove Quote from args :
 */
+
 void		ft_remove_quot(char **args)
 {
-	int	j;
-	int i;
-	char *arg;
-	int quote;
+	int		j;
+	int		i;
+	char	*arg;
+	int		quote;
 
 	if (args == NULL)
 		return ;
@@ -44,70 +45,74 @@ void		ft_remove_quot(char **args)
 }
 
 /*
-**	ft_str_remp : Function to Change sub_string with string : O
+**	ft_str_remp : Function to Change sub_string with string :
 */
-char	*ft_str_remp(char *str, char *remp, int start, int len, int rm)
-{
-	char *rtn;
-	int len_remp;
 
+char		*ft_str_remp(char *str, char *remp, int start, int len)
+{
+	char	*rtn;
+	int		len_remp;
+	int		bl;
+
+	bl = 0;
 	if (!remp || !str)
-		return NULL;
+		return (NULL);
+	if (len < 0)
+	{
+		len *= -1;
+		bl = 1;
+	}
 	len_remp = ft_strlen(remp);
 	rtn = ft_strnew(ft_strlen(str) - len + len_remp);
 	ft_strncpy(rtn, str, start);
 	ft_strncpy(rtn + start, remp, len_remp);
 	ft_strcpy(rtn + start + len_remp, str + start + len);
-	if ((rm == 1 || rm == 3) && str)
-		free(str);
-	if ((rm == 2 || rm == 3) && remp)
-		free(remp);
+	if (bl == 1)
+	{
+		ft_strdel(&str);
+		ft_strdel(&remp);
+	}
 	return (rtn);
 }
 
 /*
-**  ft_swap_vrb : Swap Variable with value : O
+**  ft_swap_vrb : Swap Variable with value :
 */
-char	*ft_swap_vrb(char *arg, int *index, char **environ)
+
+char		*ft_swap_vrb(char *arg, int *index, char **environ)
 {
-	int i;
-	int index_vrb;
-	char *temp;
-	char *value;
+	int		i;
+	int		index_vrb;
+	char	*temp;
+	char	*value;
 
 	if (arg == NULL || !(*arg))
-		return NULL;
+		return (NULL);
 	i = 0;
 	index_vrb = *index + 1;
-	while (arg[++(*index)])
-	{
-		if (!ft_isalpha(arg[*index]) && !ft_isalnum(arg[*index]) && arg[*index] != '_')
-			break ;
+	while (arg[++(*index)] && (ft_isalpha(arg[*index]) ||
+		ft_isalnum(arg[*index]) || arg[*index] == '_'))
 		i++;
-	}
-	/// resete index to $
 	*index -= i;
-	/// Get value of Variable
 	temp = ft_strsub(arg, index_vrb, i);
 	value = ft_get_vrb(temp, environ);
-	(value == NULL) ? value = ft_strnew(1) : NULL;
-	/// Change Vrb with value
+	(value == NULL) ? value = ft_strnew(0) : NULL;
 	i = ft_strlen(temp);
-	/// incres i by len of value
-	*index += i;
+	*index += (ft_strlen(value) - 1);
 	ft_strdel(&temp);
-	temp = ft_str_remp(arg, value, index_vrb - 1, i + 1, 0); /// you can free value inside the func
+	temp = ft_str_remp(arg, value, index_vrb - 1, i + 1);
 	ft_strdel(&value);
 	return (temp);
 }
 
 /*
-**  ft_corr_args : Correction cmd_line by change expansions : O
+**  ft_corr_args : Correction cmd_line by change expansions :
 */
-char 	*ft_corr_args(char *str_cmds, char **environ)
+
+char		*ft_corr_args(char *str_cmds, char **environ)
 {
-	int i;
-	char *cmd;
+	int		i;
+	char	*cmd;
 
 	i = 0;
 	if (str_cmds == NULL)
@@ -115,17 +120,40 @@ char 	*ft_corr_args(char *str_cmds, char **environ)
 	cmd = str_cmds;
 	while (cmd[i])
 	{
-		if (cmd[i] == '\'')
-		 	i += ft_find_char(cmd + i + 1, cmd[i]) + 2;
+		i += (cmd[i] == '\'') ? ft_find_char(cmd + i + 1, cmd[i]) + 2 : 0;
 		if (cmd[i] == '$' && cmd[i + 1])
 		{
 			str_cmds = cmd;
 			cmd = ft_swap_vrb(cmd, &i, environ);
 			ft_strdel(&str_cmds);
+			continue ;
 		}
-		else if (cmd[i] == '~' && (cmd[i + 1] == '/' || !cmd[i + 1] || ft_isspace(cmd[i + 1])))
-			cmd = ft_str_remp(cmd, ft_get_vrb("HOME" , environ), i, 1, 3);
+		else if (cmd[i] == '~' &&
+			(cmd[i + 1] == '/' || !cmd[i + 1] || ft_isspace(cmd[i + 1])))
+			cmd = ft_str_remp(cmd, ft_get_vrb("HOME", environ), i, -1);
 		i += cmd[i] != '\0';
 	}
 	return (cmd);
+}
+
+/*
+**	ft_update_tokens : update token by remove quotes
+*/
+
+void		ft_update_tokens(t_tokens *st_tokens)
+{
+	char		*temp;
+	t_tokens	*st_temp;
+
+	st_temp = st_tokens;
+	while (st_temp)
+	{
+		if (st_temp->token == 1)
+		{
+			temp = ft_strsub(st_temp->value, 1, ft_strlen(st_temp->value) - 2);
+			ft_strdel(&(st_temp->value));
+			st_temp->value = temp;
+		}
+		st_temp = st_temp->next;
+	}
 }

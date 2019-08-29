@@ -34,7 +34,7 @@ int		ft_check_charr(char *src, int str[], int exept)
 	while (src[i])
 	{
 		j = -1;
-		while(str[++j] != -1)
+		while (str[++j] != -1)
 		{
 			if (exept == 0 && src[i] == str[j])
 				return (str[j]);
@@ -46,60 +46,21 @@ int		ft_check_charr(char *src, int str[], int exept)
 	return (0);
 }
 
-char    *ft_rm_char(char *str, int index)
+char	*ft_rm_char(char *str, int index)
 {
-	int len;
+	int	len;
 
 	len = (int)ft_strlen(str);
-    if (index >= len || str == NULL)
-        return (str);
+	if (index >= len || str == NULL)
+		return (str);
 	if (index == (len - 1))
 		str[index] = '\0';
 	else
-    	str = ft_strcpy(&str[index], &str[index + 1]);
-    return (str);
+		str = ft_strcpy(&str[index], &str[index + 1]);
+	return (str);
 }
 
-int			ft_isalldigit(char *str)
-{
-	if (str == NULL)
-		return (0);
-	while (*str != '\0')
-	{
-		if (!ft_isdigit(*str))
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-int			ft_isallalphanum(char *str)
-{
-	if (str == NULL)
-		return (0);
-	while (*str != '\0')
-	{
-		if (!ft_isalphanum(*str))
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-int			ft_isallprint(char *str)
-{
-	if (str == NULL)
-		return (0);
-	while (*str != '\0')
-	{
-		if (!ft_isprint(*str))
-			return (0);
-		str++;
-	}
-	return (1);
-}
-
-void		ft_print_error(char *msg, char *para1, char *para2, int rm)
+void	ft_print_error(char *msg, char *para1, char *para2, int rm)
 {
 	if (msg == NULL)
 		return ;
@@ -109,7 +70,8 @@ void		ft_print_error(char *msg, char *para1, char *para2, int rm)
 		ft_putstr_fd(para2, 2);
 	if (para2 != NULL)
 		ft_putstr_fd(": ", 2);
-	ft_putendl_fd(msg, 2);
+	ft_putstr_fd(msg, 2);
+	ft_putchar('\n');
 	if (rm == 1 || rm == 3)
 		ft_strdel(&para1);
 	if (rm == 2 || rm == 3)

@@ -118,10 +118,7 @@ void	ft_copy_paste(char *buf, char **s, t_cursor *pos, t_select *select)
 
 	len = ft_strlen(*s);
 	if (COPY == CAST(buf) && select->start != -1 && select->end != -1)
-	{
 		ft_get_save(*s, select);
-		ft_remove_selection(pos, *s);
-	}
 	if (CUT == CAST(buf) && select->start != -1 && select->end != -1)
 		ft_cut(pos, select, s);
 	if (PASTE == CAST(buf) && select->save)

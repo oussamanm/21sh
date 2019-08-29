@@ -14,7 +14,7 @@ OBJS = ft_built_env.o ft_builtins.o ft_error_handler.o\
 	ft_func_minish.o ft_quote.o ft_strsplit.o ft_strsplit_q.o\
 	ft_variable.o minishell.o ft_signals.o ft_lexer_h.o\
 	ft_lexer.o ft_pipe.o ft_execution.o ft_parser.o ft_exec_built.o ft_free.o\
-	ft_redirection_h.o\
+	ft_redirection_h.o ft_new.o\
 	ft_redirection.o\
 	read_line/addition.o\
 	read_line/auto_completion.o\
@@ -36,8 +36,8 @@ OBJS = ft_built_env.o ft_builtins.o ft_error_handler.o\
 	read_line/termcap.o\
 	read_line/clear_readline.o\
 	read_line/heredoc_line.o\
-	read_line/cut.c
-
+	read_line/cut.o\
+	read_line/clear_line_or_window.o
 
 FLAG = -Wall -Wextra -Werror 
 INCL = ./includes
@@ -47,9 +47,9 @@ LIBFT = libft.a
 OBJS_21SH = $(addprefix ./src/, $(OBJS))
 
 
-all : $(NAME)
+all : LBT $(NAME)
 
-$(NAME) : $(LIBFT_PATH)/$(LIBFT) $(OBJS_21SH)
+$(NAME) : $(OBJS_21SH) $(LIBFT_PATH)$(LIBFT)
 	@echo "$(_lGREEN)										"
 	@echo " ▄▄▄▄▄▄▄▄▄▄▄    ▄▄▄▄     ▄▄▄▄▄▄▄▄▄▄▄ ▄         ▄ "
 	@echo "▐░░░░░░░░░░░▌ ▄█░░░░▌   ▐░░░░░░░░░░░▐░▌       ▐░▌"
@@ -62,22 +62,26 @@ $(NAME) : $(LIBFT_PATH)/$(LIBFT) $(OBJS_21SH)
 	@echo "▐░█▄▄▄▄▄▄▄▄▄ ▄▄▄▄█░░█▄▄▄ ▄▄▄▄▄▄▄▄▄█░▐░▌       ▐░▌"
 	@echo "▐░░░░░░░░░░░▐░░░░░░░░░░░▐░░░░░░░░░░░▐░▌       ▐░▌"
 	@echo " ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀ ▀▀▀▀▀▀▀▀▀▀▀ ▀         ▀  $(_END)"
-	@gcc -g $(FLAG) $(OBJS_21SH) -I $(INCL) -I $(LIBFT_PATH) $(LIBFT_PATH)/$(LIBFT) -o $(NAME) -ltermcap
-	@mv $(SRC)/*.o $(SRC)/read_line/*.o ./libs/
+	@echo "$(_lBLUE)gcc $(FLAG) -I $(INCL)  -I $(LIBFT_PATH) $(_END) $(_lGREEN)$(OBJS_21SH)$(_END) $(_lYELLOW)$(LIBFT_PATH)$(LIBFT)$(_END) -o $(_BOLD)$(NAME)$(_END) -ltermcap"
+	@gcc $(FLAG) -I $(INCL) -I $(LIBFT_PATH) $(OBJS_21SH) $(LIBFT_PATH)$(LIBFT) -o $(NAME) -ltermcap
+
 %.o : %.c
+	@echo "$(_lGREEN)gcc $(FLAG) -I $(INCL) -I $(LIBFT_PATH) -c $< -o $@$(_END)"
 	@gcc $(FLAG) -I $(INCL) -I $(LIBFT_PATH) -c $< -o $@
 
-$(LIBFT_PATH)/$(LIBFT) :
+LBT :
+	@echo "$(_lYELLOW)starting compile $(_RED)libft$(_END) librairie .. $(_END)"
+	@echo "$(_lYELLOW)make -C $(LIBFT_PATH)$(_END)"
 	@make -C $(LIBFT_PATH)
 
-
-
 clean :
+	@echo "\n$(_lCYAN)Makefile :$(_END) will delete $(_RED)$(OBJS_21SH) $(_END)and clean $(_RED)libft$(_END)"
 	@make clean -C $(LIBFT_PATH)
-	@rm -f ./libs/*.o
+	@rm -f $(OBJS_21SH)
 
 fclean : clean
+	@echo "\n$(_lCYAN)Makefile :$(_END) will delete $(_RED)$(NAME)$(_END) and $(_RED)$(LIBFT)$(_END)"
 	@make fclean -C $(LIBFT_PATH)
-	@rm -f ./$(NAME)
+	@rm -f $(NAME)
 
 re : fclean all

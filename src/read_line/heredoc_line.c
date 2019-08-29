@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "read_line.h"
-#include "21sh.h"
 
 char	*ft_read_heredoc(char *eol)
 {
@@ -28,13 +27,13 @@ char	*ft_read_heredoc(char *eol)
 	{
 		ft_putstr("heredoc> ");
 		s = ft_read_line(his, select, 9);
-		if (ft_strequ(s, eol))
+		if (ft_strequ(s, eol) || (s != NULL && s[0] == -1))
 		{
 			ft_strdel(&s);
 			break ;
 		}
-		if (!line)
-			line = ft_strnew(0);
+		(!line) ? (line = ft_strnew(0)) : 0;
+		(!s) ? (s = ft_strnew(0)) : 0;
 		line = ft_strjoir(line, s, 3);
 		line = ft_strjoir(line, "\n", 1);
 	}

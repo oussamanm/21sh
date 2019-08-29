@@ -18,14 +18,12 @@
 ** - put the cursor in the right position
 */
 
-char	*ft_line_edd(char *s, t_cursor *pos, char c, t_select *select)
+char	*ft_line_add(char *s, t_cursor *pos, char c)
 {
 	char *new;
 
 	if (!(new = ft_memalloc(sizeof(char) * ft_strlen(s) + 2)))
 		return (NULL);
-	if (select->start != -1 && select->end != -1)
-		ft_remove_selections(pos, select, s);
 	ft_strncpy(new, s, pos->index);
 	new[pos->index] = c;
 	ft_strcpy(new + pos->index + 1, s + pos->index);
@@ -44,4 +42,15 @@ char	*ft_line_edd(char *s, t_cursor *pos, char c, t_select *select)
 	ft_set_last_position(*pos, pos->num_lines);
 	free(s);
 	return (new);
+}
+
+char	*ft_inside_line(char *s, t_cursor *pos, char *buf)
+{
+	int i;
+
+	i = 0;
+	while ((ft_isprint(buf[i]) || buf[i] == '\n') && i < 6)
+		if (!(s = ft_line_add(s, pos, buf[i++])))
+			return (NULL);
+	return (s);
 }

@@ -10,19 +10,17 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 #include "read_line.h"
 
-///*** Redirection *****////
-
 /*
-** Redirection output >	 : O
+** Redirection output >	 :
 */
+
 void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 {
-	/// Initiale Vrb redirection
 	ft_init_redi(st_redir, 1);
-	if (st_tokens->token == T_RED_OUT_S) // 7>file
+	if (st_tokens->token == T_RED_OUT_S)
 	{
 		if (PREV && PREV->indx == st_tokens->indx &&
 			ft_isalldigit(PREV->value) && PREV->token == 0)
@@ -34,9 +32,9 @@ void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 		st_redir->fd_file = st_tokens->next->value;
 		st_tokens->next->is_arg = 1;
 	}
-	else if (st_tokens->token == T_RED_OUT_A) /// >& || &>
+	else if (st_tokens->token == T_RED_OUT_A)
 		ft_redi_out_h(st_redir, st_tokens);
-	else if (st_tokens->token == T_RED_OUT_B) // >&-
+	else if (st_tokens->token == T_RED_OUT_B)
 	{
 		if (PREV->indx == st_tokens->indx && ft_isalldigit(PREV->value))
 		{
@@ -49,11 +47,11 @@ void	ft_redi_out(t_redir *st_redir, t_tokens *st_tokens)
 }
 
 /*
-** Redirection input <	 : O
+** Redirection input <	 :
 */
+
 void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens)
 {
-	/// Initiale Vrb redirection
 	ft_init_redi(st_redir, 0);
 	if (st_tokens->token == T_RED_IN_S)
 	{
@@ -64,15 +62,15 @@ void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens)
 		st_redir->fd_file = st_tokens->next->value;
 		st_tokens->next->is_arg = 1;
 	}
-	else if (st_tokens->token == T_RED_IN_A) /// [n1]<& n2
+	else if (st_tokens->token == T_RED_IN_A)
 	{
 		if (PREV->indx == st_tokens->indx && ft_isalldigit(PREV->value) &&
 			(PREV->is_arg = 1))
 			st_redir->fd_red = ft_atoi(st_tokens->prev->value);
-		st_redir->fd_des = ft_atoi(st_tokens->next->value); // next must be a number
+		st_redir->fd_des = ft_atoi(st_tokens->next->value);
 		st_tokens->next->is_arg = 1;
 	}
-	else if (st_tokens->token == T_RED_IN_B) /// <&-
+	else if (st_tokens->token == T_RED_IN_B)
 	{
 		if (PREV->indx == st_tokens->indx && ft_isalldigit(PREV->value) &&
 			(PREV->is_arg = 1))
@@ -81,8 +79,9 @@ void	ft_redi_in(t_redir *st_redir, t_tokens *st_tokens)
 }
 
 /*
-** Redirection append >> : O
+** Redirection append >> :
 */
+
 void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
 {
 	ft_init_redi(st_redir, 2);
@@ -112,12 +111,14 @@ void	ft_redi_app(t_redir *st_redir, t_tokens *st_tokens)
 }
 
 /*
-** Redirection input <>	 : O
+** Redirection input <>	 :
 */
+
 void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
 {
 	ft_init_redi(st_redir, 3);
-	if (st_tokens->prev->indx == st_tokens->indx && ft_isalldigit(st_tokens->prev->value))
+	if (st_tokens->prev->indx == st_tokens->indx &&
+		ft_isalldigit(st_tokens->prev->value))
 	{
 		st_tokens->prev->is_arg = 1;
 		st_redir->fd_red = ft_atoi(st_tokens->prev->value);
@@ -128,15 +129,16 @@ void	ft_redi_both(t_redir *st_redir, t_tokens *st_tokens)
 }
 
 /*
-** Redirection : Here-doc : O
+** Redirection : Here-doc :
 */
+
 void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
 {
 	char *content;
 
-	/// add error of here doc syntax
 	ft_init_redi(st_redir, 4);
-	if (PREV != NULL && PREV->indx == st_tokens->indx && ft_isallprint(PREV->value))
+	if (PREV != NULL && PREV->indx == st_tokens->indx &&
+		ft_isallprint(PREV->value))
 	{
 		st_redir->fd_red = ft_atoi(PREV->value);
 		PREV->is_arg = 1;
@@ -149,7 +151,6 @@ void	ft_redi_her(t_redir *st_redir, t_tokens *st_tokens)
 		ft_strdel(&(st_tokens->next->value));
 		st_tokens->next->value = content;
 		st_redir->fd_file = content;
-		//st_redir->fd_file = ft_strdup(content);
 		st_redir->fd_des = -2;
 	}
 }

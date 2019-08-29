@@ -6,15 +6,16 @@
 /*   By: onouaman <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/07/17 19:26:08 by onouaman          #+#    #+#             */
-/*   Updated: 2019/07/17 19:26:09 by onouaman         ###   ########.fr       */
+/*   Updated: 2019/08/07 18:03:20 by hlamhidr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "21sh.h"
+#include "shell.h"
 
-/**
+/*
 **	 Clear struct t_tokens
 */
+
 void		ft_clear_tokens(t_tokens *st_tokens)
 {
 	t_tokens *st_temp;
@@ -30,9 +31,10 @@ void		ft_clear_tokens(t_tokens *st_tokens)
 	}
 }
 
-/**
+/*
 **	 Clear struct t_pipes
 */
+
 void		ft_clear_cmds(t_pipes *st_pipes)
 {
 	t_pipes *st_temp;
@@ -40,14 +42,10 @@ void		ft_clear_cmds(t_pipes *st_pipes)
 	while (st_pipes)
 	{
 		st_temp = st_pipes;
-		/// free args
 		ft_strrdel(st_pipes->args);
-		/// free cmd
 		ft_strdel(&(st_pipes->cmd));
-		/// free st_tokens
 		ft_clear_tokens(st_pipes->st_tokens);
 		st_pipes = st_pipes->next;
-		/// free old node
 		free(st_temp);
 	}
 }

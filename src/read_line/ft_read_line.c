@@ -17,26 +17,42 @@
 ** - move the cursor in the last of the line.
 */
 
-void	ft_enter(t_cursor *pos, t_select *select, char *s)
+void	ft_enter(t_cursor *pos, char *s, t_select *select)
 {
 	if (select->start != -1 && select->end != -1)
-		ft_remove_selections(pos, select, s);
+	{
+		ft_remove_selections(pos, s);
+		select->start = -1;
+		select->end = -1;
+	}
 	ft_putstr_term(pos->num_col, s + pos->index, pos);
 	ft_putchar('\n');
+}
+
+void	ft_clear_selection(t_select *select, t_cursor *pos, char *s, char *buf)
+{
+	ft_remove_selections(pos, s);
+	if (CAST(buf) != COPY && CAST(buf) != CUT && CAST(buf) != PASTE)
+	{
+		select->start = -1;
+		select->end = -1;
+	}
 }
 
 char	*ft_call_complete(t_select *select, char *s, char *buf)
 {
 	if (LE == CAST(buf) || RI == CAST(buf))
-		ft_see_touch(buf, s, &pos1, select);
+		ft_see_touch(buf, s, &g_pos);
 	else if (SEL_RI == CAST(buf) || SEL_LE == CAST(buf))
-		ft_selection(s, &pos1, buf, select);
+		ft_selection(s, &g_pos, buf, select);
 	else if (COPY == CAST(buf) || PASTE == CAST(buf) || CUT == CAST(buf))
-		ft_copy_paste(buf, &s, &pos1, select);
-	else if (ft_isprint(buf[0]) && pos1.index != (int)ft_strlen(s))
-		s = ft_line_edd(s, &pos1, buf[0], select);
+		ft_copy_paste(buf, &s, &g_pos, select);
+	else if (CTRL_U == CAST(buf) || CTRL_L == CAST(buf))
+		s = ft_clear(&g_pos, s, buf);
+	else if (g_pos.index != (int)ft_strlen(s))
+		s = ft_inside_line(s, &g_pos, buf);
 	else
-		ft_print_touch_and_join(&pos1, buf, &s);
+		ft_print_touch_and_join(&g_pos, buf, &s);
 	return (s);
 }
 
@@ -46,55 +62,54 @@ char	*ft_call_complete(t_select *select, char *s, char *buf)
 
 char	*ft_key_call_func(t_history *his, t_select *select, char *s, char *buf)
 {
+	if (CAST(buf) != SEL_RI && CAST(buf) != SEL_LE
+	&& select->start != -1 && select->end != -1)
+		ft_clear_selection(select, &g_pos, s, buf);
 	if (TAB == CAST(buf))
-		s = ft_auto_completion(&pos1, his, s);
+		s = ft_auto_completion(&g_pos, his, s);
 	else if (CTRL_D == CAST(buf))
-		s = ft_ctrl_d(&pos1, his, select, s);
+		s = ft_ctrl_d(&g_pos, his, select, s);
 	else if (ALT_UP == CAST(buf) || ALT_DO == CAST(buf))
-		ft_move_by_lines(&pos1, s, buf);
+		ft_move_by_lines(&g_pos, s, buf);
 	else if (HOME == CAST(buf) || END == CAST(buf))
-		ft_home_end(&pos1, s, buf);
+		ft_home_end(&g_pos, s, buf);
 	else if (RI_WOR == CAST(buf) || LE_WOR == CAST(buf))
-		ft_move_by_word(&pos1, s, buf);
+		ft_move_by_word(&g_pos, s, buf);
 	else if (DEL == CAST(buf))
-		s = ft_delcolomn(s, &pos1);
+		s = ft_delcolomn(s, &g_pos);
 	else if (UP == CAST(buf) || DO == CAST(buf))
-	{
-		if (select->start != -1 && select->end != -1)
-			ft_remove_selections(&pos1, select, s);
-		ft_print_history(his, buf, &s, &pos1);
-	}
+		ft_print_history(his, buf, &s, &g_pos);
 	else
 		s = ft_call_complete(select, s, buf);
 	return (s);
 }
 
 /*
-** - function filter the keys tap by the user and call all functions needed.
-** - return the line to our shell.
+** - function filter the keys tap by the user and call all functions
+** needed to edit the line returned to our shell.
 */
 
 char	*ft_read_line(t_history *his, t_select *select, int p)
 {
 	char	buf[6];
-	char	*tmp;
 
 	ft_initial(p);
 	ft_bzero(buf, 6);
+	ft_enable();
 	while (read(0, buf, 6) > 0)
 	{
 		if (ENTER == CAST(buf))
 		{
-			ft_enter(&pos1, select, pos1.cmd);
+			ft_enter(&g_pos, g_pos.cmd, select);
 			break ;
 		}
-		if (!(pos1.cmd = ft_key_call_func(his, select, pos1.cmd, buf)))
+		if (!(g_pos.cmd = ft_key_call_func(his, select, g_pos.cmd, buf))
+			|| g_pos.cmd[0] == -1)
 			break ;
 		ft_bzero(buf, 6);
 	}
-	free(pos1.end);
-	tmp = pos1.cmd;
-	pos1.cmd = ft_strtrim(pos1.cmd);
-	ft_strdel(&tmp);
-	return (pos1.cmd);
+	ft_disable();
+	free(g_pos.end);
+	(g_pos.cmd[0] != -1) ? g_pos.cmd = ft_strtrim_and_free(g_pos.cmd) : 0;
+	return (g_pos.cmd);
 }
