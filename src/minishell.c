@@ -39,7 +39,7 @@ int			ft_parse_error(char *str_cmds)
 	if (str_cmds == NULL)
 		return (1);
 
-	if (ft_error_separ(str_cmds, '|'))// || ft_pipe_error(str_cmds))
+	if (ft_error_separ(str_cmds, '|') || ft_pipe_error(str_cmds))
 	{
 		ft_putstr_fd("syntax error near unexpected token `|' \n", 2);
 		return (1);

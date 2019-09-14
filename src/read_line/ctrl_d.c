@@ -31,8 +31,6 @@ void	ft_free_tab(char **tableau)
 
 int		ft_read_exit(t_cursor *pos, t_history *his, t_select *select, char **s)
 {
-	ft_putstr("exit\n");
-	ft_putnbr(g_pos.p);
 	if (g_pos.p == 9)
 	{
 		(*s)[0] = -1;

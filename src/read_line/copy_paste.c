@@ -44,11 +44,9 @@ void	ft_get_save(char *s, t_select *select)
 
 void	ft_remove_selection(t_cursor *pos, char *s)
 {
-	int len;
 	int x_save;
 
 	x_save = pos->x;
-	len = ft_strlen(s);
 	ft_move_cursor_zero(*pos);
 	tputs(tgetstr("cd", NULL), 0, my_outc);
 	ft_putstr(s);

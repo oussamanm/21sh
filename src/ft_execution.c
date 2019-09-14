@@ -141,6 +141,11 @@ int			ft_call_cmdss(char *str_arg, char ***environ)
 	if (str_arg == NULL)
 		return (-1);
 	args_pipe = ft_str_split_q(str_arg, "|");
+	if (!*args_pipe)
+	{
+		ft_strrdel(args_pipe);
+		return (-1);
+	}
 	st_pipes = ft_strr_list(args_pipe);
 	(args_pipe) ? free(args_pipe) : NULL;
 	if (ft_error_syn(st_pipes) == 1)

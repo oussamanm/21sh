@@ -43,7 +43,8 @@ char	*ft_search_in_dir(char *begin, char *dirname)
 	struct dirent	*dp;
 	int				ret;
 
-	dir = opendir(dirname);
+	if (!(dir = opendir(dirname)))
+		return (NULL);
 	while ((dp = readdir(dir)))
 	{
 		if ((ret = ft_looks_like(dp->d_name, begin)) > 0)
