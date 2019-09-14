@@ -68,8 +68,6 @@ void		ft_buil_unsetenv(char *arg, char ***env)
 	{
 		if (ft_find_char(arg, '=') >= 0)
 			ft_print_error(CMD_NV, "setenv :", arg, 0);
-		if (ft_find_char(arg, '=') >= 0)
-			return ;
 		else if (!ft_strncmp(arg, (*env)[i], ft_find_char((*env)[i], '=')))
 		{
 			len_env = ft_strrlen(*env);

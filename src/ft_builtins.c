@@ -41,11 +41,7 @@ void		ft_buil_echo(char **arg)
 		(i != 1) ? ft_putchar(' ') : NULL;
 		j = 0;
 		while (arg[i][j] != '\0')
-		{
-			if (arg[i][j] == '\\' && ++j)
-				continue ;
 			ft_putchar(arg[i][j++]);
-		}
 	}
 	ft_putstr("\n");
 }
