@@ -53,32 +53,19 @@ void		ft_buil_setenv(char **args, char ***env)
 }
 
 /*
-**	Builten setenv : O
+**	Builten unsetenv : unset variable from environ
 */
 
-void		ft_buil_unsetenv(char *arg, char ***env)
+void		ft_buil_unsetenv(char **args, char ***env)
 {
-	int		i;
-	int		len_env;
-
-	len_env = -1;
-	if ((i = -1) == -1 && (!(*env) || !*(*env) || !arg))
+	if (!args || !(*args) || !env || !(*env))
 		return ;
-	while ((*env)[++i] != NULL)
+	while (*args)
 	{
-		if (ft_find_char(arg, '=') >= 0)
-			ft_print_error(CMD_NV, "setenv :", arg, 0);
-		else if (!ft_strncmp(arg, (*env)[i], ft_find_char((*env)[i], '=')))
-		{
-			len_env = ft_strrlen(*env);
-			ft_strdel(&((*env)[i]));
-			break ;
-		}
+		if (ft_find_char(*args, '=') != -1)
+			ft_print_error(CMD_NV, "unsetenv :", *args, 0);
+		else
+			ft_unset_vrb(*args, env);
+		args++;
 	}
-	while (i < (len_env - 1) && (*env)[i + 1] != NULL)
-	{
-		(*env)[i] = (*env)[i + 1];
-		i++;
-	}
-	(*env)[i] = (len_env != -1) ? NULL : (*env)[i];
 }

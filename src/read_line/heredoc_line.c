@@ -14,7 +14,6 @@
 
 char	*ft_read_heredoc(char *eol)
 {
-	char		*s;
 	char		*line;
 	t_history	*his;
 	t_select	*select;
@@ -26,15 +25,16 @@ char	*ft_read_heredoc(char *eol)
 	while (1337)
 	{
 		ft_putstr("heredoc> ");
-		s = ft_read_line(his, select, 9);
-		if (ft_strequ(s, eol) || (s != NULL && s[0] == -1))
+		ft_read_line(his, select, 9);
+		if (ft_strequ(g_pos.cmd, eol) ||
+			(g_pos.cmd != NULL && g_pos.cmd[0] == -1) || g_pos.exit)
 		{
-			ft_strdel(&s);
+			ft_strdel(&g_pos.cmd);
 			break ;
 		}
 		(!line) ? (line = ft_strnew(0)) : 0;
-		(!s) ? (s = ft_strnew(0)) : 0;
-		line = ft_strjoir(line, s, 3);
+		(!g_pos.cmd) ? (g_pos.cmd = ft_strnew(0)) : 0;
+		line = ft_strjoir(line, g_pos.cmd, 1);
 		line = ft_strjoir(line, "\n", 1);
 	}
 	return (line);

@@ -12,43 +12,45 @@
 
 #include "read_line.h"
 
-void	ft_next_line(t_cursor *pos, char *s, int num_col)
+void	ft_next_line(t_cursor *pos, char *s)
 {
-	if (s[pos->index] == '\n')
+	int save_x;
+	int bye;
+
+	save_x = (pos->x > pos->end[pos->y + 1]) ? pos->end[pos->y + 1] : pos->x;
+	bye = 0;
+	while (s[pos->index])
 	{
-		pos->x = 0;
-		pos->y++;
-		pos->index++;
-	}
-	while (s[pos->index] && s[pos->index] != '\n')
-	{
-		if (pos->x == num_col - 1)
+		if (pos->x == pos->end[pos->y] && !bye)
 		{
+			bye = 1;
 			pos->x = 0;
 			pos->y++;
 		}
+		else if (pos->x == save_x && bye)
+			break ;
 		else
 			pos->x++;
 		pos->index++;
 	}
 }
 
-void	ft_last_line(t_cursor *pos, char *s)
+void	ft_last_line(t_cursor *pos)
 {
-	if (pos->x == 0 && s[pos->index - 1] == '\n')
-	{
-		pos->y--;
-		pos->x = pos->end[pos->y];
-		pos->index--;
-	}
+	int save_x;
+	int bye;
+
+	save_x = (pos->x > pos->end[pos->y - 1]) ? pos->end[pos->y - 1] : pos->x;
+	bye = 0;
 	while (pos->index > 0)
 	{
-		if (pos->x == 0 && s[pos->index - 1] != '\n')
+		if (pos->x == 0 && !bye)
 		{
+			bye = 1;
 			pos->y--;
 			pos->x = pos->end[pos->y];
 		}
-		else if (pos->x == 0 && s[pos->index - 1] == '\n')
+		else if (pos->x == save_x && bye)
 			break ;
 		else
 			pos->x--;
@@ -72,14 +74,14 @@ void	ft_move_by_lines(t_cursor *pos, char *s, char *buf)
 	{
 		tputs(tgetstr("cd", NULL), 0, my_outc);
 		ft_putstr_term(num_col, s + pos->index, pos);
-		ft_next_line(pos, s, num_col);
+		ft_next_line(pos, s);
 		ft_set_last_position(*pos, num_lines);
 	}
 	if (ALT_UP == CAST(buf))
 	{
 		tputs(tgetstr("cd", NULL), 0, my_outc);
 		ft_putstr_term(num_col, s + pos->index, pos);
-		ft_last_line(pos, s);
+		ft_last_line(pos);
 		ft_set_last_position(*pos, num_lines);
 	}
 }

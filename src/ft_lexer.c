@@ -57,16 +57,16 @@ void		ft_lexer_red(t_tokens **st_tokens, char *arg, int *j, int indx)
 			str[k++] = ERRO_IN_AND;
 		else if ((arg[i] == '>' || arg[i] == '<') && (str[k++] = arg[i]))
 		{
-			if (arg[i + 1] == arg[i] && ++i)
-				str[k++] = arg[i];
+			if (arg[i + 1] && arg[i + 1] == arg[i])
+				str[k++] = arg[++i];
 		}
 		else if (arg[i] == '-' && k == 2 && str[1] == '&')
 			str[k++] = '-';
-		else if (i-- || 1)
+		else
 			break ;
 	}
 	ft_fill_token(st_tokens, ft_sum_asci(str) * -1, ft_strdup(str), indx);
-	*j += i;
+	*j += (i <= 0) ? 0 : (i - 1);
 }
 
 /*
@@ -98,19 +98,28 @@ void		ft_lexer_txt(t_tokens **st_tokens, char *arg, int *j, int indx)
 ** ft_lexer_h : call funct lexer
 */
 
-void		ft_lexer_h(t_tokens **st_tokens, char *arg, int *j, int i)
+void		ft_lexer_h(t_tokens **st_tokens, char *arg, int i)
 {
-	if (arg[*j] == '"' || arg[*j] == '\'')
-		ft_lexer_quot(st_tokens, &arg[*j], j, i);
-	else if (arg[*j] == '&' && ft_check_char("><", arg[*j + 1]))
-		ft_lexer_red(st_tokens, &arg[*j], j, i);
-	else if (arg[*j] == '>' || arg[*j] == '<')
-		ft_lexer_red(st_tokens, &arg[*j], j, i);
-	else if ((*st_tokens)->prev && (*st_tokens)->prev->token == T_RED_OUT_A &&
-		arg[*j] == '-' && j != 0 && arg[(*j) - 1] == '&')
-		ft_upd_token((*st_tokens)->prev, T_RED_OUT_B, ">&-");
-	else
-		ft_lexer_txt(st_tokens, &arg[*j], j, i);
+	int j;
+
+	if (!arg)
+		return ;
+	j = 0;
+	while (arg[j])
+	{
+		if (arg[j] == '"' || arg[j] == '\'')
+			ft_lexer_quot(st_tokens, &arg[j], &j, i);
+		else if (arg[j] == '&' && ft_check_char("><", arg[j + 1]))
+			ft_lexer_red(st_tokens, &arg[j], &j, i);
+		else if (arg[j] == '>' || arg[j] == '<')
+			ft_lexer_red(st_tokens, &arg[j], &j, i);
+		else if ((*st_tokens)->prev && (*st_tokens)->prev->token == T_RED_OUT_A
+			&& arg[j] == '-' && j && arg[j - 1] == '&')
+			ft_upd_token((*st_tokens)->prev, T_RED_OUT_B, ">&-");
+		else
+			ft_lexer_txt(st_tokens, &arg[j], &j, i);
+		j++;
+	}
 }
 
 /*
@@ -123,20 +132,20 @@ t_tokens	*ft_lexer(char **args)
 	t_tokens	*st_tokens;
 	t_tokens	*st_head;
 	int			i;
-	int			j;
 
 	i = -1;
 	st_tokens = ft_new_token();
 	st_head = st_tokens;
 	while (args[++i] != '\0')
 	{
-		j = -1;
 		arg = args[i];
-		while (arg[++j] != '\0')
-			ft_lexer_h(&st_tokens, arg, &j, i);
+		ft_lexer_h(&st_tokens, arg, i);
 	}
-	(st_tokens->prev != NULL) ? (st_tokens->prev->next = NULL) : NULL;
-	free(st_tokens);
+	if (st_tokens != NULL && st_tokens->prev != NULL)
+	{
+		st_tokens->prev->next = NULL;
+		free(st_tokens);
+	}
 	if (i == 0)
 		return (NULL);
 	return (st_head);

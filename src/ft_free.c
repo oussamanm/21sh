@@ -38,10 +38,21 @@ void		ft_clear_tokens(t_tokens *st_tokens)
 void		ft_clear_cmds(t_pipes *st_pipes)
 {
 	t_pipes *st_temp;
+	t_redir	*st_red;
 
 	while (st_pipes)
 	{
 		st_temp = st_pipes;
+		if (st_pipes->st_redir)
+		{
+			st_red = st_pipes->st_redir;
+			while (st_red)
+			{
+				if (st_red)
+					free(st_red);
+				st_red = st_red->next;
+			}
+		}
 		ft_strrdel(st_pipes->args);
 		ft_strdel(&(st_pipes->cmd));
 		ft_clear_tokens(st_pipes->st_tokens);

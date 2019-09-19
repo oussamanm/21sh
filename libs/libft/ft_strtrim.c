@@ -71,7 +71,7 @@ char			*ft_strtrim_and_free(char *s)
 	size_t	len;
 	char	*n_s;
 
-	if (s == NULL || s[0] == '\0')
+	if (s == NULL || *s == '\0')
 	{
 		ft_strdel(&s);
 		return (NULL);
@@ -80,7 +80,10 @@ char			*ft_strtrim_and_free(char *s)
 	len = ft_strlen(s);
 	cnt1 = ft_firstsp(s);
 	if (cnt1 == len)
+	{
+		ft_strdel(&s);
 		return (NULL);
+	}
 	cnt2 = ft_lastsp((len - cnt1 - 1), &s[cnt1]);
 	if (!(n_s = (char *)malloc(sizeof(char) * (len - cnt1 - cnt2 + 1))))
 		return (NULL);

@@ -25,14 +25,11 @@ void	ft_catch_signal(int signal)
 	else
 	{
 		ft_putstr_term(g_pos.num_col, g_pos.cmd + g_pos.index, &g_pos);
-		free(g_pos.end);
-		if (!(g_pos.end = ft_memalloc(sizeof(int) * 20)))
-			return ;
 		g_pos.index = 0;
 		g_pos.x = 8;
 		g_pos.y = 0;
 		g_pos.num_col = ft_get_size_windz();
-		ft_strdel(&g_pos.cmd);
+		ft_strdel(&(g_pos.cmd));
 		g_pos.cmd = ft_strnew(0);
 		if (g_pos.p != 8)
 		{

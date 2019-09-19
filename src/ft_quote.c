@@ -77,59 +77,66 @@ char		*ft_str_remp(char *str, char *remp, int start, int len)
 
 /*
 **  ft_swap_vrb : Swap Variable with value :
+**		in case of - $$ replace with PID
+**				   - $(nor alphanum) do nothing
 */
 
 char		*ft_swap_vrb(char *arg, int *index, char **environ)
 {
-	int		i;
-	int		index_vrb;
-	char	*temp;
-	char	*value;
+	int			len_vrb;
+	char		*temp;
+	char		*value;
+	int			j;
 
 	if (arg == NULL || !(*arg))
 		return (NULL);
-	i = 0;
-	index_vrb = *index + 1;
-	while (arg[++(*index)] && (ft_isalpha(arg[*index]) ||
-		ft_isalnum(arg[*index]) || arg[*index] == '_'))
-		i++;
-	*index -= i;
-	temp = ft_strsub(arg, index_vrb, i);
-	value = ft_get_vrb(temp, environ);
-	(value == NULL) ? value = ft_strnew(0) : NULL;
-	i = ft_strlen(temp);
-	*index += (ft_strlen(value) - 1);
+	len_vrb = 0;
+	j = *index + 1;
+	while (arg[j] && (ft_isalnum(arg[j]) || arg[j] == '_') && ++j)
+		len_vrb++;
+	if (len_vrb == 0 && arg[j] != '$' && ++(*index))
+		return (arg);
+	temp = ft_strsub(arg, *index + 1, len_vrb);
+	if (!len_vrb && arg[j] == '$' && ++len_vrb)
+		value = ft_itoa((int)getpid());
+	else if ((value = ft_get_vrb(temp, environ)) == NULL)
+		value = ft_strnew(0);
 	ft_strdel(&temp);
-	temp = ft_str_remp(arg, value, index_vrb - 1, i + 1);
+	temp = ft_str_remp(arg, value, *index, len_vrb + 1);
+	*index += ft_strlen(value);
 	ft_strdel(&value);
+	ft_strdel(&arg);
 	return (temp);
 }
 
 /*
 **  ft_corr_args : Correction cmd_line by change expansions :
+**				condition replace ~ : -followed by /
+**									: -followed a whitespace
 */
 
-char		*ft_corr_args(char *str_cmds, char **environ)
+char		*ft_corr_args(char *cmd, char **environ)
 {
 	int		i;
-	char	*cmd;
+	int		bl_q;
 
 	i = 0;
-	if (str_cmds == NULL)
+	bl_q = 0;
+	if (cmd == NULL)
 		return (NULL);
-	cmd = str_cmds;
 	while (cmd[i])
 	{
-		i += (cmd[i] == '\'') ? ft_find_char(cmd + i + 1, cmd[i]) + 2 : 0;
+		if (cmd[i] == '"')
+			bl_q = (bl_q == 0) ? 1 : 0;
+		i += (!bl_q && cmd[i] == 39) ? ft_find_char(cmd + i + 1, '\'') + 2 : 0;
 		if (cmd[i] == '$' && cmd[i + 1])
 		{
-			str_cmds = cmd;
 			cmd = ft_swap_vrb(cmd, &i, environ);
-			ft_strdel(&str_cmds);
 			continue ;
 		}
-		else if (cmd[i] == '~' &&
-			(cmd[i + 1] == '/' || !cmd[i + 1] || ft_isspace(cmd[i + 1])))
+		else if (cmd[i] == '~' && ((i) ? (ft_isspace(cmd[i - 1])) : 1) &&
+			(cmd[i + 1] == '/' || !cmd[i + 1] || ft_isspace(cmd[i + 1])) &&
+			((i) ? (cmd[i - 1] != '"') : 1))
 			cmd = ft_str_remp(cmd, ft_get_vrb("HOME", environ), i, -1);
 		i += cmd[i] != '\0';
 	}

@@ -43,29 +43,26 @@ int		ft_check_quot(char *str)
 
 void	ft_quotes(char **line, t_select *select, t_history *his)
 {
-	char	*s;
-	int		c;
 	int		q;
 
 	if ((q = ft_check_quot(*line)) == 0)
 		return ;
-	c = q;
 	while (1337)
 	{
 		*line = ft_strjoir(*line, "\n", 1);
 		if (q == '\'')
 		{
 			ft_putstr("quote> ");
-			s = ft_read_line(his, select, 7);
+			ft_read_line(his, select, 7);
 		}
 		else if (q == '"')
 		{
 			ft_putstr("dquotes>> ");
-			s = ft_read_line(his, select, 10);
+			ft_read_line(his, select, 10);
 		}
-		(!(g_pos.exit) && s) ? *line = ft_strjoir(*line, s, 3) : 0;
-		if ((s != NULL && (c = ft_check_quot(*line)) == 0) || g_pos.exit)
+		(!(g_pos.exit) && g_pos.cmd) ? *line = ft_strjoir(*line, g_pos.cmd, 1) : 0;
+		if ((g_pos.cmd != NULL && (((q = ft_check_quot(*line)) == 0)
+		|| g_pos.cmd[0] == -1)) || g_pos.exit)
 			break ;
-		q = c;
 	}
 }

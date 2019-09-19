@@ -71,7 +71,7 @@ void	ft_print_error(char *msg, char *para1, char *para2, int rm)
 	if (para2 != NULL)
 		ft_putstr_fd(": ", 2);
 	ft_putstr_fd(msg, 2);
-	ft_putchar('\n');
+	ft_putchar_fd('\n', 2);
 	if (rm == 1 || rm == 3)
 		ft_strdel(&para1);
 	if (rm == 2 || rm == 3)

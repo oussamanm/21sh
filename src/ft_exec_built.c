@@ -52,7 +52,7 @@ int			ft_call_built(t_pipes *st_pipes, char ***env)
 	else if (ft_strcmp((st_pipes->args)[0], "setenv") == 0 && (rtn = 1))
 		ft_buil_setenv(&(st_pipes->args)[1], env);
 	else if (ft_strcmp((st_pipes->args)[0], "unsetenv") == 0 && (rtn = 1))
-		ft_buil_unsetenv(st_pipes->args[1], env);
+		ft_buil_unsetenv(&(st_pipes->args)[1], env);
 	else if (ft_strcmp((st_pipes->args)[0], "cd") == 0 && (rtn = 1))
 		ft_buil_cd(&(st_pipes->args)[1], env);
 	while (st_pipes->st_redir != NULL)

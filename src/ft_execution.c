@@ -54,9 +54,9 @@ int			ft_cmd_exec(t_pipes *st_pipes, char **env)
 		str_arg = ft_strdup(st_pipes->args[0]);
 		if (access(str_arg, F_OK) != 0 && ++i)
 			ft_print_error(FIL_NS, NULL, str_arg, 2);
-		else if (str_arg && access(str_arg, X_OK) != 0 && ++i)
-			ft_print_error(FIL_PD, NULL, str_arg, 2);
 	}
+	if (!i && str_arg && access(str_arg, X_OK) != 0 && ++i)
+		ft_print_error(FIL_PD, NULL, str_arg, 2);
 	if (i == 0 && str_arg != NULL)
 	{
 		execve(str_arg, st_pipes->args, env);

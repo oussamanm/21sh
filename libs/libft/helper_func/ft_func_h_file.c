@@ -48,12 +48,12 @@ int			ft_check_file(char *file, int mode)
 	if (access(file, F_OK) == 0)
 	{
 		if (lstat(file, &st_stat) == 0 && S_ISDIR(st_stat.st_mode) && ++bl)
-			ft_print_error("Is a directory", NULL, file, 0);
+			ft_print_error("Is a directory", "21sh :", file, 0);
 		else if (access(file, mode) != 0 && ++bl)
-			ft_print_error(FIL_PD, NULL, file, 0);
+			ft_print_error(FIL_PD, "21sh :", file, 0);
 	}
-	else if (mode == R_OK && ++bl)
-		ft_print_error(FIL_NS, NULL, file, 0);
+	else if ((mode == R_OK || (file && !ft_strlen(file))) && ++bl)
+		ft_print_error(FIL_NS, "21sh :", file, 0);
 	return (bl);
 }
 

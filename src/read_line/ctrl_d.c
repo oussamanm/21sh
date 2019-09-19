@@ -31,7 +31,7 @@ void	ft_free_tab(char **tableau)
 
 int		ft_read_exit(t_cursor *pos, t_history *his, t_select *select, char **s)
 {
-	if (g_pos.p == 9)
+	if (g_pos.p == 9 || g_pos.p == 10)
 	{
 		(*s)[0] = -1;
 		return (-1);
@@ -52,7 +52,7 @@ int		ft_read_exit(t_cursor *pos, t_history *his, t_select *select, char **s)
 /*
 ** - function exit from our shell when we have empty line.
 ** - else the function remove a character from the index of our cursor.
-** return the new line.
+** - return the new line.
 */
 
 char	*ft_ctrl_d(t_cursor *pos, t_history *his, t_select *select, char *s)

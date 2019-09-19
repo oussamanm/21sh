@@ -134,7 +134,7 @@ void					ft_buil_cd(char **arg, char ***env);
 void					ft_builtenv_cmd(char **args, char ***env);
 void					ft_buil_env(char **args, char ***env);
 void					ft_buil_setenv(char **args, char ***env);
-void					ft_buil_unsetenv(char *arg, char ***env);
+void					ft_buil_unsetenv(char **args, char ***env);
 
 /*
 **Variable
@@ -143,6 +143,7 @@ void					ft_buil_unsetenv(char *arg, char ***env);
 char					*ft_get_vrb(char *vrb, char **env);
 void					ft_set_vrb(char *vrb, char ***env, int rm);
 void					ft_add_vrb(char *arg, char ***env);
+void					ft_unset_vrb(char *vrb, char ***env);
 
 /*
 **Error handler
@@ -155,6 +156,8 @@ int						ft_error_cd(char *path, char **arg);
 int						ft_error_semic(char *str_arg, char **args_cmd);
 int						ft_error_separ(char *str_arg, char c);
 int						ft_error_syn(t_pipes *st_pipes);
+int						ft_pipe_error(char *str);
+int						ft_parse_error(char *str_cmds);
 
 /*
 **Updated Splite

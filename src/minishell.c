@@ -17,36 +17,6 @@
 ** Initiale terminle attr , fill struct info and call function Read
 */
 
-int			ft_pipe_error(char *str)
-{
-	char *tmp;
-	int i;
-
-	i = 0;
-	tmp = ft_strtrim(str);
-	while (tmp && tmp[i])
-	{
-		if (tmp[i] == '|' && (i == 0 || tmp[i + 1] == '\0'))
-			return (1);
-		i++;
-	}
-	ft_strdel(&tmp);
-	return (0);
-}
-
-int			ft_parse_error(char *str_cmds)
-{
-	if (str_cmds == NULL)
-		return (1);
-
-	if (ft_error_separ(str_cmds, '|') || ft_pipe_error(str_cmds))
-	{
-		ft_putstr_fd("syntax error near unexpected token `|' \n", 2);
-		return (1);
-	}
-	return (0);
-}
-
 void		ft_initial_read_line(t_history **his, t_select **select)
 {
 	*his = ft_memalloc(sizeof(t_history));
@@ -76,20 +46,19 @@ void		ft_save_address(t_history **his, t_select **select)
 	}
 }
 
-char			**ft_error_multi(char *str_cmds)
+char		**ft_error_multi(char *str_cmds)
 {
-	char **args;
-	int i;
+	char	**args;
+	int		i;
 
 	i = 0;
 	if (ft_error_separ(str_cmds, ';'))
 	{
 		ft_putstr_fd("syntax error near unexpected token `;' \n", 2);
-		ft_strdel(&str_cmds);		
+		ft_strdel(&str_cmds);
 		return (NULL);
 	}
-	args = ft_str_split_q(str_cmds, ";");
-	if (args == NULL || *args == NULL)
+	if ((args = ft_str_split_q(str_cmds, ";")) == NULL || *args == NULL)
 	{
 		ft_putstr_fd("syntax error near unexpected tokenl `;' \n", 2);
 		ft_strrdel(args);
@@ -97,14 +66,12 @@ char			**ft_error_multi(char *str_cmds)
 		return (NULL);
 	}
 	while (args[i])
-	{
 		if (ft_parse_error(args[i++]))
 		{
 			ft_strrdel(args);
 			ft_strdel(&str_cmds);
 			return (NULL);
 		}
-	}
 	return (args);
 }
 
@@ -123,7 +90,7 @@ void		ft_multi_cmd(char *str_cmds, char ***environ)
 		i++;
 	}
 	ft_strrdel(args);
-	ft_strdel(&str_cmds);
+	ft_strdel(&g_pos.cmd);
 }
 
 int			main(void)
@@ -132,9 +99,9 @@ int			main(void)
 	char		*str_cmds;
 	t_history	*his;
 	t_select	*select;
-
+	
 	if (ft_set_termcap() == -1)
-		ft_err_exit("ERROR in seting Temcap parameters");
+		ft_err_exit("ERROR in seting Temcap parameters\n");
 	ft_initial_read_line(&his, &select);
 	ft_call_signal();
 	environ = ft_strr_dup(environ, ft_strrlen(environ));
